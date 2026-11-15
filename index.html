@@ -1845,6 +1845,7 @@ CFG.forEach(c=>{
   .feel .opt{text-align:center;font-size:16px;padding:9px 2px}.feel .opt i{display:block;font-style:normal;font-size:28px}
   .feel .opt.sel{background:#ffe6a8;box-shadow:inset 0 0 0 3px #f0b429}
   .lfld{display:block;font-size:14px;color:#7d736c;margin-top:8px}
+  .lfld textarea{display:block;width:100%;font-size:15px;line-height:1.5;border:2px solid #cfe0f5;border-radius:12px;padding:9px 10px;margin-top:3px;font-family:inherit}
   .lfld input,.lfld select{display:block;width:100%;font-size:17px;border:2px solid #cfe0f5;border-radius:12px;padding:9px 10px;margin-top:3px;font-family:inherit;background:#fff}
   .lnote{font-size:13px;color:#8c8178;line-height:1.5;margin-top:10px}
   details.lset{margin-top:14px;font-size:14px;color:#6b625b}details.lset summary{cursor:pointer}
@@ -1855,6 +1856,9 @@ CFG.forEach(c=>{
   .shelf .cnt{position:absolute;top:-6px;right:-4px;background:#e35d5d;color:#fff;border-radius:99px;font-size:12px;padding:2px 7px;font-family:'Jua',sans-serif}
   .vols{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
   .vols button{border:none;border-radius:10px;aspect-ratio:3/4;background:#eef4ff;font-family:'Jua',sans-serif;font-size:17px;color:#5d7aa0;padding:0;position:relative;overflow:hidden}
+  .vols.titled{grid-template-columns:repeat(3,1fr)}
+  .vols.titled button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px 4px}
+  .vols button .vt{position:relative;font-family:'Gowun Dodum',sans-serif;font-size:13px;line-height:1.3;color:#4a4540;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .vols button.rd{background:#ffe6a8;color:#93600d}
   .vols button img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .vols button .vn{position:relative;background:#fffc;border-radius:6px;padding:0 5px}
@@ -1996,6 +2000,36 @@ CFG.forEach(c=>{
     box.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{curSet=b.dataset.s;show();});
     g("setAdd").onclick=()=>setForm();
   }
+  function listOf(sid){if(!sid||!S.sets[sid])return "";const s=S.sets[sid],a=[];let any=false;
+    for(let v=1;v<=s.n;v++){const b=S.books[volId(sid,v)],t=b&&b.vt||"";if(t)any=true;a.push(v+". "+t);}return any?a.join("\n"):"";}
+  function parseList(txt){
+    return txt.split(/\r?\n/).map(l=>l.replace(/^[\s\-•·*]*(\(?\d{1,3}\)?|[①-⑳])\s*(권|번|호)?\s*[.)\]:\-]?\s*/,"").replace(/\s+/g," ").trim()).filter(Boolean);
+  }
+  async function findList(pub,name){
+    const msg=g("sFmsg");if(!name){msg.textContent="전집 이름을 먼저 써 주세요.";return;}
+    msg.textContent="📖 목록을 찾고 있어요…";
+    try{
+      let ts=[];
+      if(S.kakao){
+        for(let p=1;p<=3;p++){
+          const r=await fetch("https://dapi.kakao.com/v3/search/book?size=50&page="+p+"&query="+encodeURIComponent((pub?pub+" ":"")+name),{headers:{Authorization:"KakaoAK "+S.kakao}});
+          if(!r.ok)throw new Error(r.status===401?"카카오 키가 맞지 않아요.":"검색이 잠깐 안 돼요.");
+          const j=await r.json();
+          (j.documents||[]).forEach(d=>{if(!pub||(d.publisher||"").replace(/\s/g,"").includes(pub.replace(/\s/g,"")))ts.push(d.title);});
+          if(j.meta&&j.meta.is_end)break;
+        }
+      }else{
+        const r=await fetch("https://www.googleapis.com/books/v1/volumes?maxResults=40&printType=books&langRestrict=ko&q="+encodeURIComponent(name+(pub?" inpublisher:"+pub:"")));
+        if(!r.ok)throw new Error("검색이 잠깐 안 돼요.");
+        const j=await r.json();(j.items||[]).forEach(it=>{const v=it.volumeInfo||{};ts.push(v.title);});
+      }
+      const seen={};ts=ts.filter(t=>t&&!/세트|전\s*\d+\s*권/.test(t)&&!seen[t]&&(seen[t]=1));
+      ts.sort((a,b)=>{const x=(a.match(/(\d+)/)||[0,999])[1],y=(b.match(/(\d+)/)||[0,999])[1];return x-y;});
+      if(!ts.length){msg.innerHTML="찾지 못했어요 😢 인터넷 서점이나 중고 판매 글에서 '구성 목록'을 복사해 위 칸에 붙여넣어 주세요."+(S.kakao?"":"<br>카카오 키를 넣으면 더 잘 찾을 수 있어요(➕ 책 넣기 › 보호자 설정).");return;}
+      g("sL").value=ts.map((t,i)=>(i+1)+". "+(parseList(t)[0]||t)).join("\n");g("sC").value=ts.length;
+      msg.textContent="✅ "+ts.length+"권을 찾았어요. 순서나 빠진 책이 있는지 확인하고 고쳐 주세요.";
+    }catch(e){msg.textContent=e&&e.message&&!/fetch|network|load/i.test(e.message)?e.message:"인터넷이 연결되어 있는지 확인해 주세요.";}
+  }
   function setForm(sid){
     const s=sid?S.sets[sid]:{name:"",pub:"",n:60,img:""},c=g("tkc");g("tk").classList.add("on");let img=s.img||"";
     const isPub=PUBS.includes(s.pub);
@@ -2005,8 +2039,13 @@ CFG.forEach(c=>{
       <label class="lfld" id="sPoW" style="display:${s.pub&&!isPub?"block":"none"}">출판사 이름<input id="sPo" value="${esc(isPub?"":s.pub)}"></label>
       <label class="lfld">전집 이름<input id="sN" placeholder="예: 자연관찰, 세계명작, 수학동화" value="${esc(s.name)}"></label>
       <label class="lfld">모두 몇 권?<input id="sC" type="number" inputmode="numeric" min="1" max="200" value="${s.n}"></label>
+      <label class="lfld">📋 책 목록 (한 줄에 한 권, 1권부터 순서대로 · 몰라도 괜찮아요)<textarea id="sL" rows="7" placeholder="1. 꿀벌은 춤을 춰요&#10;2. 개미의 집&#10;…">${esc(listOf(sid))}</textarea></label>
+      <button class="btn line" id="sFind" style="width:100%">🔍 이 전집 책 목록 찾아 채우기</button>
+      <div class="lnote" id="sFmsg">인터넷 서점이나 중고 판매 글의 '구성 목록'을 복사해서 붙여넣어도 돼요. 번호는 자동으로 정리돼요.</div>
       <div class="msg" id="sMsg"></div><button class="hbtn" id="sOk" style="background:${C}">${sid?"고치기":"등록하기"}</button>
       ${sid?`<button class="holdbtn mini" id="sDel"><span>보호자: 꾹 눌러 전집 지우기 (통장 기록은 남아요)</span></button>`:""}<button class="skip" id="sNo">닫기</button>`;
+    g("sL").oninput=()=>{const L=parseList(g("sL").value);if(L.length)g("sC").value=L.length;};
+    g("sFind").onclick=()=>findList(g("sP").value==="_"?g("sPo").value.trim():g("sP").value,g("sN").value.trim());
     g("sP").onchange=()=>{g("sPoW").style.display=g("sP").value==="_"?"block":"none";};
     g("sCam").onclick=()=>photo(d=>{img=d;g("sCv").querySelector(".cv").outerHTML=`<img class="cv big" src="${d}" alt="">`;});
     g("sNo").onclick=()=>g("tk").classList.remove("on");
@@ -2014,22 +2053,26 @@ CFG.forEach(c=>{
       const pub=g("sP").value==="_"?g("sPo").value.trim():g("sP").value,name=g("sN").value.trim(),n=Math.max(1,Math.min(200,parseInt(g("sC").value,10)||0));
       if(!name){g("sMsg").textContent="전집 이름을 써 주세요.";return;}
       const id=sid||("s"+Date.now().toString(36));
-      S.sets[id]=Object.assign(S.sets[id]||{},{name,pub,n,img});
+      const L=parseList(g("sL").value),nn=L.length||n;
+      S.sets[id]=Object.assign(S.sets[id]||{},{name,pub,n:nn,img});
+      L.forEach((t,i)=>{const b=volBook(id,i+1);b.vt=t;});
       Object.values(S.books).forEach(b=>{if(b.set===id)volBook(id,b.vol);});
       if(!save())return;g("tk").classList.remove("on");curSet=id;goTab("sets");};
     const d=g("sDel");if(d)window.TOWN.hold(d,()=>{delete S.sets[sid];save();g("tk").classList.remove("on");curSet="";goTab("sets");});
   }
   function setView(sid){
     const s=S.sets[sid],box=g("lbBox"),k=setRead(sid);let cells="";
+    let titled=false;for(let v=1;v<=s.n;v++){const b=S.books[volId(sid,v)];if(b&&b.vt)titled=true;}
     for(let v=1;v<=s.n;v++){const id=volId(sid,v),b=S.books[id],t=timesRead(id),im=b&&b.img;
-      cells+=`<button class="${t?"rd":""}" data-v="${v}">${im?`<img src="${esc(im)}" alt="">`:""}<span class="vn">${v}</span>${t?`<span class="ok">${t>1?"✔"+t:"✔"}</span>`:""}</button>`;}
+      cells+=titled?`<button class="${t?"rd":""}" data-v="${v}">${im?`<img src="${esc(im)}" alt="">`:""}<span class="vn">${v}</span>${b&&b.vt&&!im?`<span class="vt">${esc(b.vt)}</span>`:""}${t?`<span class="ok">${t>1?"✔"+t:"✔"}</span>`:""}</button>`
+        :`<button class="${t?"rd":""}" data-v="${v}">${im?`<img src="${esc(im)}" alt="">`:""}<span class="vn">${v}</span>${t?`<span class="ok">${t>1?"✔"+t:"✔"}</span>`:""}</button>`;}
     box.innerHTML=`<div class="qz"><button class="btn line" id="svBack" style="margin-top:0">← 전집 목록</button>
       <div style="display:flex;gap:12px;align-items:center;margin-top:10px">${s.img?`<img class="cv big" src="${esc(s.img)}" alt="">`:`<span class="cv big">📦</span>`}<div style="flex:1"><b style="font-family:Jua;font-weight:normal;font-size:21px">${esc(s.name)}</b><div class="lab">${esc(s.pub||"")}</div>
       <div class="scene" style="font-size:16px;padding:8px 10px;margin-top:6px">${s.n}권 중 <b>${k}권</b> 읽었어요${k<s.n?`<br>다 읽으려면 몇 권 남았을까? 🤔`:"<br>🎉 전집을 다 읽었어요!"}</div></div></div>
       ${S.medals[sid]?`<div class="mdcard"><span class="medal"><span class="md">🏅</span></span><div style="font-family:Jua;font-size:19px;margin-top:6px">${esc(s.name)} 완독 메달</div><div class="lab">${shortD(S.medals[sid])}에 다 읽었어요</div><button class="hbtn" id="svCert" style="background:#d9a521">📜 완독 증서 보기</button></div>`:""}
-      <div class="vols">${cells}</div>
+      <div class="vols${titled?" titled":""}">${cells}</div>
       <button class="btn soft" id="svEdit" style="margin-top:12px">✏️ 전집 고치기</button></div>`;
-    g("lbInfo").textContent="읽은 권 번호를 누르면 저금돼요. 표지 사진을 찍으면 그 칸에 표지가 보여요.";
+    g("lbInfo").textContent="읽은 권을 누르면 저금돼요. 표지 사진을 찍으면 그 칸에 표지가 보여요."+(titled?"":" ✏️ 전집 고치기에서 책 목록을 넣으면 제목도 보여요.");
     g("svBack").onclick=()=>{curSet="";show();};
     g("svEdit").onclick=()=>setForm(sid);
     const ce=g("svCert");if(ce)ce.onclick=()=>cert(sid);
