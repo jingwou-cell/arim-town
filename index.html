@@ -1785,7 +1785,8 @@ CFG.forEach(c=>{
   const RANKS=[[0,"📖 책 친구"],[10,"🐛 책벌레"],[30,"🦉 책 박사"],[60,"📚 이야기 대장"],[100,"🏛️ 도서관장"]];
   const TALK=["주인공은 누구였어? 어떤 친구였어?","가장 재미있었던 장면은 어디야?","내가 주인공이라면 어떻게 했을까?","이야기 다음에는 무슨 일이 일어날까?","책 제목을 내가 새로 짓는다면?","이 책을 누구에게 읽어 주고 싶어? 왜?","책에서 새로 알게 된 것이 있어?","그림에서 제일 마음에 드는 곳은 어디야?"];
   const PRAISE=["책 한 권이 통장에 쏙! 📚","오늘도 이야기 하나를 모았어요! 🌟","책 읽는 아림이 최고! 👏","머릿속 도서관이 커졌어요! 🧠✨"];
-  const PUBS=["아람북스","그레이트북스"];
+  const PUBS=["아람북스","그레이트북스","성우"];
+  const PRESETS=[{"pub": "아람북스", "name": "문어빵", "list": ["뉴스를 시작합니다", "부르노 탐정의 범인 찾기", "생쥐 페레리의 이야기 여행", "개성 만점 친구들", "로아의 심부름", "몽몽이의 선택", "말부와의 반짝 딸기", "최고의 집은 어디예요?", "우리는 붕붕 가족", "카트의 세상 구경", "돌멩이 투덜멍대가 나가신다", "공룡 할아버지의 비밀", "도와줘요, 닥터 고!", "우린 친구니까!", "글케, 탐험을 떠나다!", "내가 알려 줄게!", "더워, 저리 가!", "우리 마을이 이상해!", "악기농부의 학교생활", "우리 삼촌은 영웅맨", "정임이의 특별한 모자", "오이를 뺏 주세요!", "달라와 밤피 씨", "코코섬을 지켜라", "푸른 기와집 이야기", "웬델 아저씨의 기억하던 하루", "몽랑가 오의 해", "무슨 늑대 인간은 싫어!", "번개에 맞던 날", "미모와 거북북 가족", "생쥐들의 좌충우돌 바다 여행", "땀말랑 구조대 출동!", "100층에 뭐가 있을까?"]}, {"pub": "성우", "name": "꼬마 과학 뒤집기", "list": ["누가 진짜 천재일까?", "마녀 할머니의 수상한 집", "흡혈귀 형제는 포기하지 않아", "도와줘요, 곰곰맨!", "무시무시한 호랑이 배 속 구경", "꼬물이는 어떻게 아기가 될까?", "바이러스 학교는 수업 중", "알의 주인은 누구일까?", "동물 목욕탕에 오세요!", "채식주의자가 된 호랑이", "숲속 부동산의 친절한 사장님", "쭈쭈는 피를 빨 수 있을까?", "여우의 남다른 집짓기 솜씨", "동물원에 침입한 망태 할아버지", "시들시들, 사과나무를 지켜라!", "씨앗들은 까마귀를 싫어해", "곰팡 씨는 열심히 청소해요, 가끔!", "몽땅 왕자의 아주 특별한 영화관", "아무도 그리지 않은 멋진 그림", "절대로 당황하지 않는 세탁왕", "인디언 마을은 비 걱정을 안 해!", "기체 가게와 별난 손님들", "동땡이로 만든 수프", "퐁당 탐정과 엄마 유령 사건", "쌀 따로 콩 따로!", "걱정 임금님이 하늘 위로 둥둥!", "심심 마을의 느리지만 빠른 친구들", "지구가 벌거숭이가 된다면", "얼음용을 이겨라!", "왕귀도깨비의 몸쓸 왕귀", "번쩍번쩍 물 속 괴물", "뜨뜻미지근한 흙 그릇 내놔!", "불이야, 불 좀 꺼 줘!", "말굽자석도깨비에게 생긴 일", "산타 할아버지는 실수를 안 해!", "못 말리는 마녀들의 무도회", "미리네가 만난 이상한 친구", "귀신은 천문대가 싫어!", "어린왕자가 잃어버린 별", "허풍선이 남작의 지구 한 바퀴", "늑대 인간은 사교성이 좋아!", "사라진 바위 삼 형제", "부글부글 끓는 폼페이", "흔들흔들 수프 배달", "세상에서 가장 긴 숨바꼭질", "심술쟁이 눈의 여왕", "바다를 떠난 아기 거북", "우리 왕의 정체를 밝혀라!", "새 장수의 새는 누가 훔쳤을까?", "너구리 삼 형제, 학교에 가다!", "팔 다친 두 요리사의 구세주", "노빈발, 외딴 섬에 갇히다", "화성 탐사 로봇을 멈춰라!", "빨간 망토의 위험한 심부름", "베타고와 바둑 천재 지성이의 대결"]}, {"pub": "성우", "name": "꼬마 사회 뒤집기", "list": ["나 · 안괜찮아도 괜찮아!", "", "친구 · 뾰롱이와 코돌이의 무지개", "배려 · 비비의 집 짓기 대소동", "도덕 · 태우와 마법 구슬", "", "", "", "", "우리나라의 지형과 기후 · 궁궐에 간 무명이", "세계의 기후 · 내 친구의 집은 어디일까?", "", "", "", "자연재해 · 베개를 이고 달려라!", "", "", "", "법과 재판 · 불곰 씨의 브로치 도난 사건", "공공 기관 · 구청에 간 흥부", "", "", "분단과 통일 · 선이 사라지면", "", "", "", "", "착한 소비 · 멋쟁이가 되고 싶어!", "", "", "무역 · 속 좁은 임금님의 편지", "", "", "", "", "", "", "", "환경 문제 · 모아모아 별에서 온 손님들", "전쟁과 평화 · 싸우지 않고 사이좋게"]}, {"pub": "그레이트북스", "name": "GOGO 세계아이", "list": ["중국", "일본", "몽골", "베트남", "타이", "인도", "사우디아라비아", "튀르키예", "영국", "프랑스", "독일", "이탈리아", "에스파냐", "그리스", "덴마크", "핀란드", "러시아", "미국", "캐나다", "멕시코", "페루", "브라질", "이집트", "케냐", "남아프리카공화국", "마다가스카르", "오스트레일리아", "세계 음식", "세계 옷", "세계 집", "국기", "문화다양성"]}, {"pub": "그레이트북스", "name": "이야기마법사", "list": ["생강 과자 아이", "빨간 암탉", "금발 머리 소녀와 곰 세 마리", "커다란 순무", "우락부락 염소 삼 형제", "마샤와 곰", "장갑", "늑대와 일곱 마리 아기 염소", "개구리 왕자", "미운 아기 오리", "아기 돼지 삼 형제", "거미 아난시와 여섯 아들", "구두장이와 요정들", "브레멘 음악대", "성냥팔이 소녀", "빨간 모자", "헨젤과 그레텔", "신데렐라", "벌거벗은 임금님", "토끼와 악어", "열두 달 이야기", "백설 공주", "미녀와 야수", "핀과 쿠쿨린", "잠자는 숲속의 공주", "톰 팃 톳", "잭과 콩나무", "장화 신은 고양이", "엄지 공주", "어부와 황금 물고기", "망고나무와 젊은이", "라푼첼", "돌멩이 수프", "황금 거위", "백조 왕자", "알리바바와 40명의 도둑", "해의 동쪽 달의 서쪽", "호두까기 인형", "피터와 늑대", "거인의 정원", "인어 공주", "알라딘과 요술 램프", "행복한 왕자", "피노키오", "용감한 꼬마 재봉사", "오즈의 마법사", "눈의 여왕", "피터 팬", "바보 이반", "플랜더스의 개", "세계의 우화1", "세계의 우화2", "세계 옛이야기"]}, {"pub": "그레이트북스", "name": "안녕, 마음아", "list": ["청결", "보건", "성장", "식습관", "정리습관", "놀이안전", "미아예방", "자기보호", "인사예절", "긍정", "사랑", "화", "서운함", "창피함", "고집", "두려움", "슬픔", "질투", "걱정", "행복", "감정인지", "자존감", "정직", "자기주도", "책임감", "자신감", "자기통제", "끈기", "도전", "문제해결", "정정당당", "생명존중", "장래희망", "친구맺기", "경청", "경쟁", "화해", "자기표현", "공정", "협동", "규범", "이웃배려", "반편견", "함께살기", "나눔"]}, {"pub": "그레이트북스", "name": "나의 첫 그리스로마신화", "list": ["", "", "", "", "", "", "", "", "", "", "", ""]}];
   const total=()=>S.log.length;
   const talked=()=>S.log.filter(x=>x.talk).length;
   const bonus=()=>Math.floor(total()/10)*3;
@@ -1995,15 +1996,18 @@ CFG.forEach(c=>{
     const box=g("lbBox"),ids=Object.keys(S.sets);
     box.innerHTML=`<div class="qz"><div class="qtitle" style="margin-top:0">📦 우리 집 전집</div>
       ${ids.length?ids.map(sid=>{const s=S.sets[sid],k=setRead(sid);return `<button class="bres" data-s="${sid}">${s.img?`<img class="cv" src="${esc(s.img)}" alt="">`:`<span class="cv">📦</span>`}<div style="flex:1"><b>${S.medals[sid]?"🏅 ":""}${esc(s.name)}</b><span>${esc(s.pub||"")} · ${s.n}권 중 ${k}권 읽었어요</span><div class="bar"><i style="width:${k/s.n*100}%"></i></div></div></button>`;}).join(""):`<div class="stamps">아직 등록한 전집이 없어요.</div>`}
-      <button class="btn" id="setAdd" style="width:100%;margin-top:12px">➕ 전집 등록하기</button></div>`;
+      <button class="btn" id="setAdd" style="width:100%;margin-top:12px">➕ 전집 등록하기</button></div>
+      ${(()=>{const have=Object.values(S.sets).map(s=>s.name.replace(/\s/g,""));const pr=PRESETS.map((p,i)=>[p,i]).filter(([p])=>!have.includes(p.name.replace(/\s/g,"")));
+        return pr.length?`<div class="qz" style="margin-top:12px"><div class="qtitle" style="margin-top:0">⚡ 우리 집 전집 바로 등록</div><div class="lnote" style="margin:0 0 4px">책 목록이 미리 들어 있어요. 눌러서 확인하고 등록하세요.</div>${pr.map(([p,i])=>`<button class="bres" data-p="${i}"><span class="cv">📦</span><div><b>${esc(p.name)}</b><span>${esc(p.pub)} · ${p.list.length}권${p.list.some(t=>!t)?" · 제목 일부만 있어요":""}</span></div></button>`).join("")}</div>`:"";})()}`;
     g("lbInfo").textContent="전집을 한 번 등록해 두면, 다음부터는 몇 권인지 번호만 누르면 돼요.";
     box.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{curSet=b.dataset.s;show();});
     g("setAdd").onclick=()=>setForm();
+    box.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>setForm(null,PRESETS[Number(b.dataset.p)]));
   }
   function listOf(sid){if(!sid||!S.sets[sid])return "";const s=S.sets[sid],a=[];let any=false;
     for(let v=1;v<=s.n;v++){const b=S.books[volId(sid,v)],t=b&&b.vt||"";if(t)any=true;a.push(v+". "+t);}return any?a.join("\n"):"";}
   function parseList(txt){
-    return txt.split(/\r?\n/).map(l=>l.replace(/^[\s\-•·*]*(\(?\d{1,3}\)?|[①-⑳])\s*(권|번|호)?\s*[.)\]:\-]?\s*/,"").replace(/\s+/g," ").trim()).filter(Boolean);
+    return txt.split(/\r?\n/).filter(l=>l.trim()).map(l=>l.replace(/^[\s\-•·*]*(\(?\d{1,3}\)?|[①-⑳])\s*(권|번|호)?\s*[.)\]:\-]?\s*/,"").replace(/\s+/g," ").trim());
   }
   async function findList(pub,name){
     const msg=g("sFmsg");if(!name){msg.textContent="전집 이름을 먼저 써 주세요.";return;}
@@ -2030,8 +2034,8 @@ CFG.forEach(c=>{
       msg.textContent="✅ "+ts.length+"권을 찾았어요. 순서나 빠진 책이 있는지 확인하고 고쳐 주세요.";
     }catch(e){msg.textContent=e&&e.message&&!/fetch|network|load/i.test(e.message)?e.message:"인터넷이 연결되어 있는지 확인해 주세요.";}
   }
-  function setForm(sid){
-    const s=sid?S.sets[sid]:{name:"",pub:"",n:60,img:""},c=g("tkc");g("tk").classList.add("on");let img=s.img||"";
+  function setForm(sid,pre){
+    const s=sid?S.sets[sid]:pre?{name:pre.name,pub:pre.pub,n:pre.list.length,img:""}:{name:"",pub:"",n:60,img:""},c=g("tkc");g("tk").classList.add("on");let img=s.img||"";
     const isPub=PUBS.includes(s.pub);
     c.innerHTML=`<h2>📦 ${sid?"전집 고치기":"전집 등록하기"}</h2>
       <div style="text-align:center;margin:6px 0 10px"><span class="cvw" id="sCv">${img?`<img class="cv big" src="${esc(img)}" alt="">`:`<span class="cv big">📦</span>`}<button class="camb" id="sCam">📷</button></span><div class="lab" style="margin-top:12px">책장에 꽂힌 전집이나 대표 표지를 찍어요</div></div>
@@ -2039,8 +2043,9 @@ CFG.forEach(c=>{
       <label class="lfld" id="sPoW" style="display:${s.pub&&!isPub?"block":"none"}">출판사 이름<input id="sPo" value="${esc(isPub?"":s.pub)}"></label>
       <label class="lfld">전집 이름<input id="sN" placeholder="예: 자연관찰, 세계명작, 수학동화" value="${esc(s.name)}"></label>
       <label class="lfld">모두 몇 권?<input id="sC" type="number" inputmode="numeric" min="1" max="200" value="${s.n}"></label>
-      <label class="lfld">📋 책 목록 (한 줄에 한 권, 1권부터 순서대로 · 몰라도 괜찮아요)<textarea id="sL" rows="7" placeholder="1. 꿀벌은 춤을 춰요&#10;2. 개미의 집&#10;…">${esc(listOf(sid))}</textarea></label>
+      <label class="lfld">📋 책 목록 (한 줄에 한 권, 1권부터 순서대로 · 몰라도 괜찮아요)<textarea id="sL" rows="7" placeholder="1. 꿀벌은 춤을 춰요&#10;2. 개미의 집&#10;…">${esc(pre?pre.list.map((t,i)=>(i+1)+". "+t).join("\n"):listOf(sid))}</textarea></label>
       <button class="btn line" id="sFind" style="width:100%">🔍 이 전집 책 목록 찾아 채우기</button>
+      ${pre&&pre.list.some(t=>!t)?`<div class="lnote">⚠️ 제목을 다 찾지 못해서 빈 칸이 있어요. 집에 있는 책을 보고 채워 주세요.</div>`:""}
       <div class="lnote" id="sFmsg">인터넷 서점이나 중고 판매 글의 '구성 목록'을 복사해서 붙여넣어도 돼요. 번호는 자동으로 정리돼요.</div>
       <div class="msg" id="sMsg"></div><button class="hbtn" id="sOk" style="background:${C}">${sid?"고치기":"등록하기"}</button>
       ${sid?`<button class="holdbtn mini" id="sDel"><span>보호자: 꾹 눌러 전집 지우기 (통장 기록은 남아요)</span></button>`:""}<button class="skip" id="sNo">닫기</button>`;
