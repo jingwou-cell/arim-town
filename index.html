@@ -1772,7 +1772,7 @@ CFG.forEach(c=>{
   const KEY="arim-lib",C="#3d8bd6",BG="#e3f0ff";
   let S={books:{},log:[],kakao:"",sets:{}};
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v)S=Object.assign(S,v);}catch(e){}
-  if(!S.sets)S.sets={};
+  if(!S.sets)S.sets={};if(!S.medals)S.medals={};
   const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));return true;}catch(e){alert("저장 공간이 가득 찼어요. 표지 사진 몇 개를 지우면 다시 저장할 수 있어요.");return false;}};
   const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const pad=n=>(n<10?"0":"")+n;
@@ -1859,6 +1859,22 @@ CFG.forEach(c=>{
   .vols button img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .vols button .vn{position:relative;background:#fffc;border-radius:6px;padding:0 5px}
   .vols button .ok{position:absolute;right:2px;top:1px;font-size:13px}
+  .medal{display:inline-flex;flex-direction:column;align-items:center;width:84px;font-size:12px;line-height:1.3;border:none;background:none;padding:0}
+  .medal .md{width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6c2,#f4c430 55%,#c99500);box-shadow:0 3px 0 #a87b00,inset 0 0 0 4px #ffe680;display:flex;align-items:center;justify-content:center;font-size:30px;position:relative}
+  .medal .md::before{content:"";position:absolute;top:-16px;left:18px;width:26px;height:20px;background:linear-gradient(90deg,#e35d5d 50%,#3d8bd6 50%);clip-path:polygon(0 0,100% 0,80% 100%,20% 100%);z-index:-1}
+  .medal b{font-family:'Jua',sans-serif;font-weight:normal;font-size:13px;margin-top:6px}
+  .medals{display:flex;gap:6px;overflow-x:auto;padding:18px 2px 6px}
+  .mdcard{background:linear-gradient(#fff9df,#fff);border:2px solid #f4c430;border-radius:18px;padding:14px;text-align:center;margin-top:12px}
+  .cert{background:#fffdf5;border:10px double #d9a521;border-radius:10px;padding:22px 16px;text-align:center;font-family:'Gowun Dodum',sans-serif;color:#4a3b1f;position:relative}
+  .cert h3{font-family:'Jua',sans-serif;font-weight:normal;font-size:30px;margin:4px 0 2px;color:#b07a00;letter-spacing:6px}
+  .cert .who{font-family:'Jua',sans-serif;font-size:26px;margin:14px 0 4px}
+  .cert .body{font-size:17px;line-height:1.8}
+  .cert .body b{font-family:'Jua',sans-serif;font-weight:normal;font-size:20px;color:#3d6fb0}
+  .cert .dt{margin-top:14px;font-size:15px}
+  .cert .csgn{margin-top:8px;font-family:'Jua',sans-serif;font-size:18px}
+  .cert .seal{display:inline-block;margin-left:6px;width:44px;height:44px;border:3px solid #e35d5d;color:#e35d5d;border-radius:8px;line-height:38px;font-size:15px;transform:rotate(-8deg);vertical-align:middle}
+  #certPrint{display:none}
+  @media print{body.printing>*:not(#certPrint){display:none!important}body.printing{background:#fff!important}body.printing #certPrint{display:block;padding:30px}body.printing #certPrint .cert{max-width:640px;margin:0 auto;padding:50px 30px}body.printing #certPrint .cert h3{font-size:44px}body.printing #certPrint .cert .body{font-size:22px}}
   `;
   document.head.appendChild(st);
 
@@ -1974,7 +1990,7 @@ CFG.forEach(c=>{
     if(curSet&&S.sets[curSet])return setView(curSet);
     const box=g("lbBox"),ids=Object.keys(S.sets);
     box.innerHTML=`<div class="qz"><div class="qtitle" style="margin-top:0">📦 우리 집 전집</div>
-      ${ids.length?ids.map(sid=>{const s=S.sets[sid],k=setRead(sid);return `<button class="bres" data-s="${sid}">${s.img?`<img class="cv" src="${esc(s.img)}" alt="">`:`<span class="cv">📦</span>`}<div style="flex:1"><b>${esc(s.name)}</b><span>${esc(s.pub||"")} · ${s.n}권 중 ${k}권 읽었어요</span><div class="bar"><i style="width:${k/s.n*100}%"></i></div></div></button>`;}).join(""):`<div class="stamps">아직 등록한 전집이 없어요.</div>`}
+      ${ids.length?ids.map(sid=>{const s=S.sets[sid],k=setRead(sid);return `<button class="bres" data-s="${sid}">${s.img?`<img class="cv" src="${esc(s.img)}" alt="">`:`<span class="cv">📦</span>`}<div style="flex:1"><b>${S.medals[sid]?"🏅 ":""}${esc(s.name)}</b><span>${esc(s.pub||"")} · ${s.n}권 중 ${k}권 읽었어요</span><div class="bar"><i style="width:${k/s.n*100}%"></i></div></div></button>`;}).join(""):`<div class="stamps">아직 등록한 전집이 없어요.</div>`}
       <button class="btn" id="setAdd" style="width:100%;margin-top:12px">➕ 전집 등록하기</button></div>`;
     g("lbInfo").textContent="전집을 한 번 등록해 두면, 다음부터는 몇 권인지 번호만 누르면 돼요.";
     box.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{curSet=b.dataset.s;show();});
@@ -2010,11 +2026,13 @@ CFG.forEach(c=>{
     box.innerHTML=`<div class="qz"><button class="btn line" id="svBack" style="margin-top:0">← 전집 목록</button>
       <div style="display:flex;gap:12px;align-items:center;margin-top:10px">${s.img?`<img class="cv big" src="${esc(s.img)}" alt="">`:`<span class="cv big">📦</span>`}<div style="flex:1"><b style="font-family:Jua;font-weight:normal;font-size:21px">${esc(s.name)}</b><div class="lab">${esc(s.pub||"")}</div>
       <div class="scene" style="font-size:16px;padding:8px 10px;margin-top:6px">${s.n}권 중 <b>${k}권</b> 읽었어요${k<s.n?`<br>다 읽으려면 몇 권 남았을까? 🤔`:"<br>🎉 전집을 다 읽었어요!"}</div></div></div>
+      ${S.medals[sid]?`<div class="mdcard"><span class="medal"><span class="md">🏅</span></span><div style="font-family:Jua;font-size:19px;margin-top:6px">${esc(s.name)} 완독 메달</div><div class="lab">${shortD(S.medals[sid])}에 다 읽었어요</div><button class="hbtn" id="svCert" style="background:#d9a521">📜 완독 증서 보기</button></div>`:""}
       <div class="vols">${cells}</div>
       <button class="btn soft" id="svEdit" style="margin-top:12px">✏️ 전집 고치기</button></div>`;
     g("lbInfo").textContent="읽은 권 번호를 누르면 저금돼요. 표지 사진을 찍으면 그 칸에 표지가 보여요.";
     g("svBack").onclick=()=>{curSet="";show();};
     g("svEdit").onclick=()=>setForm(sid);
+    const ce=g("svCert");if(ce)ce.onclick=()=>cert(sid);
     box.querySelectorAll(".vols button").forEach(b=>b.onclick=()=>{const v=Number(b.dataset.v);volBook(sid,v);save();record(volId(sid,v));});
   }
 
@@ -2043,6 +2061,7 @@ CFG.forEach(c=>{
   }
   function done(i){
     const n=total(),c=g("tkc"),x=S.log[i],b=S.books[x.b];
+    if(b.set&&S.sets[b.set]&&!S.medals[b.set]&&setRead(b.set)>=S.sets[b.set].n){S.medals[b.set]=todayS();save();return medalWin(b.set,i);}
     c.innerHTML=`<h2>💮 저금 완료!</h2><div style="text-align:center;margin:4px 0">${cover(b,true)}</div><div class="qq">${pick(PRAISE)}<br><b>${esc(b.t)}</b>은(는) 통장의 <b>${n}번째</b> 책이에요.${n%10===0?`<br>🎁 ${n}권 저금 이자로 별 ⭐ 3개를 더 받았어요!`:""}</div>
       <div class="lab">책 이야기를 엄마 아빠에게 들려주면 별 ⭐ 하나를 더 받아요.</div>
       <button class="hbtn" id="dTalk" style="background:${C}">🗣️ 책 이야기 미션 하기</button>
@@ -2054,6 +2073,36 @@ CFG.forEach(c=>{
   function talk(i){
     const x=S.log[i],b=S.books[x.b];
     window.TOWN.openTalk("bk:"+i+":"+x.b,"📚 "+b.t,shuffle(TALK).slice(0,2),()=>{x.talk=1;save();show();});
+  }
+
+  /* 전집 완독 메달 · 증서 */
+  function medalWin(sid,i){
+    const s=S.sets[sid],c=g("tkc");g("tk").classList.add("on");prog();
+    c.innerHTML=`<h2>🏅 전집 완독!</h2><div style="text-align:center;margin:20px 0 6px"><span class="medal" style="width:auto"><span class="md" style="width:96px;height:96px;font-size:46px">🏅</span></span></div>
+      <div class="qq" style="text-align:center"><b>${esc(s.name)}</b> ${s.n}권을<br>모두 읽었어요! 정말 대단해요 🎉</div>
+      <div class="lab" style="text-align:center">${s.n}권 동안 어떤 이야기가 제일 기억에 남아?</div>
+      <button class="hbtn" id="mCert" style="background:#d9a521">📜 완독 증서 받기</button>
+      <button class="hbtn" id="mTalk" style="background:${C}">🗣️ 방금 읽은 책 이야기 미션</button>
+      <button class="skip" id="mNo">전집으로 돌아가기</button>`;
+    g("mCert").onclick=()=>cert(sid);g("mTalk").onclick=()=>talk(i);
+    g("mNo").onclick=()=>{g("tk").classList.remove("on");show();};
+  }
+  function certHTML(sid){
+    const s=S.sets[sid],ds=S.log.filter(x=>{const b=S.books[x.b];return b&&b.set===sid;}).map(x=>x.d).sort();
+    const f=d=>{const a=d.split("-");return a[0]+"년 "+Number(a[1])+"월 "+Number(a[2])+"일";};
+    return `<div class="cert"><div style="font-size:34px">🏅</div><h3>완독 증서</h3><div class="who">이 아 림</div>
+      <div class="body">위 어린이는<br>${esc(s.pub||"")} <b>${esc(s.name)}</b> 전집<br><b>${s.n}권</b>을 모두 읽었기에<br>이 증서를 드립니다.</div>
+      <div class="dt">${ds.length?f(ds[0])+" ~ ":""}${f(S.medals[sid])}</div>
+      <div class="csgn">아림 도서관장 엄마 아빠 <span class="seal">아림</span></div></div>`;
+  }
+  function cert(sid){
+    const c=g("tkc");g("tk").classList.add("on");
+    c.innerHTML=certHTML(sid)+`<button class="hbtn" id="cPrint" style="background:#d9a521">🖨️ 인쇄하기</button><button class="skip" id="cNo">닫기</button>`;
+    g("cNo").onclick=()=>{g("tk").classList.remove("on");show();};
+    g("cPrint").onclick=()=>{let p=g("certPrint");if(!p){p=document.createElement("div");p.id="certPrint";document.body.appendChild(p);}
+      p.innerHTML=certHTML(sid);document.body.classList.add("printing");
+      const off=()=>{document.body.classList.remove("printing");window.removeEventListener("afterprint",off);};
+      window.addEventListener("afterprint",off);setTimeout(()=>{window.print();setTimeout(off,1500);},50);};
   }
 
   /* 통장 한 줄 보기 */
@@ -2078,10 +2127,12 @@ CFG.forEach(c=>{
     ids.sort((a,b)=>timesRead(b)-timesRead(a));
     const fc={};S.log.forEach(x=>{if(x.f)fc[x.f]=(fc[x.f]||0)+1;});
     const top=Object.entries(fc).sort((a,b)=>b[1]-a[1])[0];
-    box.innerHTML=ids.length?`<div class="qz"><div class="qtitle" style="margin-top:0">📚 아림이 책장 · ${ids.length}권</div>
+    const mids=Object.keys(S.medals).filter(sid=>S.sets[sid]);
+    box.innerHTML=(mids.length?`<div class="qz" style="margin-bottom:12px"><div class="qtitle" style="margin-top:0">🏅 전집 완독 메달 ${mids.length}개</div><div class="medals">${mids.map(sid=>`<button class="medal" data-m="${sid}"><span class="md">🏅</span><b>${esc(S.sets[sid].name)}</b></button>`).join("")}</div></div>`:"")+(ids.length?`<div class="qz"><div class="qtitle" style="margin-top:0">📚 아림이 책장 · ${ids.length}권</div>
       ${top?`<div class="scene" style="margin-bottom:12px">아림이는 <b>${FE[top[0]][1]} ${FE[top[0]][2]}</b> 느낌의 책을 가장 많이 만났어요.<br>다음엔 <b>어떤 느낌</b>의 책을 찾아볼까?</div>`:""}
       <div class="shelf">${ids.map(id=>{const b=S.books[id],t=timesRead(id),im=imgOf(b);return `<button data-id="${esc(id)}">${im?`<img class="cv" src="${esc(im)}" alt="">`:`<span class="cv">📕</span>`}${t>1?`<span class="cnt">${t}번</span>`:""}<span class="tt">${esc(b.t)}</span></button>`;}).join("")}</div></div>`
-      :`<div class="qz"><div style="text-align:center;font-size:17px;color:#7d736c;padding:16px">책장이 아직 비어 있어요 📕</div></div>`;
+      :`<div class="qz"><div style="text-align:center;font-size:17px;color:#7d736c;padding:16px">책장이 아직 비어 있어요 📕</div></div>`);
+    box.querySelectorAll("[data-m]").forEach(x=>x.onclick=()=>cert(x.dataset.m));
     g("lbInfo").textContent="여러 번 읽은 책일수록 앞에 꽂혀요. 표지가 없는 책은 눌러서 📷로 찍어 주세요.";
     box.querySelectorAll(".shelf button").forEach(x=>x.onclick=()=>record(x.dataset.id));
   }
