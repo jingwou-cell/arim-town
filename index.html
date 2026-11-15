@@ -29,7 +29,7 @@
   /* 건물 */
   .sky{position:relative;height:26px}
   .sky i{position:absolute;font-style:normal;font-size:24px;opacity:.9}
-  .sign{margin:0 26px;background:#2fa38a;color:#fff;border-radius:18px 18px 0 0;padding:10px 8px 8px;text-align:center;font-family:'Jua',sans-serif;font-size:30px;letter-spacing:2px;box-shadow:inset 0 -5px 0 #24856f}
+  .sign{margin:0 26px;background:#2fa38a;color:#fff;border-radius:18px 18px 0 0;padding:10px 8px 8px;text-align:center;font-family:'Jua',sans-serif;font-size:26px;letter-spacing:1px;box-shadow:inset 0 -5px 0 #24856f}
   .sign .cross{display:inline-block;background:#fff;color:#e8504f;border-radius:10px;width:36px;height:36px;line-height:36px;font-size:26px;margin-right:8px;vertical-align:-3px}
   .sign small{display:block;font-size:13px;letter-spacing:1px;opacity:.9;font-family:'Gowun Dodum',sans-serif}
   .bld{background:#fffdf9;border:3px solid #d9cfc4;border-radius:10px 10px 0 0;overflow:hidden;box-shadow:0 6px 0 #cfe6c8}
@@ -44,6 +44,12 @@
   .room .n{font-family:'Jua',sans-serif;font-size:14px;line-height:1.15;margin-top:3px;word-break:keep-all}
   .room .st{display:none;position:absolute;top:-4px;right:-2px;font-size:17px}
   .room.done .st{display:block}
+  .room .pg{font-size:11px;color:#8a7f77;margin-top:2px;letter-spacing:1px}
+  .room.done .pg{display:none}
+  .qhead{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .qhead h3{margin:0!important}
+  .dots{margin-left:auto;font-size:13px;letter-spacing:2px;color:#e3a98f}
+  .dots b{color:#2f9b7b;font-weight:normal}
   .room.desk{background:#fff3cf!important;outline:2px dashed #e6b84d;outline-offset:-3px}
   .ground{display:flex;justify-content:space-between;align-items:flex-end;font-size:28px;padding:6px 8px 0}
   .hint{text-align:center;color:var(--soft);font-size:14px;margin-top:8px}
@@ -145,19 +151,36 @@
   .tb .bar{height:8px;background:#eee7e0;border-radius:99px;margin:6px 10px 4px;overflow:hidden}
   .tb .bar i{display:block;height:100%;border-radius:99px;width:0;transition:width .4s}
   .road{font-size:26px;letter-spacing:10px;margin-top:14px}
+  #tchip{position:fixed;top:8px;right:8px;z-index:30;background:#ffffffe0;border-radius:999px;padding:6px 11px;font-family:'Jua',sans-serif;font-size:14px;color:#5d6b76;box-shadow:0 1px 0 #c9d6df}
+  #tchip.low{background:#ffe2de;color:#c2453c}
+  #lock{position:fixed;inset:0;z-index:60;display:none;background:linear-gradient(#1f2a55,#3b3f7a);color:#fff;text-align:center;padding:60px 24px;overflow:auto}
+  #lock.on{display:block}
+  #lock .moon{font-size:80px}
+  #lock h2{font-family:'Jua',sans-serif;font-weight:normal;font-size:28px;margin:14px 0 8px}
+  #lock p{font-size:18px;line-height:1.6;margin:0 0 6px;color:#e3e6ff}
+  #lock .pbtn{margin-top:40px;border:1px solid #ffffff55;background:none;color:#c9cdf5;border-radius:12px;padding:8px 14px;font-size:13px}
+  #lock .pbox{display:none;margin:14px auto 0;max-width:260px;background:#ffffff18;border-radius:16px;padding:14px;font-size:16px}
+  #lock .pbox.on{display:block}
+  #lock input{width:110px;font-size:20px;text-align:center;border-radius:10px;border:none;padding:8px;margin:8px 4px 0}
+  #lock .ok{border:none;border-radius:10px;padding:9px 14px;font-size:16px;background:#ffd66b;color:#5a4300;font-family:'Jua',sans-serif}
   .soon{margin-top:18px;background:#ffffffb0;border-radius:16px;padding:10px;font-size:14px;color:#6b625b}
 </style>
 </head>
 <body class="bg-home">
+<div id="tchip"></div>
+<div id="lock"><div class="moon">🌙</div><h2>오늘 놀이 시간이 끝났어요</h2><p>오늘도 20분 동안 열심히 했어요!</p><p>이제 눈을 쉬고, 몸을 움직여 볼까? 내일 또 만나요 👋</p>
+  <button class="pbtn" id="pbtn">보호자용 · 10분 더 주기</button>
+  <div class="pbox" id="pbox"><div id="pq"></div><input id="pin" type="number" inputmode="numeric" autocomplete="off"><button class="ok" id="pok">확인</button><div id="pmsg" style="min-height:20px;margin-top:6px;font-size:14px"></div></div>
+</div>
 <section id="home">
   <div style="font-size:26px;letter-spacing:14px">☁️🌤️☁️</div>
   <h1>🏘️ 아림 마을</h1>
   <div class="sub">가고 싶은 건물을 눌러 봐!</div>
   <div class="town">
     <button class="tb" onclick="goPlace('h')">
-      <div class="roof" style="background:#2fa38a">✚ 아림병원</div>
+      <div class="roof" style="background:#2fa38a">✚ 대학병원</div>
       <div class="wall"><span style="background:#ffe6e2">🦴</span><span style="background:#efe9ff">🧠</span><span style="background:#e4f1ff">❤️</span><span style="background:#e1f6ee">🦷</span><span style="background:#fff0d6">🚑</span><span style="background:#e4f1ff">🫁</span><span class="door">🚪</span></div>
-      <div class="info"><b>아림병원</b><span id="hRank">진료과 28개</span><div class="bar"><i id="hBar" style="background:#2fa38a"></i></div><span id="hCnt"></span></div>
+      <div class="info"><b>아림대학교병원</b><span id="hRank">진료과 36개</span><div class="bar"><i id="hBar" style="background:#2fa38a"></i></div><span id="hCnt"></span></div>
     </button>
     <button class="tb" onclick="goPlace('j')">
       <div class="roof" style="background:#f08aa6">♥ 산후조리원</div>
@@ -181,14 +204,14 @@
 <main>
 <section class="view on" id="vTour">
   <div class="sky"><i style="left:6%;top:0">☁️</i><i style="right:8%;top:2px">☁️</i><i style="left:46%;top:-6px;font-size:18px">🚁</i></div>
-  <div class="sign"><span class="cross">✚</span>아림병원<small>ARIM GENERAL HOSPITAL</small></div>
+  <div class="sign"><span class="cross">✚</span>아림대학교병원<small>ARIM UNIVERSITY HOSPITAL</small></div>
   <div class="bld" id="bld"></div>
   <div class="ground"><span>🌳</span><span>🚑</span><span>🌷</span><span>🌳</span></div>
   <button class="go" onclick="goPlace('j')">🍼 옆 건물 아림 산후조리원 놀러 가기 →</button>
-  <div class="hint">진료과 문을 눌러 들어가 봐! 퀴즈를 맞히면 견학 도장 💮을 받아요</div>
+  <div class="hint">대학병원은 환자를 치료하고, 의사를 가르치고, 새 치료법을 연구하는 큰 병원이에요.<br>진료과마다 퀴즈 5개를 모두 맞히면 견학 도장 💮을 받아요</div>
   <div class="finish" id="finish">
-    <h2>👑 아림병원 병원장님!</h2>
-    <div>28개 진료과를 모두 견학했어요.<br>이제 안내 데스크에서 환자들을 도와줄까?</div>
+    <h2>👑 아림대학교병원 교수님!</h2>
+    <div>36개 진료과의 퀴즈 180개를 모두 풀었어요.<br>이제 안내 데스크에서 환자들을 도와줄까?</div>
   </div>
   <button class="reset" id="reset">처음부터 다시 견학하기</button>
 </section>
@@ -247,11 +270,36 @@ window.onProg=function(k,n,t,r){
   const g=id=>document.getElementById(id);
   g(k+"Rank").textContent=r;g(k+"Cnt").textContent="💮 도장 "+n+" / "+t;g(k+"Bar").style.width=(n/t*100)+"%";
 };
+/* 하루 20분 놀이 시간 */
+(function(){
+  const LIMIT=20*60,EXTRA=10*60,g=id=>document.getElementById(id);
+  const today=()=>{const n=new Date();return n.getFullYear()+"-"+(n.getMonth()+1)+"-"+n.getDate();};
+  let T={d:today(),s:0,x:0},pa=0;
+  try{const v=JSON.parse(localStorage.getItem("arim-time")||"null");if(v&&v.d===today())T=v;}catch(e){}
+  const saveT=()=>{try{localStorage.setItem("arim-time",JSON.stringify(T));}catch(e){}};
+  const left=()=>LIMIT+T.x-T.s;
+  function draw(){
+    const l=Math.max(0,left()),c=g("tchip");
+    c.textContent="⏰ 오늘 남은 시간 "+Math.ceil(l/60)+"분";c.classList.toggle("low",l<=120);
+    const was=g("lock").classList.contains("on");g("lock").classList.toggle("on",l<=0);
+    if(l<=0&&!was){saveT();document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("open"));}
+  }
+  setInterval(()=>{
+    if(document.visibilityState!=="visible")return;
+    if(T.d!==today())T={d:today(),s:0,x:0};
+    if(left()>0){T.s++;if(T.s%5===0)saveT();}
+    draw();
+  },1000);
+  document.addEventListener("visibilitychange",saveT);
+  g("pbtn").onclick=()=>{const a=12+Math.floor(Math.random()*8),b=3+Math.floor(Math.random()*7);pa=a*b;g("pq").textContent=a+" × "+b+" = ?";g("pin").value="";g("pmsg").textContent="";g("pbox").classList.add("on");};
+  g("pok").onclick=()=>{if(Number(g("pin").value)===pa&&pa){T.x+=EXTRA;pa=0;saveT();g("pbox").classList.remove("on");draw();}else g("pmsg").textContent="답이 맞지 않아요.";};
+  draw();
+})();
 function fromHash(){const h=location.hash.replace("#","");goPlace(h==="hospital"?"h":h==="joriwon"?"j":"home",true);}
 window.addEventListener("hashchange",fromHash);
 (function(root){
 
-const FL={5:["수술 층","#ef7d73","#ffe6e2"],4:["머리·마음·감각 층","#9a7fe0","#efe9ff"],3:["내과 층","#4f9fe6","#e4f1ff"],2:["가족 건강 층","#3fb58f","#e1f6ee"],1:["응급·검사 층","#f0a13c","#fff0d6"]};
+const FL={6:["특수 치료 층","#2f8f9d","#def3f6"],5:["수술 층","#ef7d73","#ffe6e2"],4:["머리·마음·감각 층","#9a7fe0","#efe9ff"],3:["내과 층","#4f9fe6","#e4f1ff"],2:["가족 건강 층","#3fb58f","#e1f6ee"],1:["응급·검사 층","#f0a13c","#fff0d6"]};
 const D=[
 /* 5층 */
 {id:"gs",f:5,name:"외과",en:"General Surgery",e:"🧵",g:"belly",
@@ -292,6 +340,51 @@ const D=[
      ["🦠","요로감염","오줌길로 세균이 올라와서 오줌 눌 때 따끔하고 자꾸 화장실에 가고 싶어요.","소변 검사로 세균을 확인하고 항생제를 먹어요. 물도 많이 마셔요."]],
  q:"오줌은 콩팥에서 만들어져요. 그럼 화장실에 가기 전까지 어디에 모여 있을까?",a:"'방광'이에요! 풍선처럼 늘어나는 주머니인데, 꽉 차면 뇌에게 '화장실 가자!' 신호를 보내요.",
  pt:"옆구리가 엄청 아파요. 오줌길에 돌이 생겼대요."},
+/* 대학병원 추가 진료과 */
+{id:"icu",f:6,name:"중환자의학과",en:"Critical Care (ICU)",e:"🖥️",dzt:"🛟 이런 치료를 해요",
+ say:"생명이 위험한 환자를 24시간 지켜보며 치료하는 '중환자실'을 맡아요. 환자 한 명 곁에 기계와 의료진이 아주 많아요.",tools:["🌬️ 인공호흡기","📟 환자 감시 모니터","💧 수액 펌프"],
+ dz:[["🌬️","인공호흡기","환자가 스스로 숨쉬기 힘들 때 써요.","기계가 알맞은 양의 공기를 폐에 넣었다 뺐다 해 줘요."],
+     ["🩸","패혈증","균이 피를 타고 온몸에 퍼져서 여러 장기가 한꺼번에 힘들어져요.","항생제와 수액을 최대한 빨리 넣어 줘요. 시간이 아주 중요해요."],
+     ["🛌","큰 수술 뒤 돌봄","심장이나 뇌 같은 큰 수술을 받은 직후예요.","몸이 안정될 때까지 중환자실에서 1분 1초 지켜봐요."]]},
+{id:"tx",f:6,name:"장기이식센터",en:"Organ Transplant Center",e:"🎁",g:"pee",dzt:"🎁 이런 이식을 해요",
+ say:"병 때문에 더는 일할 수 없는 장기를, 다른 사람이 나눠 준 건강한 장기로 바꿔 주는 수술을 해요.",tools:["🧊 장기 보관 상자","💊 면역억제제","📋 이식 코디네이터"],
+ dz:[["🫘","콩팥 이식","콩팥이 피를 거르지 못해 투석을 받는 환자예요.","가족이나 기증자의 콩팥 하나를 받아요. 가장 많이 하는 이식이에요."],
+     ["🏭","간 이식","간이 굳어서 일을 못 하는 환자예요.","건강한 사람의 간 일부를 떼어 옮겨요. 준 사람도 받은 사람도 간이 다시 자라요."],
+     ["👁️","각막 이식","눈 앞쪽의 투명한 창 '각막'이 뿌옇게 된 환자예요.","기증받은 맑은 각막으로 바꿔 주면 다시 볼 수 있어요."]],
+ pt:"콩팥이 일을 못 해서 새 콩팥을 이식받으러 왔어요."},
+{id:"onc",f:6,name:"종양내과",en:"Medical Oncology",e:"🎗️",dzt:"🎗️ 이런 치료를 해요",
+ say:"암을 약으로 치료해요. 암은 몸의 세포가 고장 나서 멈추지 않고 계속 늘어나는 병이에요.",tools:["💉 항암 주사","☢️ 방사선 치료기","🧬 유전자 검사"],
+ dz:[["💉","항암제","암세포가 몸 여러 곳에 있거나 수술만으로 부족할 때 써요.","빨리 늘어나는 세포를 공격하는 약이에요. 머리카락 세포도 빨리 자라서 잠시 머리가 빠지지만, 치료가 끝나면 다시 자라요."],
+     ["☢️","방사선 치료","암이 한곳에 모여 있을 때 써요.","아주 센 빛(방사선)을 암이 있는 자리에만 쏘아서 암세포를 없애요. 쏘는 동안 아프지 않아요."],
+     ["🛡️","면역항암제","암세포가 면역 군인의 눈을 속이고 숨어 있을 때 써요.","내 면역 군인이 암세포를 잘 찾아내서 싸우도록 도와줘요."]],
+ pt:"암을 치료하는 항암 주사를 맞으러 왔어요."},
+{id:"nicu",f:6,name:"신생아중환자실",s:"신생아 중환자실",en:"Neonatal ICU (NICU)",e:"🐣",
+ say:"너무 일찍 태어났거나 아프게 태어난 아기들을 돌봐요. 아기들은 엄마 배 속과 비슷한 '인큐베이터'에서 자라요.",tools:["📦 인큐베이터","🧷 아주 작은 기저귀","🍼 수유 튜브"],
+ dz:[["🐣","이른둥이 (미숙아)","예정보다 일찍 태어나서 몸이 작고, 체온을 지키거나 숨 쉬는 일이 아직 어려워요.","따뜻하고 촉촉한 인큐베이터에서 엄마 배 속에 있는 것처럼 돌봐요."],
+     ["🫁","신생아 호흡곤란 증후군","폐가 덜 자라서, 폐 속 공기 방울을 펴 주는 미끌미끌한 물질이 모자라요. 숨쉬기가 힘들어요.","모자란 물질을 폐에 넣어 주고, 기계로 숨을 도와줘요."],
+     ["🦘","캥거루 케어","아기가 조금 안정되면 해요.","엄마 아빠가 맨가슴에 아기를 안아 줘요. 아기의 체온과 심장 박동이 편안해져요."]],
+ pt:"아기가 예정보다 두 달이나 일찍 태어났어요. 인큐베이터가 필요해요."},
+{id:"ps",f:5,name:"성형외과",en:"Plastic Surgery",e:"🩹",
+ say:"다쳤거나 태어날 때부터 모양이 다른 곳을, 원래 모양과 기능에 가깝게 고쳐 줘요. 피부를 옮겨 심기도 해요.",tools:["🧵 아주 가는 실","🔍 수술 돋보기","🩹 피부 이식"],
+ dz:[["👄","구순구개열","입술이나 입천장이 갈라진 채 태어나서 젖을 먹거나 말하기가 어려워요.","아기 때 수술로 갈라진 곳을 이어 줘요."],
+     ["♨️","화상 흉터","깊은 화상이 나은 자리의 피부가 딱딱하게 당겨져서 팔다리를 펴기 힘들어요.","몸의 다른 곳에서 건강한 피부를 떼어 옮겨 심어요(피부 이식)."],
+     ["🖐️","손 수술","사고로 손가락의 힘줄이나 신경이 끊어졌어요.","현미경을 보며 머리카락보다 가는 실로 핏줄과 신경을 하나하나 이어 줘요."]],
+ pt:"화상 흉터 때문에 팔이 잘 안 펴져요. 피부를 옮겨 심어야 한대요."},
+{id:"rheum",f:3,name:"류마티스내과",en:"Rheumatology",e:"🤲",g:"move",
+ say:"몸을 지키는 면역 군인이 실수로 자기 몸(관절, 피부 등)을 공격하는 '자가면역 질환'을 치료해요.",tools:["🧪 피검사","🔊 관절 초음파","💊 면역 조절 약"],
+ dz:[["🤲","류마티스 관절염","아침에 일어나면 손가락 관절이 뻣뻣하고, 붓고, 아파요.","면역 군인을 진정시키는 약을 꾸준히 먹거나 주사로 맞아요."],
+     ["🦵","소아 특발성 관절염","어린이에게 생기는 관절염이에요. 무릎이 붓고 다리를 절뚝거려요.","약으로 염증을 가라앉히고, 관절이 굳지 않게 운동해요."],
+     ["🦋","루푸스","얼굴에 나비 모양의 붉은 반점이 생기고, 여러 장기가 함께 아플 수 있어요.","면역을 조절하는 약을 먹고, 강한 햇빛을 피해요."]],
+ pt:"아침마다 손가락 관절이 뻣뻣하고 부어요. 면역이 내 몸을 공격한대요."},
+{id:"nm",f:1,name:"핵의학과",en:"Nuclear Medicine",e:"✨",dzt:"✨ 이런 검사와 치료를 해요",
+ say:"아주 약한 빛(방사선)을 내는 약을 몸에 넣고, 그 빛을 특수 카메라로 찍어요. 장기가 일을 잘하는지 볼 수 있어요.",tools:["🌀 PET-CT","📷 감마 카메라","💉 추적 약"],
+ dz:[["🌀","PET 검사","암이 어디에 있는지, 얼마나 퍼졌는지 볼 때 해요.","설탕을 닮은 약을 주사해요. 암세포는 설탕을 많이 먹어서 사진에서 밝게 빛나요."],
+     ["🦴","뼈 스캔","뼈 전체에 아픈 곳이 있는지 한 번에 볼 때 해요.","뼈에 달라붙는 약을 주사해요. 다치거나 아픈 뼈에 약이 더 많이 모여요."],
+     ["🦋","갑상샘 치료","갑상샘이 호르몬을 너무 많이 만들 때 해요.","갑상샘만 '요오드'를 먹는 성질을 이용해서, 방사선을 내는 요오드 약으로 치료해요."]]},
+{id:"path",f:1,name:"병리과",en:"Pathology",e:"🧫",dzt:"🧩 이런 일을 해요",
+ say:"몸에서 떼어 낸 작은 조각을 현미경으로 보고, 어떤 병인지 마지막 답을 내려요. 그래서 '의사들의 의사'라고 불려요.",tools:["🔬 현미경","🎨 염색 약","🔪 얇게 써는 기계"],
+ dz:[["🧩","조직 검사","혹이나 아픈 곳이 어떤 병인지 정확히 알아야 할 때 해요.","떼어 낸 조각을 종이보다 얇게 썰고, 분홍색과 보라색으로 물들여 세포 모양을 봐요."],
+     ["⏱️","수술 중 급한 검사","수술하는 동안 떼어 낸 혹이 나쁜 혹인지 바로 알아야 할 때 해요.","조각을 꽁꽁 얼려 얇게 썬 뒤, 20분 안에 결과를 수술실에 알려 줘요."]]},
 /* 4층 */
 {id:"neu",f:4,name:"신경과",en:"Neurology",e:"🧠",g:"brain",
  say:"뇌와 온몸에 뻗은 신경의 병을 찾아내고, 주로 약으로 치료해요.",tools:["📊 뇌파 검사","🧲 MRI","🔨 반사 망치"],
@@ -370,8 +463,8 @@ const D=[
      ["💧","신증후군","콩팥의 거름망이 헐거워져서 몸에 필요한 단백질이 오줌으로 빠져나가요. 눈과 다리가 퉁퉁 부어요.","거름망을 튼튼하게 하는 약을 먹고, 싱겁게 먹어요."]],
  q:"콩팥은 두 개예요. 하나만 있어도 살 수 있을까?",a:"네! 하나가 두 몫을 해낼 수 있어요. 그래서 가족에게 콩팥 하나를 나눠 주는 이식도 할 수 있어요.",
  pt:"콩팥이 피를 잘 거르지 못해서 온몸이 퉁퉁 부어요."},
-{id:"hem",f:3,name:"혈액종양내과",en:"Hematology-Oncology",e:"🩸",
- say:"피의 병과 암을 치료해요. 피를 만드는 공장인 '골수'도 살펴봐요.",tools:["🧪 피검사","🦴 골수 검사","🩸 수혈"],
+{id:"hem",f:3,name:"혈액내과",en:"Hematology",e:"🩸",
+ say:"피에 생긴 병을 치료해요. 피를 만드는 공장인 '골수'도 살펴봐요.",tools:["🧪 피검사","🦴 골수 검사","🩸 수혈"],
  dz:[["😪","빈혈","산소를 나르는 적혈구가 모자라서 창백하고 어지럽고 쉽게 피곤해요.","철분이 많은 음식이나 철분 약을 먹어요. 심하면 피를 받아요(수혈)."],
      ["🏭","백혈병","피 공장(골수)에서 고장 난 백혈구가 너무 많이 만들어져요. 열이 나고 멍이 잘 들어요.","항암제로 고장 난 세포를 없애고, 건강한 피 공장 세포를 이식받기도 해요."],
      ["🩹","혈우병","피를 굳히는 '응고 인자'가 태어날 때부터 모자라서 피가 잘 멈추지 않아요.","모자란 응고 인자를 주사로 넣어 줘요."]],
@@ -477,38 +570,198 @@ rad:["엑스레이 빛이 단단한 뼈는 잘 통과하지 못해서","뼈가 �
 lab:["피가 온몸을 돌며 모든 장기를 만나고 와서","피가 뇌에서 만들어져서","피 색깔이 매일 바뀌어서"],
 pharm:["남은 세균이 다시 늘어나고 더 강해질 수 있어서","약을 남기면 아까워서","많이 먹을수록 키가 커서"]
 };
+/* 문제 은행: 진료과마다 5문제 (기존 1문제 + 아래 4문제, 새 진료과는 5문제) — [질문, 정답, 오답1, 오답2, 설명] */
+const QX={
+gs:[["충수염일 때 주로 아픈 곳은 어디일까?","오른쪽 아랫배","왼쪽 가슴","등 한가운데","충수는 큰창자가 시작되는 오른쪽 아랫배에 있어요."],
+ ["충수를 떼어 내면 소화는 어떻게 될까?","그대로 잘 돼요","밥을 못 먹게 돼요","물만 마실 수 있어요","충수는 없어도 소화에 문제가 없어요."],
+ ["탈장은 어떤 병일까?","배 벽의 약한 틈으로 창자가 볼록 나오는 병","창자가 없어지는 병","배꼽이 두 개 생기는 병","수술로 틈을 튼튼하게 막아 주면 나아요."],
+ ["수술이 끝나면 상처를 어떻게 닫을까?","실로 꿰매거나 의료용 스테이플러로 집어요","단추를 달아요","지퍼를 달아요","꿰맨 자리는 며칠 지나면 피부가 서로 붙어요."]],
+os:[["뼈와 뼈를 이어 주는 질긴 끈의 이름은?","인대","혈관","신경","발목을 삐면 이 인대가 늘어난 거예요."],
+ ["발목을 삐었을 때 바로 하면 좋은 것은?","얼음찜질하고 쉬기","뜨거운 물에 담그고 뛰기","발목을 세게 돌리기","차갑게 하면 붓기와 아픔이 줄어요."],
+ ["깁스는 왜 단단할까?","부러진 뼈가 움직이지 않게 잡아 주려고","예쁘게 보이려고","팔을 무겁게 하려고","뼈가 움직이지 않아야 새 뼈가 잘 붙어요."],
+ ["척추측만증은 등뼈가 어떻게 된 걸까?","옆으로 휘었어요","짧아졌어요","두 줄이 됐어요","엑스레이로 휜 각도를 재요."]],
+ns:[["뇌 수술을 할 때 현미경을 쓰는 이유는?","아주 가는 핏줄과 신경을 크게 보고 다치지 않게 하려고","뇌가 너무 멀리 있어서","수술실이 어두워서","뇌 속 핏줄과 신경은 머리카락처럼 가늘어요."],
+ ["등뼈 속을 지나가는 굵은 신경 다발의 이름은?","척수","식도","기관지","뇌의 명령이 척수를 타고 온몸으로 가요."],
+ ["뇌출혈 수술에서는 무엇을 할까?","고인 피를 빼서 뇌가 눌리지 않게 해요","뇌를 새것으로 바꿔요","머리카락을 심어요","단단한 머리뼈 안에서는 피가 고이면 뇌가 눌려요."],
+ ["뇌를 둘러싼 물(뇌척수액)은 무슨 일을 할까?","뇌를 띄워서 충격에서 지켜 줘요","뇌를 꽁꽁 얼려요","생각을 물로 바꿔요","물침대처럼 뇌를 보호해요."]],
+cs:[["심장에는 방이 몇 개 있을까?","4개","1개","10개","위에 심방 2개, 아래에 심실 2개가 있어요."],
+ ["기흉은 어디에 구멍이 난 병일까?","폐","위","뼈","바람이 새서 폐가 쪼그라들어요."],
+ ["심장 방 사이의 문 '판막'은 무슨 일을 할까?","피가 거꾸로 흐르지 않게 막아요","피를 만들어요","숨을 쉬어요","판막은 한쪽으로만 열리는 문이에요."],
+ ["가슴 속 심장과 폐를 지켜 주는 뼈는?","갈비뼈","머리뼈","다리뼈","갈비뼈가 새장처럼 둘러싸고 있어요."]],
+ane:[["전신마취를 하면 환자는 어떻게 될까?","깊이 잠들어서 아픔을 느끼지 않아요","더 또렷하게 깨어 있어요","노래를 불러요","수술이 끝나면 약을 멈춰서 깨워요."],
+ ["치과에서 잇몸에 맞는 주사는 어떤 마취일까?","부분마취","전신마취","마취가 아니에요","그 부분만 잠시 감각이 없어져요."],
+ ["수술 전에 밥을 먹지 말라고 하는 이유는?","마취 중에 음식이 올라와 숨길로 넘어갈 수 있어서","수술실에 식탁이 없어서","배가 부르면 잠이 안 와서","이것을 '금식'이라고 해요."],
+ ["손가락에 끼우는 빨간 불빛 집게는 무엇을 잴까?","피 속 산소","키","손가락 힘","'산소포화도 측정기'라고 해요."]],
+uro:[["콩팥에서 방광까지 오줌이 내려가는 가는 관은?","요관","식도","기관지","결석이 이 좁은 길에 걸리면 아주 아파요."],
+ ["결석을 막으려면 무엇을 많이 마셔야 할까?","물","콜라","짠 국물","물을 많이 마시면 오줌이 묽어져서 돌이 덜 생겨요."],
+ ["큰 결석을 몸 밖에서 부술 때 쓰는 것은?","충격파","망치","손전등","충격파가 살은 지나가고 돌만 잘게 부숴요."],
+ ["오줌을 오래 참으면 왜 안 좋을까?","세균이 방광에서 자라기 쉬워져서","오줌이 달콤해져서","방광이 없어져서","마려울 땐 참지 말고 화장실에 가요."]],
+neu:[["뇌전증 때 몸이 떨리는 이유는?","뇌의 전기 신호가 한꺼번에 엉켜서","몸이 추워서","근육이 화가 나서","엉킨 신호가 근육에 마구 전달돼요."],
+ ["뇌의 전기 신호를 그림으로 그리는 검사는?","뇌파 검사","심전도","시력 검사","머리에 작은 단추를 여러 개 붙여요."],
+ ["갑자기 한쪽 팔에 힘이 빠지고 말이 어눌해지면?","바로 119에 전화해요","한숨 자고 나서 봐요","물을 마시고 기다려요","뇌졸중은 빨리 치료할수록 뇌를 많이 지킬 수 있어요."],
+ ["뇌의 명령은 무엇을 타고 손끝까지 갈까?","신경","뼈","머리카락","신경은 몸속 전깃줄이에요."]],
+psy:[["마음이 아픈 것도 병원에서 치료할 수 있을까?","네, 몸처럼 마음도 치료받을 수 있어요","아니요, 혼자 참아야 해요","아니요, 어른만 돼요","어린이도 마음이 힘들면 도움을 받을 수 있어요."],
+ ["놀이 치료에서는 무엇으로 마음을 표현할까?","놀이와 장난감","시험지","주사","어린이는 놀이로 마음을 이야기해요."],
+ ["잠을 잘 자려면 자기 전에 어떻게 하면 좋을까?","화면을 끄고 조용히 쉬어요","신나는 게임을 해요","달콤한 것을 많이 먹어요","밝은 화면은 뇌를 깨워서 잠을 쫓아요."],
+ ["걱정이 아주 클 때 몸에 생길 수 있는 일은?","배가 아프고 가슴이 두근거려요","키가 갑자기 커져요","머리카락 색이 바뀌어요","마음과 몸은 서로 이어져 있어요."]],
+derm:[["아토피 피부에 가장 중요한 것은?","보습제를 자주 발라 촉촉하게 하기","뜨거운 물로 오래 씻기","손톱으로 시원하게 긁기","피부 벽이 약해서 물기가 쉽게 날아가요."],
+ ["사마귀는 무엇 때문에 생길까?","바이러스","개구리","흙","피부에 들어온 바이러스 때문이에요. 개구리와는 상관없어요!"],
+ ["햇볕이 강한 날 피부를 지키려면?","선크림을 바르고 모자를 써요","반창고를 붙여요","찬물을 한 컵 마셔요","햇빛 속 자외선이 피부를 태워요."],
+ ["피부에서 땀이 나는 이유는?","체온을 식히려고","피부를 씻으려고","목이 말라서","땀이 마르면서 몸의 열을 가져가요."]],
+reh:[["재활 치료는 무엇을 하는 걸까?","다시 잘 움직이도록 연습하는 것","새 다리를 붙이는 것","잠만 자는 것","다친 뒤에 힘과 움직임을 되찾는 치료예요."],
+ ["말하기 연습을 도와주는 선생님은?","언어 치료사","영상의학과 의사","약사","놀이처럼 재미있게 연습해요."],
+ ["걷기 연습을 할 때 양손으로 잡는 두 줄 손잡이는?","평행봉","청진기","체온계","넘어지지 않게 양쪽에서 받쳐 줘요."],
+ ["재활 운동은 어떻게 해야 효과가 있을까?","조금씩 꾸준히","하루에 몰아서 한 번만","아플 때까지 세게","근육은 꾸준히 쓸 때 다시 자라요."]],
+eye:[["근시는 어떤 것이 잘 안 보일까?","멀리 있는 것","가까이 있는 것","빨간색 물건","가까운 것은 잘 보여요."],
+ ["사시 치료에서 잘 보이는 눈을 가리는 이유는?","약한 눈을 더 쓰게 해서 힘을 길러 주려고","가린 눈을 쉬게 하려고","해적 놀이를 하려고","'가림 치료'라고 해요."],
+ ["백내장은 눈의 어디가 뿌옇게 된 걸까?","수정체(눈 속 렌즈)","눈썹","눈물","인공 렌즈로 바꾸면 다시 맑게 보여요."],
+ ["어두운 곳에 가면 눈동자(동공)는 어떻게 될까?","커져요","작아져요","없어져요","빛을 더 많이 받으려고 커져요."]],
+ent:[["이비인후과의 '이'는 어디를 말할까?","귀","이빨","입","이(귀)·비(코)·인후(목)예요."],
+ ["소리를 받아 북처럼 떨리는 귀 속 얇은 막은?","고막","편도","방광","고막이 떨리면 뇌가 소리로 알아들어요."],
+ ["코는 어떻게 푸는 게 좋을까?","한쪽씩 살살","양쪽을 한꺼번에 세게","풀지 않고 들이마시기","세게 풀면 귀가 아플 수 있어요."],
+ ["목 안쪽 양옆의 편도는 무슨 일을 할까?","입으로 들어오는 균을 막는 문지기","음식을 씹어요","소리를 들어요","그래서 균과 싸우다가 붓기도 해요."]],
+gi:[["음식이 지나가는 순서로 맞는 것은?","입 → 식도 → 위 → 작은창자 → 큰창자","입 → 폐 → 위 → 심장","입 → 위 → 식도 → 콩팥","이 긴 길을 '소화관'이라고 해요."],
+ ["위액이 위벽에 상처를 낸 병은?","위궤양","골절","중이염","명치가 쓰리고 아파요."],
+ ["대장 용종은 어떻게 찾을까?","대장 내시경으로","체온계로","시력 검사로","아프지 않아서 검사를 해야 찾을 수 있어요."],
+ ["간이 아프면 눈 흰자가 무슨 색으로 변할 수 있을까?","노란색","파란색","초록색","노란 찌꺼기가 몸에 쌓여서 그래요."]],
+pul:[["천식 약을 숨으로 들이마시는 도구는?","흡입기","체중계","안경","약이 숨길에 바로 닿아요."],
+ ["폐 속에 포도송이처럼 모여 있는 작은 공기 방울은?","폐포","편도","방광","여기서 산소와 이산화탄소를 맞바꿔요."],
+ ["우리가 숨을 내쉴 때 몸 밖으로 내보내는 것은?","이산화탄소","소화액","피","몸이 쓰고 남은 기체예요."],
+ ["폐렴은 어떤 사진으로 확인할까?","가슴 엑스레이","발 사진","이 사진","아픈 곳이 하얗게 보여요."]],
+car:[["심장의 박자를 그림으로 그리는 검사는?","심전도","뇌파 검사","청력 검사","가슴에 스티커 같은 줄을 붙여요."],
+ ["막힌 심장 핏줄을 넓게 받쳐 주는 그물망은?","스텐트","깁스","교정기","손목 핏줄로 가는 관을 넣어서 설치해요."],
+ ["고혈압은 어떻게 알 수 있을까?","혈압계로 재 봐야 알아요","거울을 보면 알아요","키를 재면 알아요","아프지 않아서 재 봐야만 알 수 있어요."],
+ ["가슴이 쥐어짜듯 아픈 심근경색일 때는?","바로 119를 불러요","뜨거운 물로 목욕해요","달리기를 해요","막힌 핏줄을 빨리 뚫어야 해요."]],
+endo:[["설탕을 세포에 넣어 주는 열쇠 호르몬은?","인슐린","릴랙신","빌리루빈","췌장에서 만들어져요."],
+ ["갑상샘은 몸의 어디에 있을까?","목 앞쪽","발바닥","귀 뒤","나비 모양으로 생겼어요."],
+ ["키를 자라게 하는 성장호르몬은 언제 많이 나올까?","깊이 잠잘 때","텔레비전을 볼 때","화를 낼 때","그래서 일찍 푹 자야 키가 커요."],
+ ["피 속 설탕을 재는 작은 기계는?","혈당 측정기","체온계","청진기","손끝에서 피 한 방울만 있으면 돼요."]],
+neph:[["콩팥이 하는 가장 중요한 일은?","피를 걸러 오줌을 만들어요","음식을 녹여요","숨을 쉬어요","하루에 피를 수십 번씩 걸러요."],
+ ["콩팥 대신 기계가 피를 걸러 주는 치료는?","투석","깁스","광선 치료","일주일에 여러 번 받아요."],
+ ["콩팥을 지키려면 음식을 어떻게 먹을까?","싱겁게","아주 짜게","아주 달게만","소금이 많으면 콩팥이 힘들어해요."],
+ ["콩팥이 아프면 몸이 붓는 이유는?","물과 소금을 잘 내보내지 못해서","살이 쪄서","뼈가 자라서","남은 물이 몸에 고여요."]],
+hem:[["산소를 나르는 피 세포는?","적혈구","백혈구","혈소판","적혈구 덕분에 피가 빨갛게 보여요."],
+ ["균과 싸우는 피 세포는?","백혈구","적혈구","혈소판","백혈구는 몸을 지키는 군인이에요."],
+ ["상처에서 피를 멈추게 하는 피 세포는?","혈소판","적혈구","백혈구","상처에 모여서 딱지를 만들어요."],
+ ["다른 사람의 피를 받는 것을 무엇이라고 할까?","수혈","투석","이식","혈액형이 서로 맞아야 해요."]],
+ped:[["감기는 주로 무엇 때문에 걸릴까?","바이러스","차가운 바람","아이스크림","추위가 아니라 바이러스가 옮아서 걸려요."],
+ ["수족구병은 어디에 물집이 생길까?","손, 발, 입","머리카락","손톱 밑","이름에 답이 들어 있어요. 수(손)·족(발)·구(입)!"],
+ ["예방주사는 언제 맞는 걸까?","병에 걸리기 전에 미리","병이 다 나은 뒤에","아플 때만","몸이 미리 싸우는 연습을 해요."],
+ ["소아청소년과에서 키와 몸무게를 재는 이유는?","잘 자라고 있는지 확인하려고","옷을 사 주려고","놀이기구를 태워 주려고","자라는 속도도 건강의 신호예요."]],
+ob:[["배 속 아기를 볼 때 쓰는 검사는?","초음파","엑스레이","내시경","소리로 보는 검사라서 아기에게 안전해요."],
+ ["아기는 엄마 배 속에서 보통 얼마나 자랄까?","열 달쯤","한 달","3년","날짜로는 40주쯤이에요."],
+ ["아기가 엄마 배 속에서 둥둥 떠 있는 물은?","양수","위액","눈물","충격에서 아기를 지켜 줘요."],
+ ["수술로 엄마 배를 열어 아기를 낳는 방법은?","제왕절개","자연분만","복강경","마취를 해서 엄마는 아프지 않아요."]],
+fam:[["어느 과에 가야 할지 모를 때 먼저 가면 좋은 곳은?","가정의학과","영상의학과","마취통증의학과","진찰한 뒤 필요한 과로 안내해 줘요."],
+ ["건강을 지키는 좋은 습관은?","골고루 먹고 매일 몸을 움직이기","단 음료를 많이 마시기","밤늦게 자기","습관이 가장 좋은 약이에요."],
+ ["담배가 가장 많이 아프게 하는 곳은?","폐와 핏줄","손톱","머리카락","연기 속 나쁜 물질이 폐와 핏줄을 다치게 해요."],
+ ["혈압은 무엇의 힘을 재는 걸까?","피가 핏줄 벽을 미는 힘","숨을 부는 힘","손으로 쥐는 힘","팔에 띠를 감고 재요."]],
+dent:[["충치는 무엇이 이를 녹여서 생길까?","세균이 만든 산","침","물","세균이 단것을 먹고 산을 만들어요."],
+ ["삐뚤빼뚤한 이를 천천히 옮기는 장치는?","교정기","깁스","보조기","아주 약한 힘으로 오랫동안 밀어요."],
+ ["이 사이에 낀 찌꺼기를 빼는 실은?","치실","봉합 실","털실","칫솔이 닿지 않는 곳을 닦아요."],
+ ["어른 이(영구치)는 모두 몇 개일까?","사랑니까지 32개","10개","100개","젖니는 20개예요."]],
+inf:[["독감 예방주사는 얼마나 자주 맞을까?","해마다","평생 한 번","매일","독감 바이러스가 해마다 조금씩 바뀌기 때문이에요."],
+ ["병이 옮지 않게 하는 가장 쉬운 방법은?","비누로 손 씻기","손뼉 치기","눈 감기","손에 묻은 균이 입과 코로 들어가거든요."],
+ ["기침할 때는 어디로 가려야 할까?","팔꿈치 안쪽(옷소매)","손바닥","가리지 않아요","손으로 가리면 손에 묻은 균이 여기저기 옮아요."],
+ ["식중독을 막으려면 음식을 어떻게 해야 할까?","익혀 먹고 냉장고에 보관해요","따뜻한 곳에 오래 둬요","상해도 그냥 먹어요","세균은 따뜻한 곳에서 빨리 늘어나요."]],
+alg:[["알레르기 원인을 찾으려고 팔에 살짝 해 보는 검사는?","피부 반응 검사","시력 검사","뇌파 검사","원인 물질을 묻혀서 피부가 부푸는지 봐요."],
+ ["음식 알레르기가 있으면 과자를 사기 전에 무엇을 볼까?","포장지의 성분표","과자 색깔","과자 가격","땅콩, 우유, 달걀 같은 재료가 적혀 있어요."],
+ ["아주 심한 알레르기(아나필락시스)에 바로 맞는 주사는?","에피네프린","인슐린","성장호르몬","부은 숨길을 빠르게 넓혀 줘요."],
+ ["집먼지진드기를 줄이려면?","이불을 자주 빨고 햇볕에 말려요","이불을 절대 빨지 않아요","인형을 침대에 가득 쌓아요","진드기는 이불과 인형에 많이 살아요."]],
+er:[["응급 상황에 거는 전화번호는?","119","114","1234","'여기는 어디고, 누가 어떻게 아파요'라고 말해요."],
+ ["멈춘 심장을 다시 뛰게 하려고 가슴을 세게 누르는 것은?","심폐소생술","마사지 놀이","체조","영어로는 CPR이라고 해요."],
+ ["단추 건전지를 삼키면 어떻게 해야 할까?","바로 응급실에 가요","똥으로 나올 때까지 기다려요","물을 많이 마셔요","건전지는 몸속을 다치게 해서 아주 급해요."],
+ ["응급실은 언제 문을 열까?","밤낮없이 항상","낮에만","평일에만","365일 24시간 열려 있어요."]],
+rad:[["MRI는 무엇으로 몸속을 찍을까?","아주 큰 자석","뜨거운 불","물감","그래서 검사실에는 쇠붙이를 가지고 들어가면 안 돼요."],
+ ["CT 사진은 몸을 어떻게 보여 줄까?","식빵처럼 얇게 썬 것처럼","거울처럼 뒤집어서","만화처럼 색칠해서","여러 장을 모으면 입체로도 볼 수 있어요."],
+ ["사진을 찍을 때는 어떻게 해야 할까?","움직이지 않고 가만히","팔짝팔짝 뛰어요","노래를 불러요","움직이면 사진이 흔들려요."],
+ ["소리가 몸속에서 부딪혀 돌아오는 것으로 그림을 그리는 검사는?","초음파","엑스레이","MRI","박쥐가 길을 찾는 방법과 같아요."]],
+lab:[["아주 작은 세포와 세균을 크게 보는 도구는?","현미경","망원경","돋보기 안경","수백 배, 수천 배로 크게 보여 줘요."],
+ ["피를 빙글빙글 빠르게 돌려 층으로 나누는 기계는?","원심분리기","세탁기","선풍기","무거운 적혈구는 아래로 가라앉아요."],
+ ["소변 검사로 알 수 있는 것은?","세균이 있는지, 설탕이 새는지","키가 얼마인지","눈이 좋은지","오줌에도 몸의 소식이 담겨 있어요."],
+ ["균을 먹이 위에 키워서 정체를 알아내는 검사는?","배양 검사","시력 검사","청력 검사","어떤 약이 그 균을 이기는지도 알 수 있어요."]],
+pharm:[["의사 선생님이 약 이름과 양을 적어 주는 종이는?","처방전","영수증","일기장","약사 선생님이 이것을 보고 약을 준비해요."],
+ ["어린이 약의 양은 무엇에 맞춰 정할까?","몸무게와 나이","머리 길이","신발 크기","그래서 어른 약을 나눠 먹으면 안 돼요."],
+ ["약은 어디에 보관해야 할까?","어린이 손이 닿지 않는 곳에","식탁 위 사탕 통에","장난감 상자에","약은 사탕이 아니에요."],
+ ["해열제는 어떤 일을 하는 약일까?","열을 내리고 아픔을 줄여요","키를 크게 해요","잠을 깨워요","정해진 양과 시간 간격을 꼭 지켜요."]],
+icu:[["중환자실 모니터가 '삐삐' 알려 주는 것은?","심장 박동, 숨, 혈압 같은 몸의 신호","오늘의 날씨","점심 메뉴","숫자가 위험해지면 바로 알려 줘요."],
+ ["스스로 숨쉬기 힘든 환자를 돕는 기계는?","인공호흡기","체중계","혈당 측정기","공기를 폐에 넣었다 뺐다 해 줘요."],
+ ["중환자실 면회 시간이 짧고 손을 꼭 씻는 이유는?","환자가 균에 아주 약하고 안정이 필요해서","의자가 모자라서","불을 일찍 꺼서","작은 균도 큰 병이 될 수 있어요."],
+ ["패혈증은 균이 무엇을 타고 온몸에 퍼진 걸까?","피","머리카락","공기","그래서 여러 장기가 한꺼번에 힘들어져요."],
+ ["중환자실에서는 간호사 한 명이 환자를 몇 명쯤 돌볼까?","두세 명쯤, 아주 적게","백 명","천 명","한 명 한 명을 아주 자세히 봐야 해서예요."]],
+tx:[["장기 이식은 무엇일까?","일 못 하는 장기를 건강한 장기로 바꾸는 수술","장기를 깨끗이 씻는 것","장기 사진을 찍는 것","콩팥, 간, 심장, 각막 등을 이식할 수 있어요."],
+ ["간의 일부를 나눠 준 사람의 간은 어떻게 될까?","다시 자라요","영영 작아져요","없어져요","간은 다시 자라는 힘이 있는 장기예요."],
+ ["이식받은 뒤 '면역억제제'를 먹는 이유는?","면역 군인이 새 장기를 적으로 알고 공격하지 않게 하려고","새 장기를 크게 키우려고","잠을 잘 자려고","이것을 '거부 반응'을 막는다고 해요."],
+ ["기증받은 장기는 어떻게 옮길까?","차갑게 해서 최대한 빨리","따뜻하게 데워서 천천히","우편으로 보내요","시간이 지날수록 장기가 약해져요."],
+ ["자기 장기를 다른 사람에게 나눠 주는 것을 무엇이라고 할까?","장기 기증","장기 자랑","장기 두기","한 사람의 기증이 여러 사람을 살릴 수 있어요."]],
+onc:[["암은 어떤 병일까?","고장 난 세포가 멈추지 않고 계속 늘어나는 병","세포가 모두 잠든 병","감기가 오래가는 병","늘어난 세포가 덩어리(혹)를 만들어요."],
+ ["암은 다른 사람에게 옮을까?","아니요, 옮지 않아요","네, 기침으로 옮아요","네, 손을 잡으면 옮아요","그러니 암에 걸린 친구와 마음껏 놀아도 돼요."],
+ ["항암 치료 중에 머리카락이 빠지는 이유는?","약이 빨리 자라는 세포를 공격하는데, 머리카락 세포도 빨리 자라서","머리를 감지 않아서","모자를 써서","암세포도, 머리카락 세포도 빨리 자라는 세포예요."],
+ ["항암 치료가 끝나면 머리카락은 어떻게 될까?","다시 자라요","다시는 나지 않아요","초록색으로만 나요","치료가 끝나면 세포가 다시 건강해져요."],
+ ["방사선 치료는 무엇으로 암세포를 없앨까?","아주 센 빛(방사선)","뜨거운 물","얼음","암이 있는 자리에만 정확하게 쏘아요."]],
+nicu:[["예정보다 일찍 태어난 아기를 무엇이라고 할까?","이른둥이(미숙아)","늦둥이","쌍둥이","37주가 되기 전에 태어난 아기예요."],
+ ["인큐베이터는 무엇과 비슷하게 만든 걸까?","따뜻한 엄마 배 속","시원한 냉장고","놀이터 미끄럼틀","온도와 습도를 딱 맞춰 줘요."],
+ ["아주 작은 아기가 젖을 빨 힘이 없으면 어떻게 먹을까?","코나 입으로 넣은 가는 관으로","숟가락으로 밥을 먹어요","빨대로 주스를 마셔요","관을 통해 젖이 위로 바로 들어가요."],
+ ["엄마 아빠가 맨가슴에 아기를 안아 주는 돌봄은?","캥거루 케어","코알라 체조","펭귄 걸음","캥거루가 주머니에 새끼를 품는 것과 닮았어요."],
+ ["이른둥이가 숨쉬기 힘든 이유는?","폐가 아직 다 자라지 않아서","코가 너무 커서","너무 많이 울어서","폐는 배 속에서 가장 늦게 완성되는 장기예요."]],
+ps:[["피부 이식은 무엇일까?","건강한 피부를 떼어 다친 곳에 옮겨 심는 것","피부에 그림을 그리는 것","피부를 종이로 덮는 것","옮겨 심은 피부가 자리를 잡고 자라요."],
+ ["구순구개열은 어디가 갈라진 채 태어나는 걸까?","입술이나 입천장","귀","발가락","아기 때 수술로 이어 줘요."],
+ ["성형외과에서 아주 가는 실로 꿰매는 이유는?","흉터가 작게 남도록","실이 싸서","빨리 풀리게 하려고","촘촘하고 가늘게 꿰맬수록 흉터가 작아요."],
+ ["깊은 화상 흉터가 있으면 움직이기 힘든 이유는?","흉터 피부가 딱딱하게 당겨져서","뼈가 없어져서","근육이 늘어나서","흉터는 원래 피부처럼 잘 늘어나지 않아요."],
+ ["성형외과는 예뻐지는 수술만 할까?","아니요, 다친 곳의 모양과 기능을 되찾아 주는 일을 많이 해요","네, 그것만 해요","수술은 하지 않아요","화상, 사고, 타고난 모양 차이를 고쳐 줘요."]],
+rheum:[["자가면역 질환은 어떤 병일까?","면역 군인이 실수로 자기 몸을 공격하는 병","면역 군인이 모두 잠든 병","세균이 너무 많은 병","군인이 우리 편을 적으로 착각한 거예요."],
+ ["류마티스 관절염은 주로 언제 관절이 가장 뻣뻣할까?","아침에 일어났을 때","밥 먹을 때만","웃을 때만","움직이다 보면 조금씩 풀려요."],
+ ["뼈와 뼈가 만나서 구부러지는 곳은?","관절","혈관","손톱","무릎, 팔꿈치, 손가락 마디가 모두 관절이에요."],
+ ["루푸스 환자 얼굴에 생기기도 하는 붉은 반점의 모양은?","나비","별","하트","양쪽 볼과 콧등에 걸쳐 생겨요."],
+ ["관절염이 있어도 가벼운 운동을 하는 이유는?","관절이 굳지 않고 근육이 받쳐 주게 하려고","관절을 닳게 하려고","키가 크려고","수영이나 걷기처럼 부드러운 운동이 좋아요."]],
+nm:[["핵의학 검사에서 몸에 넣는 약은 무엇을 낼까?","아주 약한 방사선(빛)","큰 소리","달콤한 냄새","그 빛을 특수 카메라가 찍어요."],
+ ["PET 검사에서 암세포가 밝게 빛나는 이유는?","암세포가 설탕을 닮은 약을 많이 먹어서","암세포가 전구라서","암세포가 차가워서","암세포는 빨리 자라느라 설탕을 많이 써요."],
+ ["엑스레이는 장기의 '모양'을 봐요. 핵의학 검사는 주로 무엇을 볼까?","장기가 '일하는 모습'","장기의 무게","장기의 냄새","약이 어디로 얼마나 가는지를 보면 알 수 있어요."],
+ ["뼈 스캔에서 약이 많이 모이는 곳은?","다치거나 아픈 뼈","가장 긴 뼈","머리카락","아픈 뼈는 고치느라 바빠서 약을 더 많이 끌어당겨요."],
+ ["검사 뒤에 물을 많이 마시라고 하는 이유는?","약이 오줌으로 빨리 빠져나가게 하려고","목이 말라서","배가 고파서","약은 금방 약해지고 몸 밖으로 나가요."]],
+path:[["병리과 선생님은 주로 무엇으로 병을 찾을까?","현미경으로 세포를 보고","환자와 달리기를 하고","청진기 소리를 듣고","환자를 직접 만나지 않고도 병을 밝혀내요."],
+ ["조직을 현미경으로 보기 전에 물들이는 이유는?","투명한 세포가 잘 보이게 하려고","예쁘게 꾸미려고","조각을 크게 만들려고","세포는 원래 거의 투명해요."],
+ ["몸에서 작은 조각을 떼어 검사하는 것을 무엇이라고 할까?","조직 검사","시력 검사","혈압 검사","혹이 나쁜 혹인지 알 수 있어요."],
+ ["수술 중 급한 검사에서는 조각을 어떻게 준비할까?","꽁꽁 얼려서 얇게 썰어요","햇볕에 말려요","물에 끓여요","얼리면 빨리 단단해져서 바로 썰 수 있어요."],
+ ["우리 몸을 이루는 가장 작은 벽돌은?","세포","뼈","머리카락","세포가 모여 조직이, 조직이 모여 장기가 돼요."]]
+};
+const QS={};D.forEach(d=>{QS[d.id]=(d.q?[[d.q,...OPT[d.id],d.a]]:[]).concat(QX[d.id]||[]);});
+const QN=5,QTOTAL=D.length*QN;
 const DM=Object.fromEntries(D.map(d=>[d.id,d]));
 const PRAISES=["와, 생각하는 힘이 대단해요! 🌟","아림이 진짜 의사 선생님 같아! 🩺","스스로 생각해 본 게 제일 멋져요! 👏","궁금한 걸 끝까지 생각했네! 💖","오늘도 한 뼘 더 똑똑해졌어요! 🧠✨"];
 const PATIENTS=[["🐻","곰돌이가"],["🐰","토끼가"],["🐶","강아지가"],["🐱","고양이가"],["🐼","판다가"],["🦊","여우가"],["🐧","펭귄이"],["🐨","코알라가"],["🐯","호랑이가"],["🐹","햄스터가"]];
-const RANKS=[[0,"🎒 의대생"],[7,"🩺 인턴"],[14,"👩‍⚕️ 레지던트"],[21,"🏅 전문의"],[28,"👑 병원장"]];
+const RANKS=[[0,"🎒 의대생"],[30,"🩺 인턴"],[60,"👩‍⚕️ 레지던트"],[100,"🏅 전문의"],[140,"🔬 펠로우"],[180,"👑 교수님"]];
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const $=id=>root.querySelector("#"+id);
 
-let st={s:{},guided:0};
+let st={s:{},q:{},guided:0};
 try{const x=JSON.parse(localStorage.getItem("arim-hospital1")||"null");if(x)st=Object.assign(st,x);}catch(e){}
+const solved=id=>Math.min(QN,Math.max(st.q[id]||0,st.s[id]?1:0));
 const save=()=>{try{localStorage.setItem("arim-hospital1",JSON.stringify(st));}catch(e){}};
 
 /* 건물 */
-$("bld").innerHTML=[5,4,3,2,1].map(f=>{
+$("bld").innerHTML=[6,5,4,3,2,1].map(f=>{
   const [nm,c,bg]=FL[f];
-  const rooms=D.filter(d=>d.f===f).map(d=>`<button class="room" data-id="${d.id}" style="background:${bg}"><span class="st">💮</span><div class="e">${d.e}</div><div class="n">${d.s||d.name}</div></button>`).join("")
+  const rooms=D.filter(d=>d.f===f).map(d=>`<button class="room" data-id="${d.id}" style="background:${bg}"><span class="st">💮</span><div class="e">${d.e}</div><div class="n">${d.s||d.name}</div><div class="pg"></div></button>`).join("")
     +(f===1?`<button class="room desk" data-desk="1"><div class="e">🛎️</div><div class="n">안내 데스크</div></button>`:"");
   return `<div class="floor"><div class="fl" style="background:${c}">${f}F<small>${nm}</small></div><div class="rooms">${rooms}</div></div>`;
 }).join("");
 $("bld").addEventListener("click",e=>{const b=e.target.closest(".room");if(!b)return;if(b.dataset.desk)go("desk");else openDept(b.dataset.id);});
 
 function refresh(){
-  const n=D.filter(d=>st.s[d.id]).length;
-  D.forEach(d=>root.querySelector(`.room[data-id="${d.id}"]`).classList.toggle("done",!!st.s[d.id]));
+  let n=0,t=0;
+  D.forEach(d=>{const k=solved(d.id);t+=k;if(k>=QN)n++;
+    const el=root.querySelector(`.room[data-id="${d.id}"]`);el.classList.toggle("done",k>=QN);
+    el.querySelector(".pg").textContent=k?"●".repeat(k)+"○".repeat(QN-k):"";});
   let r=RANKS[0][1],next=null;
-  for(const [k,v] of RANKS){if(n>=k)r=v;else if(next===null)next=k;}
+  for(const [k,v] of RANKS){if(t>=k)r=v;else if(next===null)next=k;}
   $("pRank").textContent=r;window.onProg&&window.onProg("h",n,D.length,r);
-  $("pSt").textContent="💮 견학 도장 "+n+"/"+D.length+(next?" (다음 승진 "+next+"개)":"");
+  $("pSt").textContent="💮 도장 "+n+"/"+D.length+" · 퀴즈 "+t+"/"+QTOTAL+(next?" (승진까지 "+(next-t)+"문제)":"");
   $("pGd").textContent="🛎️ 안내 "+st.guided+"명";
-  $("finish").classList.toggle("show",n===D.length);
+  $("finish").classList.toggle("show",t>=QTOTAL);
 }
-$("reset").onclick=()=>{st={s:{},guided:0};save();refresh();window.scrollTo({top:0,behavior:"smooth"});};
+$("reset").onclick=()=>{st={s:{},q:{},guided:0};save();refresh();window.scrollTo({top:0,behavior:"smooth"});};
 
 /* 화면 전환 */
 function go(v){
@@ -524,27 +777,37 @@ const sheet=$("sheet"),card=$("card");
 const closeSheet=()=>sheet.classList.remove("open");
 sheet.addEventListener("click",e=>{if(e.target===sheet)closeSheet();});
 function openDept(id){
-  const d=DM[id],done=!!st.s[id];
+  const d=DM[id];
   card.innerHTML=`<div class="top"><div class="e">${d.e}</div><div><h2>${d.name}</h2><div class="en">${d.en}</div><span class="where">${d.f}층 · ${FL[d.f][0]}</span></div><button class="x" data-act="close" aria-label="닫기">✕</button></div>
    <div class="box b-work"><h3>🩺 무슨 일을 할까?</h3><p>${d.say}</p><div class="tools">${d.tools.map(t=>`<span class="tool">${t}</span>`).join("")}</div></div>
    <div class="dzh">${d.dzt||"🤒 이런 병을 치료해요"}</div>
    ${d.dz.map(z=>`<details><summary><span class="e">${z[0]}</span>${z[1]}</summary><div class="dzb"><div class="s"><b>${d.dzt?"언제?":"😣 이럴 때 아파요"}</b><br>${z[2]}</div><div class="c"><b>${d.dzt?"어떻게?":"💊 이렇게 치료해요"}</b><br>${z[3]}</div></div></details>`).join("")}
-   <div class="box b-q"><h3>🤔 생각해 볼까?</h3><p>${d.q}</p>
-   <div class="opts" style="margin-top:10px">${(done?[0]:shuffle([0,1,2])).map(k=>`<button class="opt${done?" right":""}" data-act="pick" data-id="${id}" data-k="${k}">${OPT[id][k]}</button>`).join("")}</div>
-   <div class="msg" id="qmsg"></div>
-   <div class="ans${done?" show":""}" id="ans"><div class="pr">${done?"견학 도장을 받았어요 💮":""}</div><p>${d.a}</p></div></div>
+   <div class="box b-q" id="qbox"></div>
    ${d.link?`<button class="go" onclick="goPlace('j')">${d.link[0]}</button>`:""}`;
+  renderQ(id);
   sheet.classList.add("open");card.scrollTop=0;
+}
+function dots(k,cur){let s="";for(let i=0;i<QN;i++)s+=i<k?"<b>●</b>":(i===cur?"◉":"○");return s;}
+function renderQ(id){
+  const k=solved(id),box=$("qbox");
+  if(k>=QN){box.innerHTML=`<div class="qhead"><h3>💮 퀴즈 완료!</h3><span class="dots">${dots(QN,-1)}</span></div><p>이 진료과의 퀴즈 5개를 모두 풀었어요. 견학 도장을 받았어요!</p>`;return;}
+  const q=QS[id][k];
+  box.innerHTML=`<div class="qhead"><h3>🤔 퀴즈 ${k+1} / ${QN}</h3><span class="dots">${dots(k,k)}</span></div><p>${q[0]}</p>
+   <div class="opts" style="margin-top:10px">${shuffle([1,2,3]).map(i=>`<button class="opt" data-act="pick" data-id="${id}" data-k="${i}">${q[i]}</button>`).join("")}</div>
+   <div class="msg" id="qmsg"></div>
+   <div class="ans" id="ans"><div class="pr"></div><p>${q[4]}</p><button class="btn" data-act="next" data-id="${id}">${k+1<QN?"다음 문제 →":"도장 받기 💮"}</button></div>`;
 }
 card.addEventListener("click",e=>{
   const b=e.target.closest("[data-act]");if(!b)return;
+  const id=b.dataset.id;
   if(b.dataset.act==="close")closeSheet();
+  else if(b.dataset.act==="next"){renderQ(id);$("qbox").scrollIntoView({block:"nearest"});}
   else if(b.dataset.act==="pick"){
-    if(st.s[b.dataset.id]||b.classList.contains("wrong"))return;
-    if(b.dataset.k==="0"){
+    if(b.classList.contains("wrong")||b.classList.contains("right"))return;
+    if(b.dataset.k==="1"){
       b.classList.add("right");card.querySelectorAll('[data-act="pick"]').forEach(x=>{if(x!==b)x.remove();});
-      $("qmsg").textContent="";const a=$("ans");a.querySelector(".pr").textContent=pick(PRAISES)+" 견학 도장 💮";a.classList.add("show");
-      st.s[b.dataset.id]=1;save();refresh();
+      $("qmsg").textContent="";const a=$("ans");a.querySelector(".pr").textContent=pick(PRAISES);a.classList.add("show");
+      st.q[id]=solved(id)+1;save();refresh();
     }else{b.classList.add("wrong");$("qmsg").textContent="음, 다시 생각해 볼까? 💭";}
   }
 });
