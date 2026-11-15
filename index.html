@@ -190,7 +190,9 @@
   @keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-9px)}70%{transform:translateY(2px)}}
   #mapsvg .win{animation:blink 6s ease-in-out infinite}
   @keyframes blink{0%,70%,100%{opacity:1}80%{opacity:.45}}
-  #me{transition:transform .6s ease-in-out;pointer-events:none}
+  #me{transition:transform 2s linear;pointer-events:none}
+  #me.walk .bob{animation:bob .42s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
   #snd{position:fixed;top:44px;right:8px;z-index:30;width:34px;height:34px;border:none;border-radius:50%;background:#ffffffe0;font-size:16px;box-shadow:0 1px 0 #c9d6df;padding:0}
   .strow{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid #f0ebe5;font-size:15px}
   .strow:first-of-type{border-top:none}
@@ -202,6 +204,7 @@
   .avrow .sw.on{box-shadow:0 0 0 3px #ff8a65}
   .avrow .chipb{border:none;border-radius:999px;padding:7px 12px;margin:0 5px 5px 0;background:#f3eee9;font-family:'Jua',sans-serif;font-size:15px}
   .avrow .chipb.on{background:#ff8a65;color:#fff}
+
 
   body.bg-j{background:linear-gradient(#ffe3ec 0,#fff3ea 420px,#fff9f1 421px)}
   body.bg-home{background:linear-gradient(#bfe4ff 0,#e6f5ff 55%,#d9f0cf 55.1%,#e9f7e2 100%)}
@@ -243,6 +246,31 @@
   #lock input{width:110px;font-size:20px;text-align:center;border-radius:10px;border:none;padding:8px;margin:8px 4px 0}
   #lock .ok{border:none;border-radius:10px;padding:9px 14px;font-size:16px;background:#ffd66b;color:#5a4300;font-family:'Jua',sans-serif}
   .soon{margin-top:18px;background:#ffffffb0;border-radius:16px;padding:10px;font-size:14px;color:#6b625b}
+  /* ===== 태블릿 · 가로 화면 ===== */
+  @media (min-width:700px){
+    main,nav{max-width:760px}
+    #home{max-width:760px}
+    .rooms{grid-template-columns:repeat(6,1fr)}
+    #pj .rooms{grid-template-columns:repeat(4,1fr)}
+    .room{min-height:92px}
+    .room .n{font-size:16px}
+    .sheet{align-items:center;padding:16px}
+    .sheet .card{max-width:680px;border-radius:26px;max-height:88vh}
+    .shopgrid{grid-template-columns:repeat(5,1fr)}
+    .tgrid{grid-template-columns:repeat(4,1fr)}
+    .ovc{max-width:560px}
+    #map{margin:14px 0 0}
+  }
+  @media (min-width:900px) and (orientation:landscape){
+    #home{max-width:1320px;display:grid;grid-template-columns:minmax(0,2.2fr) minmax(300px,1fr);column-gap:20px;align-items:start;padding:10px 18px 30px;text-align:left}
+    #home > *{grid-column:2}
+    #home > #map{grid-column:1;grid-row:1 / span 20;position:sticky;top:10px;margin:0}
+    #home > .hdeco{display:none}
+    #home h1{margin-top:44px;font-size:30px}
+    #mapsvg{max-height:calc(100vh - 28px)}
+    main,nav{max-width:900px}
+    .qz{font-size:18px}
+  }
 </style>
 </head>
 <body class="bg-home">
@@ -253,7 +281,7 @@
   <div class="pbox" id="pbox"><div id="pq"></div><input id="pin" type="number" inputmode="numeric" autocomplete="off"><button class="ok" id="pok">확인</button><div id="pmsg" style="min-height:20px;margin-top:6px;font-size:14px"></div></div>
 </div>
 <section id="home">
-  <div style="font-size:26px;letter-spacing:14px">☁️🌤️☁️</div>
+  <div class="hdeco" style="font-size:26px;letter-spacing:14px">☁️🌤️☁️</div>
   <h1>🏘️ 아림 마을</h1>
   <div class="sub">건물을 누르면 걸어가요. 공원 빈 칸과 아림이네 집도 눌러 봐!</div>
   <div class="hcard" id="newCard" style="display:none;background:#fff8d9"></div>
@@ -351,7 +379,7 @@ const PL={home:"",h:"hospital",j:"joriwon",p:"pharmacy"};
 window.goPlace=function(k,nohash){
   if(window.TOWN&&!TOWN.isOpen(k))k="home";
   document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("open"));
-  document.getElementById("home").style.display=k==="home"?"block":"none";
+  document.getElementById("home").style.display=k==="home"?"":"none";
   document.querySelectorAll(".place").forEach(x=>x.classList.toggle("on",x.id==="p"+k));
   const PB=(window.PBG||{})[k];if(PB)document.body.style.setProperty("--pbg",PB);
   document.body.className=k==="home"?"bg-home":(k==="j"?"bg-j":(k==="p"?"bg-p":(PB?"bg-x":"")));
@@ -615,7 +643,9 @@ window.addEventListener("hashchange",fromHash);
     s+=`<polygon points="${quad(C,B,.14,.42,0,Math.min(.6,22/h))}" fill="#8a6a50"/>`;
     const rc=iso(x+w/2,y+.5);return {s:s,top:[rc[0],rc[1]-h]};
   }
+  let walking=false;
   function drawMap(){
+    walking=false;
     const el=g("map");if(!el)return;
     const nx=BLD.find(b=>M.open[b.key]===undefined);
     let s=`<polygon points="${P([iso(0,0),iso(5,0),iso(5,6),iso(0,6)])}" fill="#bfe6a8"/><polygon points="${P([iso(0,6),iso(5,6),[iso(5,6)[0],iso(5,6)[1]+10],[iso(0,6)[0],iso(0,6)[1]+10]])}" fill="#8fc97a"/><polygon points="${P([iso(5,0),iso(5,6),[iso(5,6)[0],iso(5,6)[1]+10],[iso(5,0)[0],iso(5,0)[1]+10]])}" fill="#7dba68"/>`;
@@ -649,7 +679,7 @@ window.addEventListener("hashchange",fromHash);
         <text font-size="17" text-anchor="middle">🧑‍⚕️<animateTransform attributeName="transform" type="translate" from="${w2[0]} ${w2[1]}" to="${w3[0]} ${w3[1]}" dur="23s" repeatCount="indefinite"/></text>`;
     s+=lab.join("");
     const at=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(1.25,5.55);
-    s+=`<g id="me" style="transform:translate(${at[0]-17}px,${at[1]-46}px)"><g transform="scale(.58)">${avatar(M.av)}</g></g>`;
+    s+=`<g id="me" style="transform:translate(${at[0]-17}px,${at[1]-46}px)"><g class="bob"><g transform="scale(.58)">${avatar(M.av)}</g></g></g>`;
     s+=`<text font-size="30" opacity=".9">☁️<animateTransform attributeName="transform" type="translate" from="-40 30" to="600 30" dur="38s" repeatCount="indefinite"/></text><text font-size="22" opacity=".85">☁️<animateTransform attributeName="transform" type="translate" from="-40 66" to="600 66" dur="55s" begin="-20s" repeatCount="indefinite"/></text>`;
     el.innerHTML=`<svg viewBox="0 0 560 374" id="mapsvg">${s}</svg>`;
     el.querySelectorAll(".bd").forEach(b=>b.onclick=()=>{
@@ -657,8 +687,12 @@ window.addEventListener("hashchange",fromHash);
       const k=b.dataset.b;
       el.querySelectorAll(`.bd[data-b="${k}"]`).forEach(x=>{x.classList.remove("hop");void x.getBoundingClientRect();x.classList.add("hop");});
       if(!isOpen(k)){SFX("no");lockInfo(k,nx);return;}
-      SFX("pop");const f=front(k);g("me").style.transform=`translate(${f[0]-17}px,${f[1]-46}px)`;M.at=k;save();
-      setTimeout(()=>goPlace(k),620);
+      if(walking)return;walking=true;
+      SFX("pop");const f=front(k),from=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(1.25,5.55);
+      const dist=Math.hypot(f[0]-from[0],f[1]-from[1]),dur=Math.max(1.3,Math.min(3,dist/90)),me=g("me");
+      me.style.transitionDuration=dur+"s";me.classList.add("walk");
+      me.style.transform=`translate(${f[0]-17}px,${f[1]-46}px)`;M.at=k;save();
+      setTimeout(()=>{walking=false;goPlace(k);},dur*1000+350);
     });
     el.querySelectorAll(".pslot").forEach(b=>b.onclick=()=>{SFX("pop");slot(Number(b.dataset.slot));});
     /* 마을 현황 */
