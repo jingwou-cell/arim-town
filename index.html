@@ -64,6 +64,8 @@
   .talkok{margin-top:10px;font-family:'Jua',sans-serif;color:#5b43b5;font-size:17px}
   .room .tk{display:none;position:absolute;top:-4px;left:-2px;font-size:15px}
   .room.talk .tk{display:block}
+  .sign.annex{margin:18px 60px 0;background:#f08aa6;font-size:22px;box-shadow:inset 0 -5px 0 #d96f8d}
+  button.go{width:100%}
   .room.desk{background:#fff3cf!important;outline:2px dashed #e6b84d;outline-offset:-3px}
   .ground{display:flex;justify-content:space-between;align-items:flex-end;font-size:28px;padding:6px 8px 0}
   .hint{text-align:center;color:var(--soft);font-size:14px;margin-top:8px}
@@ -171,6 +173,16 @@
   header.bh h1{font-family:'Jua',sans-serif;font-weight:normal;font-size:27px;margin:4px 0}
   .tbtn.shake{animation:shake .35s}
   body.bg-x{background:linear-gradient(var(--pbg) 0,#fffdfa 420px)}
+  .shopgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .sitem{border:none;border-radius:16px;background:#fff;padding:10px 4px;box-shadow:0 3px 0 #ecd9ad;text-align:center}
+  .sitem .e{font-size:34px;line-height:1.1}
+  .sitem .n{font-family:'Jua',sans-serif;font-size:15px;margin-top:2px}
+  .sitem .p{font-size:14px;color:#b0761a}
+  .sitem .own{font-size:11px;color:#2f9b7b}
+  .sitem.poor{opacity:.55}
+  .park{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px;background:#dff2d3;border-radius:16px;padding:8px}
+  .slot{aspect-ratio:1;border:2px dashed #b9d7a8;border-radius:12px;background:#eef9e6;font-size:22px;color:#a9c99a;padding:0}
+  .slot.full{border:none;background:none;font-size:34px}
 
   body.bg-j{background:linear-gradient(#ffe3ec 0,#fff3ea 420px,#fff9f1 421px)}
   body.bg-home{background:linear-gradient(#bfe4ff 0,#e6f5ff 55%,#d9f0cf 55.1%,#e9f7e2 100%)}
@@ -232,10 +244,10 @@
       <div class="wall"><span style="background:#ffe6e2">🦴</span><span style="background:#efe9ff">🧠</span><span style="background:#e4f1ff">❤️</span><span style="background:#e1f6ee">🦷</span><span style="background:#fff0d6">🚑</span><span style="background:#e4f1ff">🫁</span><span class="door">🚪</span></div>
       <div class="info"><b>아림대학교병원</b><span id="hRank">진료과 36개</span><div class="bar"><i id="hBar" style="background:#2fa38a"></i></div><span id="hCnt"></span></div>
     </button>
-    <button class="tb" onclick="goPlace('j')">
-      <div class="roof" style="background:#f08aa6">♥ 산후조리원</div>
-      <div class="wall"><span style="background:#ffe9ef">🛏️</span><span style="background:#ffe9ef">🍲</span><span style="background:#fff0d6">👶</span><span style="background:#fff0d6">🍼</span><span style="background:#e3f6f1">🛁</span><span style="background:#e3f6f1">🩺</span><span class="door">🚪</span></div>
-      <div class="info"><b>아림 산후조리원</b><span id="jRank">방 11개</span><div class="bar"><i id="jBar" style="background:#f08aa6"></i></div><span id="jCnt"></span></div>
+<button class="tb" onclick="goPlace('s')">
+      <div class="roof" style="background:#e9a01f">🛍️ 꾸미기 가게</div>
+      <div class="wall"><span style="background:#fff3d6">🌳</span><span style="background:#fff3d6">⛲</span><span style="background:#fff3d6">🎡</span><span class="door">🚪</span></div>
+      <div class="info"><b>꾸미기 가게</b><span>별로 마을을 꾸며요</span><div class="bar"><i style="background:#e9a01f;width:100%"></i></div><span id="sBal"></span></div>
     </button>
     <button class="tb" onclick="goPlace('p')">
       <div class="roof" style="background:#7c6ee6">💊 약국</div>
@@ -245,6 +257,7 @@
     <div id="moreTown" style="display:contents"></div>
   </div>
   <div class="road">🌳🚑🌷🚗🌳</div>
+  <div class="hcard" id="parkCard"></div>
   <div class="hcard" id="bodyCard"></div>
   <div class="hstat" id="hstat"></div>
 </section>
@@ -265,12 +278,14 @@
   <div class="sky"><i style="left:6%;top:0">☁️</i><i style="right:8%;top:2px">☁️</i><i style="left:46%;top:-6px;font-size:18px">🚁</i></div>
   <div class="sign"><span class="cross">✚</span>아림대학교병원<small>ARIM UNIVERSITY HOSPITAL</small></div>
   <div class="bld" id="bld"></div>
+  <div class="sign annex"><span class="cross" style="color:#f08aa6">♥</span>별관<small>엄마와 아기 센터</small></div>
+  <div class="bld" id="bld2"></div>
   <div class="ground"><span>🌳</span><span>🚑</span><span>🌷</span><span>🌳</span></div>
-  <button class="go" onclick="goPlace('j')">🍼 옆 건물 아림 산후조리원 놀러 가기 →</button>
+  <button class="go" onclick="goPlace('j')">🍼 별관 산후조리원으로 가기 →</button>
   <div class="hint">대학병원은 환자를 치료하고, 의사를 가르치고, 새 치료법을 연구하는 큰 병원이에요.<br>진료과마다 퀴즈 5개를 모두 맞히면 견학 도장 💮을 받아요</div>
   <div class="finish" id="finish">
     <h2>👑 아림대학교병원 교수님!</h2>
-    <div>36개 진료과의 퀴즈 180개를 모두 풀었어요.<br>이제 안내 데스크에서 환자들을 도와줄까?</div>
+    <div>모든 진료과의 퀴즈를 다 풀었어요.<br>이제 안내 데스크에서 환자들을 도와줄까?</div>
   </div>
   <button class="reset" id="reset">처음부터 다시 견학하기</button>
 </section>
@@ -286,7 +301,7 @@
 
 </div>
 <div class="place" id="pj">
-<button class="backhome" onclick="goPlace('home')">← 🏘️ 아림 마을</button>
+<button class="backhome" onclick="goPlace('h')">← 🏥 대학병원 별관</button>
 
 <header>
   <div class="prog"><span class="rank" id="pRank"></span><span id="pSt"></span><span id="pGd"></span></div>
@@ -301,7 +316,7 @@
   <div class="sign"><span class="cross" style="color:#f08aa6">♥</span>아림 산후조리원<small>ARIM POSTPARTUM CARE CENTER</small></div>
   <div class="bld" id="bld"></div>
   <div class="ground"><span>🌷</span><span>🚗</span><span>🧸</span><span>🌷</span></div>
-  <button class="go" onclick="goPlace('h')">🏥 옆 건물 아림병원 놀러 가기 →</button>
+  <button class="go" onclick="goPlace('h')">🏥 대학병원으로 돌아가기 →</button>
   <div class="hint">방문을 눌러 들어가 봐! 퀴즈를 맞히면 견학 도장 💮을 받아요</div>
   <div class="finish" id="finish">
     <h2>🏅 신생아실 수간호사님!</h2>
@@ -339,6 +354,7 @@ window.goPlace=function(k,nohash){
   const PB=(window.PBG||{})[k];if(PB)document.body.style.setProperty("--pbg",PB);
   document.body.className=k==="home"?"bg-home":(k==="j"?"bg-j":(k==="p"?"bg-p":(PB?"bg-x":"")));
   if(k==="home"&&window.TOWN)TOWN.homeDraw();
+  if(k==="s"&&window.TOWN)TOWN.drawShop();
   window.scrollTo({top:0});
   const HN=PL[k]||(window.PLN||{})[k]||"";
   if(!nohash){try{history.replaceState(null,"",HN?"#"+HN:location.pathname+location.search);}catch(e){try{location.hash=HN;}catch(e2){}}}
@@ -346,6 +362,7 @@ window.goPlace=function(k,nohash){
 window.PTS={};window.PROG={};
 window.onProg=function(k,n,t,r,p){
   PTS[k]=p||0;PROG[k]={n:n,t:t||1,r:r};
+  if(k==="j"){const e=document.getElementById("joriPg");if(e)e.textContent="💮 "+n+" / "+t;}
   if(!document.getElementById(k+"Rank")&&k!=="p")return;
   const g=id=>document.getElementById(id);
   if(k==="p"){g("pRank2").textContent=r;g("pCnt").textContent="⭐ 별 "+n+"개";g("pBar").style.width=Math.min(100,n/45*100)+"%";return;}
@@ -383,10 +400,10 @@ window.addEventListener("hashchange",fromHash);
 (function(){
   const g=id=>document.getElementById(id);
   const day=()=>{const n=new Date();return Math.floor((n.getTime()-n.getTimezoneOffset()*60000)/86400000);};
-  let M={log:{},rvDay:0,rv:0,talk:{},bodyDay:0,body:0,open:{},newly:""};
+  let M={log:{},rvDay:0,rv:0,talk:{},bodyDay:0,body:0,open:{},newly:"",spent:0,inv:{},park:[]};
   const STEP=40,BLD=[];
   const pts=()=>Object.values(window.PTS||{}).reduce((a,b)=>a+(b||0),0);
-  const isOpen=k=>k==="home"||k==="h"||k==="j"||k==="p"||M.open[k]!==undefined;
+  const isOpen=k=>k==="home"||k==="h"||k==="j"||k==="p"||k==="s"||M.open[k]!==undefined;
   function unlock(){
     const nx=BLD.find(b=>M.open[b.key]===undefined);if(!nx)return;
     const opened=Object.values(M.open);
@@ -465,9 +482,68 @@ window.addEventListener("hashchange",fromHash);
     g("tkSkip").onclick=()=>g("tk").classList.remove("on");
     hold(g("tkOk"),()=>{M.talk[k]=day();save();g("tk").classList.remove("on");cb&&cb();homeDraw();});
   }
+
+  /* 꾸미기 가게와 공원 */
+  const SHOP=[["balloon","🎈","풍선",4],["tree","🌳","나무",5],["flower","🌷","꽃밭",5],["post","📮","우체통",6],["bench","🪑","벤치",8],["lamp","💡","가로등",8],["bike","🚲","자전거",10],["duck","🦆","오리 연못",12],["dog","🐕","강아지",15],["cat","🐈","고양이",15],["tent","🏕️","텐트",18],["bus","🚌","버스",20],["fountain","⛲","분수",20],["play","🛝","놀이터",25],["amb","🚑","구급차",30],["cafe","☕","카페",35],["heli","🚁","헬리콥터",40],["rainbow","🌈","무지개",50],["wheel","🎡","관람차",60]];
+  const SI=Object.fromEntries(SHOP.map(x=>[x[0],x])),SLOTS=15;
+  const bal=()=>pts()-(M.spent||0);
+  const placed=id=>M.park.filter(x=>x===id).length,spare=id=>(M.inv[id]||0)-placed(id);
+  const three=(ans,c)=>{const r=[ans];for(const v of shuffle(c)){if(v>=0&&!r.includes(v))r.push(v);if(r.length===3)break;}let k=1;while(r.length<3){if(!r.includes(ans+k))r.push(ans+k);k++;}return shuffle(r);};
+  (window.PLN=window.PLN||{}).s="shop";(window.PBG=window.PBG||{}).s="#fff0cf";
+  const sp=document.createElement("div");sp.className="place";sp.id="ps";
+  sp.innerHTML=`<button class="backhome" onclick="goPlace('home')">← 🏘️ 아림 마을</button><header class="bh"><h1 style="color:#c98209">🛍️ 꾸미기 가게</h1><div class="prog"><span class="rank" id="shBal"></span><span id="shHave"></span></div></header><main><div class="stamps" style="margin:0 0 10px">문제를 풀어 모은 별로 물건을 사서, 마을 공원에 놓아 봐!</div><div class="shopgrid" id="shGrid"></div></main>`;
+  document.body.insertBefore(sp,g("rv"));
+  function drawShop(){
+    g("shBal").textContent="⭐ 쓸 수 있는 별 "+bal();
+    g("shHave").textContent="🎁 가진 물건 "+Object.values(M.inv).reduce((a,b)=>a+b,0)+"개";
+    g("shGrid").innerHTML=SHOP.map(x=>`<button class="sitem${bal()<x[3]?" poor":""}" data-id="${x[0]}"><div class="e">${x[1]}</div><div class="n">${x[2]}</div><div class="p">⭐ ${x[3]}</div>${M.inv[x[0]]?`<div class="own">${M.inv[x[0]]}개 있음</div>`:""}</button>`).join("");
+    const sb=g("sBal");if(sb)sb.textContent="⭐ 쓸 수 있는 별 "+bal();
+  }
+  g("shGrid").addEventListener("click",e=>{const b=e.target.closest(".sitem");if(b)buy(b.dataset.id);});
+  function buy(id){
+    const it=SI[id],P=it[3],B=bal(),c=g("tkc");g("tk").classList.add("on");
+    const close=()=>{g("tk").classList.remove("on");drawShop();};
+    if(B<P){
+      const need=P-B,o=three(need,[need+1,need-1,need+2,P]);
+      c.innerHTML=`<h2>${it[1]} ${it[2]}</h2><div class="lab">가격 ⭐ ${P} · 내 별 ⭐ ${B}</div><div class="qq">별이 모자라요!<br><b>몇 개를 더 모아야 살 수 있을까?</b></div><div class="pick3">${o.map(v=>`<button class="opt" data-v="${v}">${v}개</button>`).join("")}</div><div class="msg" id="bmsg"></div><div class="ans" id="bans"><div class="pr">맞아요! ${P} - ${B} = ${need}</div><p>별 ${need}개를 더 모으면 살 수 있어요. 문제를 풀러 가 볼까?</p><button class="btn" id="bok">알겠어요</button></div><button class="skip" id="bskip">닫기</button>`;
+      c.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(b.classList.contains("wrong"))return;if(Number(b.dataset.v)===need){b.classList.add("right");g("bans").classList.add("show");g("bmsg").textContent="";}else{b.classList.add("wrong");g("bmsg").textContent="음, 다시 세어 볼까? 💭";}});
+      g("bok").onclick=close;g("bskip").onclick=close;return;
+    }
+    let q,o,ans,ex;
+    if(B<=20){ans=B-P;o=three(ans,[ans+1,ans-1,ans+2,P]).map(v=>[v+"개",v===ans]);q=`별 ${B}개 중에서 ${P}개를 쓰면<br><b>몇 개가 남을까?</b>`;ex=`${B} - ${P} = ${ans}`;}
+    else if(P<10){ans=10-P;o=three(ans,[ans+1,ans-1,P]).map(v=>[v+"개",v===ans]);q=`별 10개 묶음 하나를 냈어요.<br><b>거스름 별은 몇 개일까?</b>`;ex=`10 - ${P} = ${ans}`;}
+    else{const t=Math.floor(P/10),u=P%10,f=(a,b)=>"🔟 묶음 "+a+"개"+(b?" + ⭐ 낱개 "+b+"개":"");
+      const cs=[[t,u]];[[u||t+1,t],[t+1,u],[t-1>0?t-1:t+2,u],[t,u+1]].forEach(x=>{if(cs.length<3&&!cs.some(y=>y[0]===x[0]&&y[1]===x[1])&&x[0]>0)cs.push(x);});
+      o=shuffle(cs).map(x=>[f(x[0],x[1]),x[0]===t&&x[1]===u]);q=`별 ${P}개를 내려고 해요.<br><b>10개 묶음과 낱개를 어떻게 내면 될까?</b>`;ex=`${P}은 10이 ${t}개`+(u?`, 1이 ${u}개`:"")+"예요.";}
+    c.innerHTML=`<h2>${it[1]} ${it[2]} 사기</h2><div class="lab">가격 ⭐ ${P} · 내 별 ⭐ ${B}</div><div class="qq">${q}</div><div class="opts">${o.map((x,i)=>`<button class="opt" data-i="${i}">${x[0]}</button>`).join("")}</div><div class="msg" id="bmsg"></div>
+      <div class="ans" id="bans"><div class="pr">계산 성공! ${it[1]} ${it[2]}을(를) 샀어요 🎉</div><p>${ex}</p><button class="btn" id="bpark">공원에 놓으러 가기</button> <button class="btn soft" id="bmore">더 구경하기</button></div><button class="skip" id="bskip">사지 않기</button>`;
+    c.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      if(b.classList.contains("wrong")||g("bans").classList.contains("show"))return;
+      if(o[Number(b.dataset.i)][1]){b.classList.add("right");M.spent=(M.spent||0)+P;M.inv[id]=(M.inv[id]||0)+1;save();g("bskip").style.display="none";g("bmsg").textContent="";g("bans").classList.add("show");drawShop();}
+      else{b.classList.add("wrong");g("bmsg").textContent="음, 다시 계산해 볼까? 💭";}});
+    g("bmore").onclick=close;g("bskip").onclick=close;
+    g("bpark").onclick=()=>{close();goPlace("home");const pc=g("parkCard");pc&&pc.scrollIntoView({block:"center"});};
+  }
+  function drawPark(){
+    const pc=g("parkCard");if(!pc)return;
+    while(M.park.length<SLOTS)M.park.push("");
+    const have=SHOP.filter(x=>spare(x[0])>0).length;
+    pc.innerHTML=`<h3>🌳 아림 공원</h3>${have?"빈 칸을 눌러서 물건을 놓아 봐!":"가게에서 물건을 사면 여기에 놓을 수 있어요."}<div class="park">${M.park.map((x,i)=>`<button class="slot${x?" full":""}" data-i="${i}">${x&&SI[x]?SI[x][1]:"＋"}</button>`).join("")}</div>`;
+    pc.querySelectorAll(".slot").forEach(b=>b.onclick=()=>slot(Number(b.dataset.i)));
+  }
+  function slot(i){
+    const c=g("tkc"),cur=M.park[i],av=SHOP.filter(x=>spare(x[0])>0);g("tk").classList.add("on");
+    const close=()=>{g("tk").classList.remove("on");drawPark();};
+    c.innerHTML=`<h2>🌳 공원 꾸미기</h2><div class="qq">${cur?"이 자리의 "+SI[cur][1]+" "+SI[cur][2]+"을(를) 바꿀까?":"여기에 무엇을 놓을까?"}</div>
+      ${av.length?`<div class="pick3">${av.map(x=>`<button class="opt" data-id="${x[0]}">${x[1]}<div style="font-size:12px">${spare(x[0])}개</div></button>`).join("")}</div>`:`<div class="lab">놓을 수 있는 물건이 없어요.</div>`}
+      ${cur?`<button class="btn soft" id="ptake">치우기 (보관함으로)</button>`:""} <button class="btn line" id="pshop">🛍️ 가게 가기</button><button class="skip" id="pskip">닫기</button>`;
+    c.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{M.park[i]=b.dataset.id;save();close();});
+    const tk=g("ptake");if(tk)tk.onclick=()=>{M.park[i]="";save();close();};
+    g("pshop").onclick=()=>{close();goPlace("s");};g("pskip").onclick=close;
+  }
   /* 마을 화면 */
   function homeDraw(){
-    unlock();drawTown();
+    unlock();drawTown();drawShop();drawPark();
     const nb=BLD.find(b=>b.key===M.newly),nc=g("newCard");
     if(nb){nc.style.display="block";nc.innerHTML=`<h3>🎉 새 건물이 문을 열었어요!</h3><span class="big">${nb.emoji} ${nb.name}</span><button class="hbtn" id="newGo" style="background:${nb.color}">구경하러 가기</button>`;g("newGo").onclick=()=>{M.newly="";save();goPlace(nb.key);};}
     else nc.style.display="none";
@@ -486,7 +562,7 @@ window.addEventListener("hashchange",fromHash);
     reg:(k,f)=>{BANK[k]=f;},
     solved:(id,w)=>{if(!M.log[id]){M.log[id]={d:day(),w:w||0};save();}},
     talkDone:k=>!!M.talk[k],
-    hold:hold,isOpen:isOpen,
+    hold:hold,isOpen:isOpen,drawShop:()=>drawShop(),
     addBld:b=>{BLD.push(b);(window.PLN=window.PLN||{})[b.key]=b.hash;(window.PBG=window.PBG||{})[b.key]=b.bg;},
     openTalk:openTalk,
     homeDraw:homeDraw,
@@ -495,7 +571,7 @@ window.addEventListener("hashchange",fromHash);
 })();
 (function(root){
 
-const FL={6:["특수 치료 층","#2f8f9d","#def3f6"],5:["수술 층","#ef7d73","#ffe6e2"],4:["머리·마음·감각 층","#9a7fe0","#efe9ff"],3:["내과 층","#4f9fe6","#e4f1ff"],2:["가족 건강 층","#3fb58f","#e1f6ee"],1:["응급·검사 층","#f0a13c","#fff0d6"]};
+const FL={0:["엄마와 아기 센터","#f08aa6","#ffe9ef"],6:["특수 치료 층","#2f8f9d","#def3f6"],5:["수술 층","#ef7d73","#ffe6e2"],4:["머리·마음·감각 층","#9a7fe0","#efe9ff"],3:["내과 층","#4f9fe6","#e4f1ff"],2:["가족 건강 층","#3fb58f","#e1f6ee"],1:["응급·검사 층","#f0a13c","#fff0d6"]};
 const D=[
 /* 5층 */
 {id:"gs",f:5,name:"외과",en:"General Surgery",e:"🧵",g:"belly",
@@ -581,6 +657,20 @@ const D=[
  say:"몸에서 떼어 낸 작은 조각을 현미경으로 보고, 어떤 병인지 마지막 답을 내려요. 그래서 '의사들의 의사'라고 불려요.",tools:["🔬 현미경","🎨 염색 약","🔪 얇게 써는 기계"],
  dz:[["🧩","조직 검사","혹이나 아픈 곳이 어떤 병인지 정확히 알아야 할 때 해요.","떼어 낸 조각을 종이보다 얇게 썰고, 분홍색과 보라색으로 물들여 세포 모양을 봐요."],
      ["⏱️","수술 중 급한 검사","수술하는 동안 떼어 낸 혹이 나쁜 혹인지 바로 알아야 할 때 해요.","조각을 꽁꽁 얼려 얇게 썬 뒤, 20분 안에 결과를 수술실에 알려 줘요."]]},
+/* 별관 */
+{id:"birth",f:0,name:"분만실",en:"Delivery Room",e:"👣",dzt:"👣 아기가 태어나는 과정",next:"nb",
+ say:"아기가 세상에 태어나는 방이에요. 산부인과, 마취과, 소아청소년과 의사와 간호사가 함께 엄마와 아기를 도와요.",tools:["📈 태아 심박 모니터","🛏️ 분만 침대","✂️ 탯줄 가위"],
+ dz:[["⏰","진통","아기가 나올 때가 되면 엄마 배가 규칙적으로 뭉치며 아파요.","자궁이 조였다 풀렸다 하면서 아기를 아래로 밀어내는 거예요. 간격이 점점 짧아져요."],
+     ["💧","양수가 터져요","아기를 감싸고 있던 물주머니가 터져서 물이 흘러나와요.","아기가 곧 나온다는 신호예요. 바로 병원에 가요."],
+     ["👶","아기가 태어나요","아기는 보통 머리부터 나와요.","태어나자마자 '응애' 하고 울면서 처음으로 폐로 숨을 쉬어요."],
+     ["✂️","탯줄 자르기","아기와 엄마를 이어 주던 탯줄을 집게로 집고 잘라요.","탯줄에는 아픔을 느끼는 신경이 없어서 아프지 않아요. 아빠가 자르기도 해요."]]},
+{id:"nb",f:0,name:"신생아실",en:"Newborn Nursery",e:"👶",dzt:"👶 태어나서 처음 하는 일",
+ say:"갓 태어난 건강한 아기들이 지내는 방이에요. 처음 며칠 동안 검사를 받고 엄마 품으로 갈 준비를 해요.",tools:["🏷️ 이름표 팔찌","⚖️ 아기 체중계","🧢 아기 모자"],
+ dz:[["💯","아프가 점수","태어나고 1분, 5분에 해요.","심장 박동, 숨쉬기, 근육의 힘, 반응, 피부색을 보고 10점 만점으로 점수를 매겨요."],
+     ["🏷️","이름표 달기","태어나자마자 해요.","엄마와 아기가 같은 번호의 팔찌를 차서 아기가 바뀌지 않게 해요."],
+     ["💉","첫 주사","태어난 날에 맞아요.","피가 잘 멎게 돕는 비타민 K 주사와 B형 간염 예방주사를 맞아요."],
+     ["👣","발도장","태어난 기념으로 찍어요.","아기 발바닥 무늬는 지문처럼 아기마다 달라요."]],
+ link:["🍼 엄마와 함께 산후조리원으로 가기 →","https://claude.ai/artifact/X6Gak1KGYWTKBrRDytmHNr"]},
 /* 4층 */
 {id:"neu",f:4,name:"신경과",en:"Neurology",e:"🧠",g:"brain",
  say:"뇌와 온몸에 뻗은 신경의 병을 찾아내고, 주로 약으로 치료해요.",tools:["📊 뇌파 검사","🧲 MRI","🔨 반사 망치"],
@@ -680,7 +770,7 @@ const D=[
      ["🏥","제왕절개","아기가 거꾸로 있거나 나오기 어려울 때가 있어요.","마취를 하고, 엄마 배를 수술로 열어 아기를 꺼내요."]],
  q:"배 속 아기는 밥도 못 먹고 숨도 못 쉬는데 어떻게 자랄까?",a:"'탯줄'로 엄마에게서 영양분과 산소를 받아요. 우리 배꼽이 바로 탯줄이 있던 자리예요!",
  pt:"배 속 아기가 잘 자라고 있는지 초음파로 보러 왔어요.",
- link:["👶 아기가 태어났어요! 아림 산후조리원으로 가기 →","https://claude.ai/artifact/X6Gak1KGYWTKBrRDytmHNr"]},
+ next:"birth"},
 {id:"fam",f:2,name:"가정의학과",en:"Family Medicine",e:"🏡",
  say:"아기부터 할머니 할아버지까지 온 가족의 건강을 돌봐요. 어느 과에 가야 할지 모를 때 먼저 가면 좋아요.",tools:["📏 혈압계","🩺 청진기","📋 건강검진표"],
  dz:[["📋","건강검진","아프지 않아도 정기적으로 몸 상태를 검사해요.","피검사, 엑스레이, 시력·청력 검사 등으로 숨은 병을 일찍 찾아요."],
@@ -915,6 +1005,16 @@ nm:[["핵의학 검사에서 몸에 넣는 약은 무엇을 낼까?","아주 약
  ["엑스레이는 장기의 '모양'을 봐요. 핵의학 검사는 주로 무엇을 볼까?","장기가 '일하는 모습'","장기의 무게","장기의 냄새","약이 어디로 얼마나 가는지를 보면 알 수 있어요."],
  ["뼈 스캔에서 약이 많이 모이는 곳은?","다치거나 아픈 뼈","가장 긴 뼈","머리카락","아픈 뼈는 고치느라 바빠서 약을 더 많이 끌어당겨요."],
  ["검사 뒤에 물을 많이 마시라고 하는 이유는?","약이 오줌으로 빨리 빠져나가게 하려고","목이 말라서","배가 고파서","약은 금방 약해지고 몸 밖으로 나가요."]],
+birth:[["아기가 나올 때 엄마 배가 규칙적으로 아픈 것을 무엇이라고 할까?","진통","두통","치통","자궁이 아기를 밀어내는 힘이에요."],
+ ["아기는 보통 어디부터 나올까?","머리","발","손","머리가 가장 커서, 머리가 나오면 몸은 쉽게 나와요."],
+ ["갓 태어난 아기가 '응애' 하고 우는 이유는?","처음으로 폐에 공기를 넣어 숨을 쉬려고","배가 고파서 화가 나서","엄마가 보고 싶어서","배 속에서는 탯줄로 산소를 받았지만, 이제 스스로 숨을 쉬어야 해요."],
+ ["탯줄을 자를 때 아기는 아플까?","아프지 않아요. 탯줄에는 아픔을 느끼는 신경이 없어요","아주 아파요","간지러워요","머리카락을 자를 때 아프지 않은 것과 비슷해요."],
+ ["분만실에서 아기의 심장 소리를 계속 듣는 이유는?","아기가 힘들어하지 않는지 확인하려고","아기에게 노래를 들려주려고","엄마가 심심하지 않게 하려고","심장 박동이 느려지면 아기가 힘들다는 신호예요."]],
+nb:[["아기와 엄마가 같은 번호의 팔찌를 차는 이유는?","아기가 다른 아기와 바뀌지 않게 하려고","예쁘게 꾸미려고","시계 대신 쓰려고","신생아실에는 아기가 여러 명 있어요."],
+ ["갓 태어난 아기에게 모자를 씌우는 이유는?","머리로 열이 빠져나가 체온이 떨어지지 않게 하려고","머리카락이 없어 부끄러울까 봐","햇빛을 가리려고","아기는 체온을 스스로 지키는 힘이 약해요."],
+ ["태어난 날 아기가 맞는 비타민 K 주사는 무슨 일을 할까?","피가 잘 멎도록 도와줘요","키를 크게 해요","잠을 잘 자게 해요","갓난아기는 비타민 K가 모자라서 주사로 채워 줘요."],
+ ["아프가 점수는 몇 점이 만점일까?","10점","100점","5점","다섯 가지를 0~2점씩 매겨요."],
+ ["신생아의 발바닥 무늬(발도장)는 어떨까?","아기마다 서로 달라요","모든 아기가 똑같아요","자라면 없어져요","손가락 지문처럼 사람마다 다른 무늬예요."]],
 path:[["병리과 선생님은 주로 무엇으로 병을 찾을까?","현미경으로 세포를 보고","환자와 달리기를 하고","청진기 소리를 듣고","환자를 직접 만나지 않고도 병을 밝혀내요."],
  ["조직을 현미경으로 보기 전에 물들이는 이유는?","투명한 세포가 잘 보이게 하려고","예쁘게 꾸미려고","조각을 크게 만들려고","세포는 원래 거의 투명해요."],
  ["몸에서 작은 조각을 떼어 검사하는 것을 무엇이라고 할까?","조직 검사","시력 검사","혈압 검사","혹이 나쁜 혹인지 알 수 있어요."],
@@ -926,7 +1026,7 @@ const QN=5,QTOTAL=D.length*QN;
 const DM=Object.fromEntries(D.map(d=>[d.id,d]));
 const PRAISES=["와, 생각하는 힘이 대단해요! 🌟","아림이 진짜 의사 선생님 같아! 🩺","스스로 생각해 본 게 제일 멋져요! 👏","궁금한 걸 끝까지 생각했네! 💖","오늘도 한 뼘 더 똑똑해졌어요! 🧠✨"];
 const PATIENTS=[["🐻","곰돌이가"],["🐰","토끼가"],["🐶","강아지가"],["🐱","고양이가"],["🐼","판다가"],["🦊","여우가"],["🐧","펭귄이"],["🐨","코알라가"],["🐯","호랑이가"],["🐹","햄스터가"]];
-const RANKS=[[0,"🎒 의대생"],[30,"🩺 인턴"],[60,"👩‍⚕️ 레지던트"],[100,"🏅 전문의"],[140,"🔬 펠로우"],[180,"👑 교수님"]];
+const RANKS=[[0,"🎒 의대생"],[30,"🩺 인턴"],[60,"👩‍⚕️ 레지던트"],[100,"🏅 전문의"],[140,"🔬 펠로우"],[190,"👑 교수님"]];
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const $=id=>root.querySelector("#"+id);
@@ -943,7 +1043,14 @@ $("bld").innerHTML=[6,5,4,3,2,1].map(f=>{
     +(f===1?`<button class="room desk" data-desk="1"><div class="e">🛎️</div><div class="n">안내 데스크</div></button>`:"");
   return `<div class="floor"><div class="fl" style="background:${c}">${f}F<small>${nm}</small></div><div class="rooms">${rooms}</div></div>`;
 }).join("");
-$("bld").addEventListener("click",e=>{const b=e.target.closest(".room");if(!b)return;if(b.dataset.desk)go("desk");else openDept(b.dataset.id);});
+$("bld2").innerHTML=`<div class="floor"><div class="fl" style="background:${FL[0][1]}">별관<small>${FL[0][0]}</small></div><div class="rooms">`
+  +D.filter(d=>d.f===0).map(d=>`<button class="room" data-id="${d.id}" style="background:${FL[0][2]}"><span class="st">💮</span><span class="tk">🗣️</span><div class="e">${d.e}</div><div class="n">${d.name}</div><div class="pg"></div></button>`).join("")
+  +`<button class="room" data-jori="1" style="background:#fff0d6"><div class="e">🍼</div><div class="n">산후조리원</div><div class="pg" id="joriPg" style="display:block"></div></button></div></div>`;
+const roomClick=e=>{const b=e.target.closest(".room");if(!b)return;
+  if(b.dataset.desk)go("desk");
+  else if(b.dataset.jori){if(window.goPlace)window.goPlace("j");else location.href="https://claude.ai/artifact/X6Gak1KGYWTKBrRDytmHNr";}
+  else openDept(b.dataset.id);};
+$("bld").addEventListener("click",roomClick);$("bld2").addEventListener("click",roomClick);
 
 function refresh(){
   let n=0,t=0;
@@ -977,12 +1084,13 @@ const closeSheet=()=>sheet.classList.remove("open");
 sheet.addEventListener("click",e=>{if(e.target===sheet)closeSheet();});
 function openDept(id){
   const d=DM[id];
-  card.innerHTML=`<div class="top"><div class="e">${d.e}</div><div><h2>${d.name}</h2><div class="en">${d.en}</div><span class="where">${d.f}층 · ${FL[d.f][0]}</span></div><button class="x" data-act="close" aria-label="닫기">✕</button></div>
+  card.innerHTML=`<div class="top"><div class="e">${d.e}</div><div><h2>${d.name}</h2><div class="en">${d.en}</div><span class="where">${d.f?d.f+"층":"별관"} · ${FL[d.f][0]}</span></div><button class="x" data-act="close" aria-label="닫기">✕</button></div>
    <div class="box b-work"><h3>🩺 무슨 일을 할까?</h3><p>${d.say}</p><div class="tools">${d.tools.map(t=>`<span class="tool">${t}</span>`).join("")}</div></div>
    <div class="dzh">${d.dzt||"🤒 이런 병을 치료해요"}</div>
    ${d.dz.map(z=>`<details><summary><span class="e">${z[0]}</span>${z[1]}</summary><div class="dzb"><div class="s"><b>${d.dzt?"언제?":"😣 이럴 때 아파요"}</b><br>${z[2]}</div><div class="c"><b>${d.dzt?"어떻게?":"💊 이렇게 치료해요"}</b><br>${z[3]}</div></div></details>`).join("")}
    <div class="box b-q" id="qbox"></div>
-   ${d.link?`<button class="go" onclick="goPlace('j')">${d.link[0]}</button>`:""}`;
+   ${d.link?`<button class="go" onclick="goPlace('j')">${d.link[0]}</button>`:""}
+   ${d.next?`<button class="go" data-act="goto" data-id="${d.next}">➡️ 다음 방: ${DM[d.next].e} ${DM[d.next].name}</button>`:""}`;
   renderQ(id);
   sheet.classList.add("open");card.scrollTop=0;
 }
@@ -1006,6 +1114,7 @@ card.addEventListener("click",e=>{
   const b=e.target.closest("[data-act]");if(!b)return;
   const id=b.dataset.id;
   if(b.dataset.act==="close")closeSheet();
+  else if(b.dataset.act==="goto"){openDept(id);}
   else if(b.dataset.act==="next"){renderQ(id);$("qbox").scrollIntoView({block:"nearest"});}
   else if(b.dataset.act==="talk"){const d=DM[id];window.TOWN&&TOWN.openTalk("h:"+id,d.e+" "+d.name,d.dz.slice(0,3).map(z=>"'"+z[1]+"'이(가) 뭔지 알려 줘"),()=>{renderQ(id);refresh();});}
   else if(b.dataset.act==="pick"){
