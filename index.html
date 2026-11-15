@@ -22,7 +22,7 @@
   .prog span{background:#fff;border-radius:999px;padding:5px 11px;box-shadow:0 1px 0 #c9dff0}
   .prog .rank{font-family:'Jua',sans-serif;color:#b0661a;background:#fff3cf}
   nav{display:flex;gap:6px;max-width:520px;margin:10px auto 0;padding:0 12px}
-  nav button{flex:1;font-family:'Jua',sans-serif;font-size:17px;border:none;border-radius:16px;padding:11px 4px;background:#ffffffb0;color:var(--soft)}
+  nav button{flex:1;font-family:'Jua',sans-serif;font-size:16px;border:none;border-radius:16px;padding:11px 2px;background:#ffffffb0;color:var(--soft)}
   nav button.on{background:var(--accent);color:#fff;box-shadow:0 3px 0 #e46e4b}
   main{max-width:520px;margin:0 auto;padding:10px 12px 40px}
   .view{display:none}.view.on{display:block}
@@ -50,6 +50,20 @@
   .qhead h3{margin:0!important}
   .dots{margin-left:auto;font-size:13px;letter-spacing:2px;color:#e3a98f}
   .dots b{color:#2f9b7b;font-weight:normal}
+  .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .tbtn{border:none;border-radius:14px;padding:11px 6px;font-family:'Jua',sans-serif;font-size:16px;background:#eef4ff;text-align:center}
+  .tbtn.used{background:#e9e4df;color:#a59a91}
+  .tbtn:disabled{opacity:.55}
+  .clues{display:grid;gap:6px;margin-top:10px}
+  .clue{background:#f3f7ff;border-radius:12px;padding:9px 12px;font-size:16px;line-height:1.5}
+  .clue b{font-family:'Jua',sans-serif;font-weight:normal;color:#3a6fb0}
+  .left{font-size:14px;color:#a5624a;margin-left:6px;letter-spacing:2px}
+  .scene{font-size:19px;line-height:1.6;background:#fff3e8;border-radius:18px;padding:14px 16px}
+  .scene .big{font-size:46px;display:block;text-align:center;margin-bottom:4px}
+  .talkbtn{display:block;width:100%;margin-top:10px;border:none;border-radius:14px;padding:12px;font-family:'Jua',sans-serif;font-size:17px;background:#e9e2ff;color:#5b43b5}
+  .talkok{margin-top:10px;font-family:'Jua',sans-serif;color:#5b43b5;font-size:17px}
+  .room .tk{display:none;position:absolute;top:-4px;left:-2px;font-size:15px}
+  .room.talk .tk{display:block}
   .room.desk{background:#fff3cf!important;outline:2px dashed #e6b84d;outline-offset:-3px}
   .ground{display:flex;justify-content:space-between;align-items:flex-end;font-size:28px;padding:6px 8px 0}
   .hint{text-align:center;color:var(--soft);font-size:14px;margin-top:8px}
@@ -71,7 +85,7 @@
   .msg{min-height:24px;margin-top:8px;font-size:16px;color:#a5624a}
   .result{background:#eafaf4;border-radius:18px;padding:14px 16px;margin-top:12px;font-size:17px;line-height:1.55}
   .result b{font-family:'Jua',sans-serif;font-weight:normal;font-size:20px;color:#22795f}
-  .stamps{text-align:center;font-size:20px;margin-top:12px;color:var(--soft)}
+  .stamps{text-align:center;font-size:16px;line-height:1.5;margin-top:12px;color:var(--soft)}
   /* 시트 */
   .sheet{position:fixed;inset:0;background:rgba(40,36,33,.4);display:none;align-items:flex-end;justify-content:center;z-index:10}
   .sheet.open{display:flex}
@@ -123,6 +137,33 @@
   .baby{font-size:64px;line-height:1;text-align:center}
   .bname{text-align:center;font-family:'Jua',sans-serif;font-size:20px;margin-top:4px}
 
+  /* 마을 공통: 복습·미션·약국 */
+  .hcard{background:#fff;border-radius:20px;padding:14px 16px;margin-top:14px;text-align:left;box-shadow:0 3px 0 #c6dcec;font-size:16px;line-height:1.5}
+  .hcard h3{font-family:'Jua',sans-serif;font-weight:normal;font-size:20px;margin:0 0 4px}
+  .hcard .big{font-size:18px}
+  .hbtn{display:block;width:100%;margin-top:10px;border:none;border-radius:14px;padding:12px;font-family:'Jua',sans-serif;font-size:18px;background:#ff8a65;color:#fff}
+  .holdbtn{position:relative;overflow:hidden;display:block;width:100%;margin-top:10px;border:2px dashed #b7a5f0;border-radius:14px;padding:12px;font-family:'Jua',sans-serif;font-size:16px;background:#f4f0ff;color:#5b43b5;touch-action:none;user-select:none;-webkit-user-select:none}
+  .holdbtn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:#cfc2ff}
+  .holdbtn.holding::before{width:100%;transition:width 1.5s linear}
+  .holdbtn span{position:relative}
+  .hstat{margin-top:14px;font-size:14px;color:#5f7686}
+  .ov{position:fixed;inset:0;z-index:40;background:rgba(40,36,33,.45);display:none;align-items:center;justify-content:center;padding:16px}
+  .ov.on{display:flex}
+  .ovc{background:#fff;border-radius:24px;padding:18px;width:100%;max-width:480px;max-height:90vh;overflow:auto;text-align:left}
+  .ovc h2{font-family:'Jua',sans-serif;font-weight:normal;font-size:23px;margin:0 0 2px;color:#d9603f}
+  .ovc .lab{font-size:14px;color:#7d736c;margin-bottom:8px}
+  .ovc .qq{font-size:19px;line-height:1.55;margin:8px 0 10px}
+  .ovc .skip{display:block;margin:14px auto 0;border:none;background:none;color:#9a8f87;font-size:14px;text-decoration:underline}
+  .ovc ul{margin:8px 0 0;padding-left:20px;font-size:18px;line-height:1.7}
+  .tb.soon2 .wall{opacity:.5}
+  #pp header{text-align:center;padding:6px 12px 0}
+  #pp h1{font-family:'Jua',sans-serif;font-weight:normal;font-size:28px;margin:4px 0;color:#5b43b5}
+  .rx{background:#fffbe9;border:2px solid #eedc9a;border-radius:16px;padding:12px 14px;font-size:20px;line-height:1.9}
+  .rx b{font-family:'Jua',sans-serif;font-weight:normal;display:inline-block;min-width:74px}
+  .pick3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+  .pick3 .opt{text-align:center;padding:10px 4px;font-size:24px}
+  .pick3 .opt svg{width:100%;height:auto;display:block}
+  body.bg-p{background:linear-gradient(#e7e1ff 0,#f5f1ff 420px,#fbf9ff 421px)}
 
   body.bg-j{background:linear-gradient(#ffe3ec 0,#fff3ea 420px,#fff9f1 421px)}
   body.bg-home{background:linear-gradient(#bfe4ff 0,#e6f5ff 55%,#d9f0cf 55.1%,#e9f7e2 100%)}
@@ -176,6 +217,7 @@
   <div style="font-size:26px;letter-spacing:14px">☁️🌤️☁️</div>
   <h1>🏘️ 아림 마을</h1>
   <div class="sub">가고 싶은 건물을 눌러 봐!</div>
+  <div class="hcard" id="rvCard"></div>
   <div class="town">
     <button class="tb" onclick="goPlace('h')">
       <div class="roof" style="background:#2fa38a">✚ 대학병원</div>
@@ -187,9 +229,20 @@
       <div class="wall"><span style="background:#ffe9ef">🛏️</span><span style="background:#ffe9ef">🍲</span><span style="background:#fff0d6">👶</span><span style="background:#fff0d6">🍼</span><span style="background:#e3f6f1">🛁</span><span style="background:#e3f6f1">🩺</span><span class="door">🚪</span></div>
       <div class="info"><b>아림 산후조리원</b><span id="jRank">방 11개</span><div class="bar"><i id="jBar" style="background:#f08aa6"></i></div><span id="jCnt"></span></div>
     </button>
+    <button class="tb" onclick="goPlace('p')">
+      <div class="roof" style="background:#7c6ee6">💊 약국</div>
+      <div class="wall"><span style="background:#efeaff">🔢</span><span style="background:#efeaff">⏰</span><span style="background:#efeaff">🥄</span><span class="door">🚪</span></div>
+      <div class="info"><b>아림 약국</b><span id="pRank2">수와 시계 놀이</span><div class="bar"><i id="pBar" style="background:#7c6ee6"></i></div><span id="pCnt"></span></div>
+    </button>
+    <div class="tb soon2">
+      <div class="roof" style="background:#b9b2a9">🚧 준비 중</div>
+      <div class="wall"><span style="background:#f1ede8">❓</span><span style="background:#f1ede8">❓</span><span style="background:#f1ede8">❓</span><span class="door">🚪</span></div>
+      <div class="info"><b>새 건물</b>곧 문을 열어요</div>
+    </div>
   </div>
   <div class="road">🌳🚑🌷🚗🌳</div>
-  <div class="soon">🚧 마을에 새 건물이 더 생길 예정이에요!</div>
+  <div class="hcard" id="bodyCard"></div>
+  <div class="hstat" id="hstat"></div>
 </section>
 <div class="place" id="ph">
 <button class="backhome" onclick="goPlace('home')">← 🏘️ 아림 마을</button>
@@ -198,8 +251,10 @@
   <div class="prog"><span class="rank" id="pRank"></span><span id="pSt"></span><span id="pGd"></span></div>
 </header>
 <nav>
-  <button data-v="tour" class="on">🏥 병원 구경</button>
-  <button data-v="desk">🛎️ 안내 데스크</button>
+  <button data-v="tour" class="on">🏥 구경</button>
+  <button data-v="desk">🛎️ 안내</button>
+  <button data-v="dx">🔍 추리</button>
+  <button data-v="mind">💗 마음</button>
 </nav>
 <main>
 <section class="view on" id="vTour">
@@ -219,6 +274,8 @@
   <div class="qz" id="quiz"></div>
   <div class="stamps" id="stamps"></div>
 </section>
+<section class="view" id="vDx"><div class="qz" id="dxbox"></div><div class="stamps" id="dxinfo"></div></section>
+<section class="view" id="vMind"><div class="qz" id="mindbox"></div><div class="stamps" id="mindinfo"></div></section>
 <div class="note">몸이 아플 때는 꼭 엄마 아빠에게 말하고, 진짜 의사 선생님께 진료를 받아요.</div>
 </main>
 <div class="sheet" id="sheet"><div class="card" id="card" role="dialog" aria-modal="true"></div></div>
@@ -256,18 +313,32 @@
 </main>
 <div class="sheet" id="sheet"><div class="card" id="card" role="dialog" aria-modal="true"></div></div>
 </div>
+<div class="place" id="pp">
+<button class="backhome" onclick="goPlace('home')">← 🏘️ 아림 마을</button>
+<header><h1>💊 아림 약국</h1><div class="prog"><span class="rank" id="ppRank"></span><span id="ppSt"></span></div></header>
+<nav>
+  <button data-g="count" class="on">🔢 약 세기</button>
+  <button data-g="clock">⏰ 약 시간</button>
+  <button data-g="cup">🥄 물약</button>
+</nav>
+<main><div class="qz" id="ppbox"></div><div class="stamps" id="ppinfo"></div></main>
+</div>
+<div class="ov" id="rv"><div class="ovc" id="rvc"></div></div>
+<div class="ov" id="tk"><div class="ovc" id="tkc"></div></div>
 <script>
-const PL={home:"",h:"hospital",j:"joriwon"};
+const PL={home:"",h:"hospital",j:"joriwon",p:"pharmacy"};
 window.goPlace=function(k,nohash){
   document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("open"));
   document.getElementById("home").style.display=k==="home"?"block":"none";
-  ["h","j"].forEach(x=>document.getElementById("p"+x).classList.toggle("on",x===k));
-  document.body.className=k==="home"?"bg-home":(k==="j"?"bg-j":"");
+  ["h","j","p"].forEach(x=>document.getElementById("p"+x).classList.toggle("on",x===k));
+  document.body.className=k==="home"?"bg-home":(k==="j"?"bg-j":(k==="p"?"bg-p":""));
+  if(k==="home"&&window.TOWN)TOWN.homeDraw();
   window.scrollTo({top:0});
   if(!nohash){try{history.replaceState(null,"",PL[k]?"#"+PL[k]:location.pathname+location.search);}catch(e){try{location.hash=PL[k];}catch(e2){}}}
 };
 window.onProg=function(k,n,t,r){
   const g=id=>document.getElementById(id);
+  if(k==="p"){g("pRank2").textContent=r;g("pCnt").textContent="⭐ 별 "+n+"개";g("pBar").style.width=Math.min(100,n/45*100)+"%";return;}
   g(k+"Rank").textContent=r;g(k+"Cnt").textContent="💮 도장 "+n+" / "+t;g(k+"Bar").style.width=(n/t*100)+"%";
 };
 /* 하루 20분 놀이 시간 */
@@ -295,8 +366,95 @@ window.onProg=function(k,n,t,r){
   g("pok").onclick=()=>{if(Number(g("pin").value)===pa&&pa){T.x+=EXTRA;pa=0;saveT();g("pbox").classList.remove("on");draw();}else g("pmsg").textContent="답이 맞지 않아요.";};
   draw();
 })();
-function fromHash(){const h=location.hash.replace("#","");goPlace(h==="hospital"?"h":h==="joriwon"?"j":"home",true);}
+function fromHash(){const h=location.hash.replace("#","");goPlace(h==="hospital"?"h":h==="joriwon"?"j":h==="pharmacy"?"p":"home",true);}
 window.addEventListener("hashchange",fromHash);
+/* 마을 공통: 복습 · 설명하기 미션 · 몸 미션 */
+(function(){
+  const g=id=>document.getElementById(id);
+  const day=()=>{const n=new Date();return Math.floor((n.getTime()-n.getTimezoneOffset()*60000)/86400000);};
+  let M={log:{},rvDay:0,rv:0,talk:{},bodyDay:0,body:0};
+  try{const v=JSON.parse(localStorage.getItem("arim-meta")||"null");if(v)M=Object.assign(M,v);}catch(e){}
+  const save=()=>{try{localStorage.setItem("arim-meta",JSON.stringify(M));}catch(e){}};
+  const BANK={};
+  const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  const PR=["기억하고 있었네! 🌟","역시 아림 박사님! 🩺","머릿속에 쏙 들어 있었구나! 🧠","복습 대장이야! 💖"];
+  const BODY=["제자리 뛰기 20번을 하고, 가슴에 손을 대서 심장이 얼마나 빨라졌는지 느껴 보기","비누로 손 씻기! '생일 축하 노래'를 두 번 부르는 동안 씻기","숨을 크게 5번 들이쉬고 내쉬면서, 배가 볼록해지는지 손으로 느껴 보기","한 발로 서서 10까지 세기. 반대쪽 발도!","내 몸에서 구부러지는 곳(관절)을 10군데 찾아서 움직여 보기","오늘 먹은 채소와 과일을 세어서 엄마 아빠에게 말하기","엄마나 아빠 가슴에 귀를 대고 심장 소리 듣기","거울을 보면서 윗니, 아랫니, 어금니까지 꼼꼼히 양치하기","물 한 컵을 천천히 마시고, 물이 몸속 어디로 가는지 말해 보기","손목에 손가락을 대고 콩닥콩닥 맥박 찾아보기","기지개를 쭉 켜고, 고양이처럼 등을 둥글게 말았다 펴기 5번","눈을 감고 한 발로 서 보기. 눈을 떴을 때와 무엇이 다른지 말하기","엄마 아빠와 손바닥 밀기 놀이 하고, 어느 근육에 힘이 들어갔는지 찾기","먼 곳(창밖)을 20초 동안 바라보며 눈 쉬게 하기"];
+  function hold(btn,cb){let t=null;const stop=()=>{clearTimeout(t);t=null;btn.classList.remove("holding");};
+    btn.addEventListener("pointerdown",e=>{e.preventDefault();btn.classList.add("holding");t=setTimeout(()=>{stop();cb();},1500);});
+    ["pointerup","pointerleave","pointercancel"].forEach(ev=>btn.addEventListener(ev,stop));
+    btn.addEventListener("contextmenu",e=>e.preventDefault());}
+  function getQ(id){const b=BANK[id.split(":")[0]];return b?b(id):null;}
+  function cands(){
+    const t=day(),a=[];
+    for(const id in M.log){const e=M.log[id];if(e.d>=t||!getQ(id))continue;
+      let pr=-1;
+      if(e.w>0&&(!e.r||t-e.r>=2))pr=0; else if(!e.r)pr=1; else if(t-e.r>=7&&(e.n||0)<3)pr=2;
+      if(pr>=0)a.push([pr,-e.d,Math.random(),id]);}
+    a.sort((x,y)=>x[0]-y[0]||x[1]-y[1]||x[2]-y[2]);
+    return a.slice(0,3).map(x=>x[3]);
+  }
+  /* 복습 */
+  let R=null;
+  function openReview(){const ids=cands();if(!ids.length)return;R={ids,i:0,w:0};g("rv").classList.add("on");drawR();}
+  function drawR(){
+    const c=g("rvc");
+    if(R.i>=R.ids.length){
+      M.rvDay=day();M.rv++;save();
+      c.innerHTML=`<h2>🔁 복습 완료!</h2><div class="qq">어제까지 배운 걸 잘 기억하고 있어요.<br>복습 별 ⭐ 하나를 받았어요!</div><button class="hbtn" id="rvClose">마을로 가기 🏘️</button>`;
+      g("rvClose").onclick=()=>{g("rv").classList.remove("on");R=null;homeDraw();};return;}
+    const id=R.ids[R.i],it=getQ(id),q=it.q;R.w=0;
+    c.innerHTML=`<h2>🔁 오늘의 복습 ${R.i+1} / ${R.ids.length}</h2><div class="lab">${it.label}에서 배웠어요</div><div class="qq">${q[0]}</div>
+      <div class="opts">${shuffle([1,2,3]).map(k=>`<button class="opt" data-k="${k}">${q[k]}</button>`).join("")}</div>
+      <div class="msg" id="rvmsg"></div>
+      <div class="ans" id="rvans"><div class="pr"></div><p>${q[4]}</p><button class="btn" id="rvNext">${R.i+1<R.ids.length?"다음 문제 →":"복습 끝내기 ⭐"}</button></div>
+      <button class="skip" id="rvSkip">나중에 하기</button>`;
+    g("rvSkip").onclick=()=>{g("rv").classList.remove("on");R=null;homeDraw();};
+    g("rvNext").onclick=()=>{R.i++;drawR();};
+    c.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      if(b.classList.contains("wrong")||b.classList.contains("right"))return;
+      const e=M.log[id];
+      if(b.dataset.k==="1"){
+        b.classList.add("right");c.querySelectorAll(".opt").forEach(x=>{if(x!==b)x.remove();});
+        e.r=day();e.n=R.w?0:(e.n||0)+1;if(!R.w&&e.w>0)e.w--;save();
+        g("rvmsg").textContent="";g("rvSkip").style.display="none";
+        const a=g("rvans");a.querySelector(".pr").textContent=R.w?"이제 알았지? 다음에 또 만나자! 💪":PR[Math.floor(Math.random()*PR.length)];a.classList.add("show");
+      }else{R.w++;e.w=(e.w||0)+1;save();b.classList.add("wrong");g("rvmsg").textContent="음, 다시 떠올려 볼까? 💭";}
+    });
+  }
+  /* 설명하기 미션 */
+  function openTalk(k,name,prompts,cb){
+    const c=g("tkc");
+    c.innerHTML=`<h2>🗣️ 설명하기 미션</h2><div class="lab">${name}</div>
+      <div class="qq">오늘 배운 걸 엄마 아빠에게 선생님처럼 설명해 줘!</div>
+      <ul>${prompts.map(p=>`<li>${p}</li>`).join("")}<li>제일 신기했던 건 뭐였어?</li></ul>
+      <button class="holdbtn" id="tkOk"><span>👨‍👩‍👧 설명을 들은 엄마 아빠가 2초 동안 꾹 눌러 주세요</span></button>
+      <button class="skip" id="tkSkip">나중에 하기</button>`;
+    g("tk").classList.add("on");
+    g("tkSkip").onclick=()=>g("tk").classList.remove("on");
+    hold(g("tkOk"),()=>{M.talk[k]=day();save();g("tk").classList.remove("on");cb&&cb();homeDraw();});
+  }
+  /* 마을 화면 */
+  function homeDraw(){
+    const t=day(),n=cands().length,rc=g("rvCard");
+    if(M.rvDay===t)rc.innerHTML=`<h3>🔁 오늘의 복습</h3>오늘 복습을 마쳤어요 ⭐`;
+    else if(n)rc.innerHTML=`<h3>🔁 오늘의 복습</h3>전에 배운 문제 ${n}개가 기다리고 있어요.<button class="hbtn" id="rvGo">복습하러 가기</button>`;
+    else rc.innerHTML=`<h3>🔁 오늘의 복습</h3>오늘 퀴즈를 풀면, 내일부터 복습 문제가 나와요.`;
+    const go=g("rvGo");if(go)go.onclick=openReview;
+    const bc=g("bodyCard"),ms=BODY[t%BODY.length];
+    if(M.bodyDay===t)bc.innerHTML=`<h3>🏃 오늘의 몸 미션</h3><span class="big">${ms}</span><br>미션 성공! 🎉`;
+    else{bc.innerHTML=`<h3>🏃 오늘의 몸 미션</h3><span class="big">${ms}</span><button class="holdbtn" id="bodyOk"><span>👨‍👩‍👧 다 하면 엄마 아빠가 2초 동안 꾹!</span></button>`;
+      hold(g("bodyOk"),()=>{M.bodyDay=t;M.body++;save();homeDraw();});}
+    g("hstat").textContent="⭐ 복습 별 "+M.rv+" · 🗣️ 설명 도장 "+Object.keys(M.talk).length+" · 🏃 몸 미션 "+M.body;
+  }
+  window.TOWN={
+    reg:(k,f)=>{BANK[k]=f;},
+    solved:(id,w)=>{if(!M.log[id]){M.log[id]={d:day(),w:w||0};save();}},
+    talkDone:k=>!!M.talk[k],
+    openTalk:openTalk,
+    homeDraw:homeDraw,
+    start:()=>{homeDraw();if(M.rvDay!==day()&&cands().length&&g("home").style.display!=="none")openReview();}
+  };
+})();
 (function(root){
 
 const FL={6:["특수 치료 층","#2f8f9d","#def3f6"],5:["수술 층","#ef7d73","#ffe6e2"],4:["머리·마음·감각 층","#9a7fe0","#efe9ff"],3:["내과 층","#4f9fe6","#e4f1ff"],2:["가족 건강 층","#3fb58f","#e1f6ee"],1:["응급·검사 층","#f0a13c","#fff0d6"]};
@@ -735,7 +893,7 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const $=id=>root.querySelector("#"+id);
 
-let st={s:{},q:{},guided:0};
+let st={s:{},q:{},guided:0,dx:0,dxn:0,mind:0};
 try{const x=JSON.parse(localStorage.getItem("arim-hospital1")||"null");if(x)st=Object.assign(st,x);}catch(e){}
 const solved=id=>Math.min(QN,Math.max(st.q[id]||0,st.s[id]?1:0));
 const save=()=>{try{localStorage.setItem("arim-hospital1",JSON.stringify(st));}catch(e){}};
@@ -743,7 +901,7 @@ const save=()=>{try{localStorage.setItem("arim-hospital1",JSON.stringify(st));}c
 /* 건물 */
 $("bld").innerHTML=[6,5,4,3,2,1].map(f=>{
   const [nm,c,bg]=FL[f];
-  const rooms=D.filter(d=>d.f===f).map(d=>`<button class="room" data-id="${d.id}" style="background:${bg}"><span class="st">💮</span><div class="e">${d.e}</div><div class="n">${d.s||d.name}</div><div class="pg"></div></button>`).join("")
+  const rooms=D.filter(d=>d.f===f).map(d=>`<button class="room" data-id="${d.id}" style="background:${bg}"><span class="st">💮</span><span class="tk">🗣️</span><div class="e">${d.e}</div><div class="n">${d.s||d.name}</div><div class="pg"></div></button>`).join("")
     +(f===1?`<button class="room desk" data-desk="1"><div class="e">🛎️</div><div class="n">안내 데스크</div></button>`:"");
   return `<div class="floor"><div class="fl" style="background:${c}">${f}F<small>${nm}</small></div><div class="rooms">${rooms}</div></div>`;
 }).join("");
@@ -758,16 +916,19 @@ function refresh(){
   for(const [k,v] of RANKS){if(t>=k)r=v;else if(next===null)next=k;}
   $("pRank").textContent=r;window.onProg&&window.onProg("h",n,D.length,r);
   $("pSt").textContent="💮 도장 "+n+"/"+D.length+" · 퀴즈 "+t+"/"+QTOTAL+(next?" (승진까지 "+(next-t)+"문제)":"");
-  $("pGd").textContent="🛎️ 안내 "+st.guided+"명";
+  $("pGd").textContent="🛎️ 안내 "+st.guided+" · 🔍 추리 ⭐"+st.dx+" · 💗 마음 "+st.mind;
+  if(window.TOWN)D.forEach(d=>root.querySelector(`.room[data-id="${d.id}"]`).classList.toggle("talk",TOWN.talkDone("h:"+d.id)));
   $("finish").classList.toggle("show",t>=QTOTAL);
 }
-$("reset").onclick=()=>{st={s:{},q:{},guided:0};save();refresh();window.scrollTo({top:0,behavior:"smooth"});};
+$("reset").onclick=()=>{st={s:{},q:{},guided:0,dx:0,dxn:0,mind:0};save();refresh();window.scrollTo({top:0,behavior:"smooth"});};
 
 /* 화면 전환 */
 function go(v){
   root.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x.dataset.v===v));
-  $("vTour").classList.toggle("on",v==="tour");$("vDesk").classList.toggle("on",v==="desk");
+  [["tour","vTour"],["desk","vDesk"],["dx","vDx"],["mind","vMind"]].forEach(x=>$(x[1]).classList.toggle("on",v===x[0]));
   if(v==="desk"&&!qz)newPatient();
+  if(v==="dx"&&!dx)newCase();
+  if(v==="mind"&&!md)newMind();
   window.scrollTo({top:0});
 }
 root.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.v));
@@ -788,9 +949,15 @@ function openDept(id){
   sheet.classList.add("open");card.scrollTop=0;
 }
 function dots(k,cur){let s="";for(let i=0;i<QN;i++)s+=i<k?"<b>●</b>":(i===cur?"◉":"○");return s;}
+let qw=0;
 function renderQ(id){
   const k=solved(id),box=$("qbox");
-  if(k>=QN){box.innerHTML=`<div class="qhead"><h3>💮 퀴즈 완료!</h3><span class="dots">${dots(QN,-1)}</span></div><p>이 진료과의 퀴즈 5개를 모두 풀었어요. 견학 도장을 받았어요!</p>`;return;}
+  if(k>=QN){
+    const T=window.TOWN,td=T&&T.talkDone("h:"+id);
+    box.innerHTML=`<div class="qhead"><h3>💮 퀴즈 완료!</h3><span class="dots">${dots(QN,-1)}</span></div><p>이 진료과의 퀴즈 5개를 모두 풀었어요. 견학 도장을 받았어요!</p>`
+      +(T?(td?`<div class="talkok">🗣️ 설명 도장도 받았어요!</div>`:`<button class="talkbtn" data-act="talk" data-id="${id}">🗣️ 엄마 아빠에게 설명하기 미션</button>`):"");
+    return;}
+  qw=0;
   const q=QS[id][k];
   box.innerHTML=`<div class="qhead"><h3>🤔 퀴즈 ${k+1} / ${QN}</h3><span class="dots">${dots(k,k)}</span></div><p>${q[0]}</p>
    <div class="opts" style="margin-top:10px">${shuffle([1,2,3]).map(i=>`<button class="opt" data-act="pick" data-id="${id}" data-k="${i}">${q[i]}</button>`).join("")}</div>
@@ -802,13 +969,15 @@ card.addEventListener("click",e=>{
   const id=b.dataset.id;
   if(b.dataset.act==="close")closeSheet();
   else if(b.dataset.act==="next"){renderQ(id);$("qbox").scrollIntoView({block:"nearest"});}
+  else if(b.dataset.act==="talk"){const d=DM[id];window.TOWN&&TOWN.openTalk("h:"+id,d.e+" "+d.name,d.dz.slice(0,3).map(z=>"'"+z[1]+"'이(가) 뭔지 알려 줘"),()=>{renderQ(id);refresh();});}
   else if(b.dataset.act==="pick"){
     if(b.classList.contains("wrong")||b.classList.contains("right"))return;
     if(b.dataset.k==="1"){
       b.classList.add("right");card.querySelectorAll('[data-act="pick"]').forEach(x=>{if(x!==b)x.remove();});
       $("qmsg").textContent="";const a=$("ans");a.querySelector(".pr").textContent=pick(PRAISES);a.classList.add("show");
-      st.q[id]=solved(id)+1;save();refresh();
-    }else{b.classList.add("wrong");$("qmsg").textContent="음, 다시 생각해 볼까? 💭";}
+      const k0=solved(id);st.q[id]=k0+1;save();refresh();
+      window.TOWN&&TOWN.solved("h:"+id+":"+k0,qw);
+    }else{qw++;b.classList.add("wrong");$("qmsg").textContent="음, 다시 생각해 볼까? 💭";}
   }
 });
 
@@ -840,6 +1009,89 @@ $("quiz").addEventListener("click",e=>{
   if(b.dataset.o===qz.d.id){qz.done=true;st.guided++;save();refresh();renderQuiz();}
   else{b.classList.add("wrong");$("msg").textContent="음, 다시 생각해 볼까? 💭 "+DM[b.dataset.o].name+"는 다른 곳을 치료해요.";}
 });
+/* 진단 추리 */
+const TOOLS={ask:["🗣️","더 물어보기"],temp:["🌡️","체온 재기"],steth:["🩺","청진기"],look:["🔦","귀·목 보기"],img:["🩻","사진 찍기"],blood:["🩸","피검사"],urine:["🧪","소변 검사"]};
+const NORM={temp:"36.7도예요. 열이 없어요.",steth:"심장과 폐 소리가 깨끗해요.",look:"귀와 목 안은 깨끗해요.",img:"사진에 이상한 곳이 없어요.",blood:"피검사 결과는 정상이에요.",urine:"오줌은 깨끗해요."};
+const CASES=[
+{say:"기침이 나고 숨이 차요.",c:["천식","폐렴","감기"],a:0,dept:"pul",r:{ask:"먼지가 많은 곳이나 밤에 더 심해져요. 열은 안 나요.",steth:"숨을 내쉴 때 '쌕쌕' 소리가 나요."},ex:"열이 없고 쌕쌕 소리가 나면 숨길이 좁아진 천식이에요."},
+{say:"기침이 심하고 힘이 하나도 없어요.",c:["천식","폐렴","감기"],a:1,dept:"pul",r:{ask:"사흘째 열이 나고 누런 가래가 나와요.",temp:"39.2도! 열이 높아요.",steth:"한쪽 폐에서 '부글부글' 소리가 나요.",img:"오른쪽 폐에 하얀 부분이 보여요.",blood:"균과 싸우는 백혈구가 많이 늘었어요."},ex:"높은 열, 부글부글 소리, 사진의 하얀 부분은 폐렴의 단서예요."},
+{say:"배가 아파요.",c:["충수염","변비","위장염"],a:0,dept:"gs",r:{ask:"배꼽 주변이 아프다가 오른쪽 아랫배로 옮겨 갔어요.",temp:"37.9도. 열이 조금 있어요.",img:"초음파에서 충수가 퉁퉁 부어 있어요.",blood:"균과 싸우는 백혈구가 늘었어요."},ex:"아픈 곳이 오른쪽 아랫배로 옮겨 가고 충수가 부어 있으면 충수염이에요."},
+{say:"배가 빵빵하고 아파요.",c:["충수염","변비","위장염"],a:1,dept:"ped",r:{ask:"나흘째 똥을 못 눴어요. 열은 없어요.",img:"큰창자에 똥이 가득 차 있어요."},ex:"열이 없고 며칠째 똥을 못 눴다면 변비예요."},
+{say:"배가 아프고 토했어요.",c:["충수염","변비","위장염"],a:2,dept:"gi",r:{ask:"어제 상한 것 같은 음식을 먹었어요. 설사도 해요.",temp:"37.8도. 열이 조금 있어요.",steth:"배에서 꾸르륵 소리가 아주 바쁘게 나요.",urine:"오줌 색이 진해요. 몸에 물이 모자라요."},ex:"상한 음식을 먹고 토하고 설사하면 위장염이에요. 물을 조금씩 자주 마셔요."},
+{say:"자꾸 피곤하고 목이 말라요.",c:["당뇨병","빈혈","요로감염"],a:0,dept:"endo",r:{ask:"물을 아주 많이 마시고 오줌을 자주 눠요. 살도 빠졌어요.",blood:"피 속 설탕이 아주 높아요.",urine:"오줌에 설탕이 섞여 나와요."},ex:"피와 오줌에 설탕이 많으면 당뇨병이에요. 인슐린 열쇠가 모자란 거예요."},
+{say:"자꾸 피곤하고 어지러워요.",c:["당뇨병","빈혈","부정맥"],a:1,dept:"hem",r:{ask:"얼굴이 하얗다는 말을 자주 들어요. 고기와 채소를 잘 안 먹어요.",steth:"심장이 조금 빨리 뛰지만 박자는 일정해요.",blood:"산소를 나르는 적혈구가 모자라요."},ex:"적혈구가 모자라면 빈혈이에요. 산소 배달이 부족해서 피곤해요."},
+{say:"오줌 눌 때 아파요.",c:["요로감염","요로 결석","당뇨병"],a:0,dept:"uro",r:{ask:"따끔따끔하고 자꾸 화장실에 가고 싶어요.",temp:"38.0도. 열이 있어요.",img:"초음파에서 돌은 보이지 않아요.",urine:"오줌에서 세균이 보여요."},ex:"오줌에 세균이 있고 따끔하면 요로감염이에요."},
+{say:"옆구리가 너무너무 아파요.",c:["요로 결석","요로감염","충수염"],a:0,dept:"uro",r:{ask:"갑자기 데굴데굴 구를 만큼 아팠어요. 오줌이 붉어요.",img:"오줌길에 작은 돌이 걸려 있어요.",urine:"오줌에 피가 조금 섞여 있어요."},ex:"사진에서 돌이 보이면 요로 결석이에요. 돌이 오줌길을 긁어서 피가 섞여요."},
+{say:"넘어져서 팔이 아파요.",c:["골절","염좌(삠)","타박상(멍)"],a:0,dept:"os",r:{ask:"팔이 퉁퉁 붓고 조금도 못 움직이겠어요.",img:"엑스레이에서 팔뼈에 금이 보여요."},ex:"엑스레이에서 뼈에 금이 보이면 골절이에요. 깁스로 고정해요."},
+{say:"발목을 삐끗했어요.",c:["골절","염좌(삠)","타박상(멍)"],a:1,dept:"os",r:{ask:"붓고 아프지만 살살 디딜 수는 있어요.",img:"엑스레이에서 뼈는 멀쩡해요."},ex:"뼈는 멀쩡한데 붓고 아프면 인대가 늘어난 염좌예요."},
+{say:"열이 나고 자꾸 보채요.",c:["중이염","편도염","독감"],a:0,dept:"ent",r:{ask:"감기에 걸린 뒤부터 귀를 자꾸 만지고 아파해요.",temp:"38.5도. 열이 있어요.",look:"고막이 빨갛게 부풀어 있어요.",blood:"균과 싸우는 백혈구가 조금 늘었어요."},ex:"고막이 빨갛게 부풀어 있으면 중이염이에요."},
+{say:"목이 아프고 열이 나요.",c:["중이염","편도염","독감"],a:1,dept:"ent",r:{ask:"침을 삼킬 때 아파요. 기침은 거의 없어요.",temp:"38.8도. 열이 높아요.",look:"목 안의 편도가 빨갛게 붓고 하얀 점이 있어요."},ex:"편도가 붓고 하얀 점이 보이면 편도염이에요."}
+];
+let dx=null,lastCase=-1;
+function newCase(){let i;do{i=Math.floor(Math.random()*CASES.length);}while(i===lastCase);lastCase=i;
+  dx={cs:CASES[i],p:pick(PATIENTS),used:[],wrong:[],done:false,opts:shuffle([0,1,2])};renderDx();}
+function renderDx(){
+  const c=dx.cs,left=3-dx.used.length;
+  let h=`<div class="pt"><div class="face">${dx.p[0]}</div><div class="bubble"><b>${dx.p[1]} 진료실에 왔어요!</b><br>"${c.say}"</div></div>`;
+  if(!dx.done){
+    h+=`<div class="qtitle">🔎 검사 고르기<span class="left">${"●".repeat(left)+"○".repeat(3-left)}</span></div>
+      <div class="tgrid">${Object.keys(TOOLS).map(t=>`<button class="tbtn${dx.used.includes(t)?" used":""}" data-t="${t}" ${left<=0||dx.used.includes(t)?"disabled":""}>${TOOLS[t][0]} ${TOOLS[t][1]}</button>`).join("")}</div>
+      <div class="msg">${left>0?"검사는 3번까지 할 수 있어요. 꼭 필요한 검사를 골라 봐!":"검사를 다 썼어요. 단서를 모아서 진단해 봐!"}</div>`;
+  }
+  if(dx.used.length)h+=`<div class="clues">${dx.used.map(t=>`<div class="clue"><b>${TOOLS[t][0]} ${TOOLS[t][1]}</b><br>${c.r[t]||NORM[t]}</div>`).join("")}</div>`;
+  if(!dx.done){
+    h+=`<div class="qtitle">🩺 어떤 병일까?</div><div class="opts">${dx.opts.map(i=>`<button class="opt${dx.wrong.includes(i)?" wrong":""}" data-c="${i}">${c.c[i]}</button>`).join("")}</div><div class="msg" id="dxmsg"></div>`;
+  }else{
+    const s=Math.max(1,3-dx.wrong.length),d=DM[c.dept];
+    h+=`<div class="result"><b>${"⭐".repeat(s)} 진단: ${c.c[c.a]}</b><br>${c.ex}<br>👩‍⚕️ ${d.f}층 ${d.e} ${d.name}에서 치료해요.</div>
+        <button class="btn soft" id="nextCase">다음 환자 🚪</button><button class="btn line" id="dxDept">${d.name} 구경하기</button>`;
+  }
+  $("dxbox").innerHTML=h;
+  $("dxinfo").textContent=st.dxn?"진단한 환자 "+st.dxn+"명 · 추리 별 ⭐"+st.dx:"환자 말만 듣고는 알 수 없어요. 검사로 단서를 모아서 병을 찾아 줘!";
+}
+$("dxbox").addEventListener("click",e=>{
+  if(e.target.closest("#nextCase")){newCase();return;}
+  if(e.target.closest("#dxDept")){openDept(dx.cs.dept);return;}
+  const t=e.target.closest(".tbtn");
+  if(t&&!t.disabled){dx.used.push(t.dataset.t);renderDx();return;}
+  const b=e.target.closest(".opt");if(!b||dx.done||b.classList.contains("wrong"))return;
+  const i=Number(b.dataset.c);
+  if(i===dx.cs.a){dx.done=true;st.dx+=Math.max(1,3-dx.wrong.length);st.dxn++;save();refresh();renderDx();}
+  else{dx.wrong.push(i);renderDx();$("dxmsg").textContent=dx.used.length<3?"음, 단서가 더 필요할까? 검사를 더 해 봐 💭":"단서를 다시 차근차근 읽어 봐 💭";}
+});
+
+/* 마음 읽기 */
+const MINDS=[
+["😢","다섯 살 민준이가 주사가 무서워서 울고 있어요.","\"무섭지? 따끔하고 금방 끝나. 내가 손 잡아 줄게.\"","\"울면 바보야.\"","\"주사는 하나도 안 아파.\" 하고 거짓말해요","무서운 마음을 먼저 알아주고 사실대로 말해 주면, 친구가 나를 믿을 수 있어요."],
+["😟","친구 서아가 다리에 깁스를 해서 놀이터에서 못 놀아요.","\"우리 앉아서 할 수 있는 놀이 하자!\"","\"넌 못 하니까 저리 가.\"","모른 척하고 나만 놀아요","함께할 수 있는 방법을 찾아 주면 친구가 외롭지 않아요."],
+["🧢","항암 치료로 머리카락이 빠진 친구가 모자를 쓰고 왔어요.","\"모자 멋지다! 같이 놀자.\"","\"왜 머리카락이 없어?\" 하고 큰 소리로 물어봐요","옮을까 봐 가까이 가지 않아요","암은 옮지 않아요. 평소처럼 대해 주는 게 친구에게 가장 큰 힘이 돼요."],
+["😭","동생이 넘어져서 무릎에서 피가 나요.","\"많이 아프지? 여기 앉아 있어. 어른을 불러올게.\"","\"울지 마! 시끄러워.\"","\"피다!\" 하고 도망가요","아픈 마음을 알아주고, 어른에게 도움을 청하는 게 가장 좋은 방법이에요."],
+["🥺","할머니가 병원에 입원하셔서 심심해하세요.","그림 편지를 그려서 드려요","병원은 재미없다고 안 가요","할머니 침대 위에서 뛰어요","아픈 사람은 누군가 자기를 생각해 준다는 것만으로도 힘이 나요."],
+["🧑‍🦽","휠체어를 탄 친구가 문 앞에서 기다리고 있어요.","\"문 열어 줄까?\" 하고 먼저 물어봐요","말없이 휠체어를 막 밀어요","빤히 쳐다보기만 해요","돕기 전에 먼저 물어보는 것이 친구를 존중하는 방법이에요."],
+["😮‍💨","엄마가 아기 동생을 돌보느라 무척 피곤해 보여요.","\"엄마, 내가 기저귀 가져다줄까?\"","\"나랑만 놀아 줘!\" 하고 떼써요","방문을 쾅 닫아요","작은 도움도 엄마에게는 큰 힘이 돼요. 엄마도 쉬어야 다시 힘이 나요."],
+["🤧","짝꿍이 감기에 걸려서 기침을 해요.","\"괜찮아? 휴지 줄게.\" 하고, 나는 손을 잘 씻어요","\"더러워! 저리 가.\"","짝꿍 물컵으로 같이 마셔요","친구를 걱정해 주면서, 내 몸도 지킬 수 있어요."],
+["😨","나는 MRI 검사를 받아야 하는데, 쿵쿵 소리가 무서워요.","\"무서워요\" 하고 말하고, 엄마 손을 잡아요","아무 말도 안 하고 꾹 참아요","도망가서 숨어요","무서운 마음을 말하는 건 용감한 일이에요. 말해야 어른들이 도와줄 수 있어요."],
+["👓","안경을 새로 쓴 친구를 다른 아이가 놀리고 있어요.","\"놀리지 마. 안경은 눈을 도와주는 거야.\"","같이 놀려요","못 본 척해요","친구 편이 되어 주는 한마디가 큰 용기를 줘요."],
+["😣","친구가 아토피 때문에 팔을 자꾸 긁어요.","\"많이 가렵구나. 선생님께 같이 말하러 갈까?\"","\"긁지 마! 보기 싫어.\"","\"옮는 거 아니야?\" 하고 피해요","아토피는 옮지 않아요. 가려운 건 참기 정말 힘든 일이에요."],
+["🏥","새로 온 환자가 병원에서 길을 잃고 두리번거려요.","\"어디 찾으세요? 안내 데스크로 같이 가요.\"","못 본 척 지나가요","\"저쪽이요.\" 하고 아무 데나 가리켜요","모를 때는 아는 척하지 않고, 도와줄 수 있는 사람에게 데려다주는 게 진짜 도움이에요."]
+];
+let md=null,lastMind=-1;
+function newMind(){let i;do{i=Math.floor(Math.random()*MINDS.length);}while(i===lastMind);lastMind=i;md={m:MINDS[i],done:false,opts:shuffle([2,3,4])};renderMind();}
+function renderMind(){
+  const m=md.m;
+  let h=`<div class="scene"><span class="big">${m[0]}</span>${m[1]}</div>`;
+  if(!md.done)h+=`<div class="qtitle">💗 어떻게 하면 좋을까?</div><div class="opts">${md.opts.map(i=>`<button class="opt" data-m="${i}">${m[i]}</button>`).join("")}</div><div class="msg" id="mdmsg"></div>`;
+  else h+=`<div class="result"><b>💗 따뜻한 마음이에요!</b><br>${m[2]}<br><br>${m[5]}</div><button class="btn soft" id="nextMind">다음 이야기 →</button>`;
+  $("mindbox").innerHTML=h;
+  $("mindinfo").textContent=st.mind?"따뜻한 마음 💗 "+st.mind+"개":"좋은 의사는 병만 보지 않고 마음도 살펴요. 가장 따뜻한 방법을 골라 줘!";
+}
+$("mindbox").addEventListener("click",e=>{
+  if(e.target.closest("#nextMind")){newMind();return;}
+  const b=e.target.closest(".opt");if(!b||md.done||b.classList.contains("wrong"))return;
+  if(b.dataset.m==="2"){md.done=true;st.mind++;save();refresh();renderMind();}
+  else{b.classList.add("wrong");$("mdmsg").textContent="그러면 친구 마음이 어떨까? 다시 생각해 봐 💭";}
+});
+window.TOWN&&TOWN.reg("h",qid=>{const a=qid.split(":"),q=QS[a[1]]&&QS[a[1]][a[2]];return q?{q:q,label:DM[a[1]].e+" "+DM[a[1]].name}:null;});
 refresh();
 
 })(document.getElementById("ph"));
@@ -1001,19 +1253,22 @@ function openRoom(id){
    <div class="box b-q"><h3>🤔 퀴즈!</h3><p>${d.q}</p>
    <div class="opts" style="margin-top:10px">${(done?[0]:shuffle([0,1,2])).map(k=>`<button class="opt${done?" right":""}" data-act="pick" data-id="${id}" data-k="${k}">${d.o[k]}</button>`).join("")}</div>
    <div class="msg" id="qmsg"></div>
-   <div class="ans${done?" show":""}" id="ans"><div class="pr">${done?"견학 도장을 받았어요 💮":""}</div><p>${d.a}</p></div></div>
+   <div class="ans${done?" show":""}" id="ans"><div class="pr">${done?"견학 도장을 받았어요 💮":""}</div><p>${d.a}</p></div>${done&&window.TOWN?(TOWN.talkDone("j:"+id)?`<div class="talkok">🗣️ 설명 도장도 받았어요!</div>`:`<button class="talkbtn" data-act="talk" data-id="${id}">🗣️ 엄마 아빠에게 설명하기 미션</button>`):""}</div>
    ${d.link?`<button class="go" onclick="goPlace('h')">${d.link[0]}</button>`:""}`;
   sheet.classList.add("open");card.scrollTop=0;
 }
 card.addEventListener("click",e=>{
   const b=e.target.closest("[data-act]");if(!b)return;
   if(b.dataset.act==="close")closeSheet();
+  else if(b.dataset.act==="talk"){const d=DM[b.dataset.id];window.TOWN&&TOWN.openTalk("j:"+d.id,d.e+" "+d.name,d.items.slice(0,3).map(z=>"'"+z[1]+"'이(가) 뭔지 알려 줘"),()=>{openRoom(d.id);refresh();});}
   else if(b.dataset.act==="pick"){
     if(st.s[b.dataset.id]||b.classList.contains("wrong"))return;
     if(b.dataset.k==="0"){
       b.classList.add("right");card.querySelectorAll('[data-act="pick"]').forEach(x=>{if(x!==b)x.remove();});
       $("qmsg").textContent="";const a=$("ans");a.querySelector(".pr").textContent=pick(PRAISES)+" 견학 도장 💮";a.classList.add("show");
       st.s[b.dataset.id]=1;save();refresh();
+      window.TOWN&&TOWN.solved("j:"+b.dataset.id+":0",card.querySelectorAll(".opt.wrong").length);
+      if(window.TOWN)$("ans").insertAdjacentHTML("afterend",`<button class="talkbtn" data-act="talk" data-id="${b.dataset.id}">🗣️ 엄마 아빠에게 설명하기 미션</button>`);
     }else{b.classList.add("wrong");$("qmsg").textContent="음, 다시 생각해 볼까? 💭";}
   }
 });
@@ -1044,10 +1299,81 @@ $("quiz").addEventListener("click",e=>{
   if(b.dataset.o===qz.k){qz.done=true;st.cared++;save();refresh();renderQuiz();}
   else{b.classList.add("wrong");$("msg").textContent="음, 단서를 다시 읽어 볼까? 💭";}
 });
+window.TOWN&&TOWN.reg("j",qid=>{const d=DM[qid.split(":")[1]];return d?{q:[d.q,d.o[0],d.o[1],d.o[2],d.a],label:d.e+" "+d.name}:null;});
 refresh();
 
 })(document.getElementById("pj"));
+/* 아림 약국 */
+(function(){
+  const root=document.getElementById("pp"),$=id=>root.querySelector("#"+id);
+  const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+  const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  const PR={count:["숫자를 잘 세었어요! 🌟","정확해요! 꼼꼼한 약사 선생님! 💊"],clock:["시계를 잘 읽었어요! ⏰","시간을 딱 맞췄어요! 👏"],cup:["눈금을 딱 맞췄어요! 👏","정확해요! 꼼꼼한 약사 선생님! 💊"]};
+  let st={count:0,clock:0,cup:0};
+  try{const v=JSON.parse(localStorage.getItem("arim-pharm1")||"null");if(v)st=Object.assign(st,v);}catch(e){}
+  const save=()=>{try{localStorage.setItem("arim-pharm1",JSON.stringify(st));}catch(e){}};
+  const RANKS=[[0,"🧪 약국 견학생"],[10,"💊 꼬마 약사"],[25,"⚗️ 조제 약사"],[45,"👑 약국장"]];
+  let game="count",cur=null;
+  const lv=()=>Math.min(2,Math.floor(st[game]/5));
+  function distinct(ans,cands){const s=[ans];for(const c of shuffle(cands)){if(c>0&&!s.includes(c))s.push(c);if(s.length===3)break;}let k=1;while(s.length<3){if(!s.includes(ans+k))s.push(ans+k);k++;}return shuffle(s);}
+  function clockSvg(h,m){
+    const ha=((h%12)+m/60)*30,ma=m*6,pt=(a,r)=>[50+r*Math.sin(a*Math.PI/180),50-r*Math.cos(a*Math.PI/180)];
+    let nums="";for(let i=1;i<=12;i++){const p=pt(i*30,36);nums+=`<text x="${p[0]}" y="${p[1]+3.5}" font-size="${i%3===0?10:7}" text-anchor="middle" fill="#5a5048" font-family="Jua,sans-serif">${i}</text>`;}
+    const hp=pt(ha,20),mp=pt(ma,31);
+    return `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#7c6ee6" stroke-width="4"/>${nums}<line x1="50" y1="50" x2="${hp[0]}" y2="${hp[1]}" stroke="#33302e" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="50" x2="${mp[0]}" y2="${mp[1]}" stroke="#e8504f" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="3.5" fill="#33302e"/></svg>`;
+  }
+  function cupSvg(ml,minor){
+    const y=v=>88-v*3.6;let t="";
+    for(let v=0;v<=20;v++){if(v%5===0)t+=`<line x1="30" y1="${y(v)}" x2="44" y2="${y(v)}" stroke="#5a5048" stroke-width="1.5"/><text x="27" y="${y(v)+3}" font-size="8" text-anchor="end" fill="#5a5048" font-family="Jua,sans-serif">${v}</text>`;else if(minor)t+=`<line x1="30" y1="${y(v)}" x2="38" y2="${y(v)}" stroke="#a79d94" stroke-width="1"/>`;}
+    return `<svg viewBox="0 0 100 100"><rect x="30" y="${y(ml)}" width="46" height="${88-y(ml)}" fill="#ff9ec0"/><path d="M30 10 L30 88 Q30 92 34 92 L72 92 Q76 92 76 88 L76 10" fill="none" stroke="#7c6ee6" stroke-width="3" stroke-linecap="round"/>${t}<text x="92" y="16" font-size="8" text-anchor="end" fill="#8a7f77" font-family="Jua,sans-serif">mL</text></svg>`;
+  }
+  const tstr=(h,m)=>h+"시"+(m?" "+m+"분":"");
+  function make(){
+    const L=lv();
+    if(game==="count"){
+      const slots=[["🌅","아침"],["☀️","점심"],["🌙","저녁"]],use=L===0?(Math.random()<.5?[0,2]:[0,1,2]):[0,1,2];
+      const per=use.map(()=>L===0?rnd(1,2):rnd(1,3)),days=L===2?rnd(2,3):1,sum=per.reduce((a,b)=>a+b,0),ans=sum*days;
+      cur={q:days>1?days+"일 동안 먹을 약은 모두 몇 알일까?":"하루에 먹을 약은 모두 몇 알일까?",
+        show:`<div class="rx">${use.map((s,i)=>`<div><b>${slots[s][0]} ${slots[s][1]}</b>${"💊".repeat(per[i])}</div>`).join("")}${days>1?`<div><b>📅 기간</b>${days}일</div>`:""}</div>`,
+        opts:distinct(ans,[ans-1,ans+1,ans+2,ans-2,sum]).map(v=>[v+"알",v===ans]),
+        ex:per.join(" + ")+" = "+sum+(days>1?" , "+sum+"알씩 "+days+"일이면 "+ans+"알":"")+"이에요."};
+    }else if(game==="clock"){
+      const h=rnd(1,12),m=L===0?0:(L===1?[0,30][rnd(0,1)]:[0,15,30,45][rnd(0,3)]);
+      const key=(a,b)=>a+":"+b,seen=[key(h,m)],ds=[];
+      const tryAdd=(a,b)=>{a=((a-1+12)%12)+1;if(!seen.includes(key(a,b))&&ds.length<2){seen.push(key(a,b));ds.push([a,b]);}};
+      shuffle([[h+1,m],[h-1,m],[h,(m+30)%60],[m===0?12:m/5,(h%12)*5],[h+3,m],[h+6,m]]).forEach(x=>tryAdd(x[0],x[1]));
+      cur={q:"약 먹을 시간이에요. 맞는 시계를 골라 줘!",show:`<div class="rx" style="text-align:center"><b style="min-width:0">⏰ 약 먹을 시간</b> ${tstr(h,m)}</div>`,
+        opts:shuffle([[clockSvg(h,m),true],...ds.map(d=>[clockSvg(d[0],d[1]),false])]),grid:true,
+        ex:"짧은 바늘은 '시', 긴 바늘은 '분'을 가리켜요. "+(m===0?"긴 바늘이 12에 있으면 정각이에요.":m===30?"긴 바늘이 6에 있으면 30분이에요.":"긴 바늘이 "+(m/5)+"에 있으면 "+m+"분이에요.")};
+    }else{
+      const ml=L===0?[5,10,15,20][rnd(0,3)]:rnd(3,19),minor=L>0;
+      const ds=distinct(ml,L===0?[5,10,15,20]:[ml-1,ml+1,ml+2,ml-2,ml+5,ml-5].filter(v=>v>0&&v<=20)).filter(v=>v<=20);
+      while(ds.length<3){const v=rnd(1,20);if(!ds.includes(v))ds.push(v);}
+      cur={q:"물약을 눈금에 맞게 따른 컵을 골라 줘!",show:`<div class="rx" style="text-align:center"><b style="min-width:0">🥄 물약</b> ${ml}mL</div>`,
+        opts:ds.map(v=>[cupSvg(v,minor),v===ml]),grid:true,ex:"물약의 윗면이 숫자 "+ml+" 눈금에 닿으면 "+ml+"mL예요. 약은 정해진 양만큼만 먹어야 해요."};
+    }
+    cur.done=false;render();
+  }
+  function render(){
+    let h=cur.show+`<div class="qtitle">${cur.q}</div><div class="${cur.grid?"pick3":"pick3"}">${cur.opts.map((o,i)=>`<button class="opt${cur.done?(o[1]?" right":" wrong"):""}" data-i="${i}">${o[0]}</button>`).join("")}</div><div class="msg" id="ppmsg"></div>`;
+    if(cur.done)h+=`<div class="result"><b>${PR[game][Math.floor(Math.random()*2)]}</b><br>${cur.ex}</div><button class="btn soft" id="ppNext">다음 손님 🚪</button>`;
+    $("ppbox").innerHTML=h;
+    const tot=st.count+st.clock+st.cup;let r=RANKS[0][1];for(const [k,v] of RANKS)if(tot>=k)r=v;
+    $("ppRank").textContent=r;$("ppSt").textContent="⭐ 약 세기 "+st.count+" · 약 시간 "+st.clock+" · 물약 "+st.cup;
+    $("ppinfo").textContent=["쉬움","보통","어려움"][lv()]+" 단계 · 5개를 맞힐 때마다 조금씩 어려워져요";
+    window.onProg&&window.onProg("p",tot,null,r);
+  }
+  $("ppbox").addEventListener("click",e=>{
+    if(e.target.closest("#ppNext")){make();return;}
+    const b=e.target.closest(".opt");if(!b||cur.done||b.classList.contains("wrong"))return;
+    if(cur.opts[Number(b.dataset.i)][1]){cur.done=true;st[game]++;save();render();}
+    else{b.classList.add("wrong");$("ppmsg").textContent="음, 다시 세어 볼까? 💭";}
+  });
+  root.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{game=b.dataset.g;root.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));make();});
+  make();
+})();
 fromHash();
+TOWN.start();
 if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
 </script>
 </body>
