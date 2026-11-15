@@ -183,6 +183,25 @@
   .park{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px;background:#dff2d3;border-radius:16px;padding:8px}
   .slot{aspect-ratio:1;border:2px dashed #b9d7a8;border-radius:12px;background:#eef9e6;font-size:22px;color:#a9c99a;padding:0}
   .slot.full{border:none;background:none;font-size:34px}
+  #map{margin:14px -10px 0;background:linear-gradient(#cfeaff,#e9f6ff 45%,#eaf7e2);border-radius:22px;padding:4px 0 2px;box-shadow:0 3px 0 #c6dcec;overflow:hidden}
+  #mapsvg{width:100%;display:block;touch-action:manipulation}
+  #mapsvg .bd,#mapsvg .pslot{cursor:pointer}
+  #mapsvg .bd.hop{animation:hop .45s ease}
+  @keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-9px)}70%{transform:translateY(2px)}}
+  #mapsvg .win{animation:blink 6s ease-in-out infinite}
+  @keyframes blink{0%,70%,100%{opacity:1}80%{opacity:.45}}
+  #me{transition:transform .6s ease-in-out;pointer-events:none}
+  #snd{position:fixed;top:44px;right:8px;z-index:30;width:34px;height:34px;border:none;border-radius:50%;background:#ffffffe0;font-size:16px;box-shadow:0 1px 0 #c9d6df;padding:0}
+  .strow{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid #f0ebe5;font-size:15px}
+  .strow:first-of-type{border-top:none}
+  .strow .r{font-size:13px;color:#b0661a}
+  .strow .n{font-size:13px;color:#5f7686;min-width:64px;text-align:right}
+  .avrow{margin-top:8px}
+  .avrow b{display:block;font-family:'Jua',sans-serif;font-weight:normal;font-size:15px;color:#7d736c;margin-bottom:3px}
+  .avrow .sw{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px #d9d0c8;margin-right:6px}
+  .avrow .sw.on{box-shadow:0 0 0 3px #ff8a65}
+  .avrow .chipb{border:none;border-radius:999px;padding:7px 12px;margin:0 5px 5px 0;background:#f3eee9;font-family:'Jua',sans-serif;font-size:15px}
+  .avrow .chipb.on{background:#ff8a65;color:#fff}
 
   body.bg-j{background:linear-gradient(#ffe3ec 0,#fff3ea 420px,#fff9f1 421px)}
   body.bg-home{background:linear-gradient(#bfe4ff 0,#e6f5ff 55%,#d9f0cf 55.1%,#e9f7e2 100%)}
@@ -228,6 +247,7 @@
 </head>
 <body class="bg-home">
 <div id="tchip"></div>
+<button id="snd" aria-label="소리">🔊</button>
 <div id="lock"><div class="moon">🌙</div><h2>오늘 놀이 시간이 끝났어요</h2><p>오늘도 20분 동안 열심히 했어요!</p><p>이제 눈을 쉬고, 몸을 움직여 볼까? 내일 또 만나요 👋</p>
   <button class="pbtn" id="pbtn">보호자용 · 10분 더 주기</button>
   <div class="pbox" id="pbox"><div id="pq"></div><input id="pin" type="number" inputmode="numeric" autocomplete="off"><button class="ok" id="pok">확인</button><div id="pmsg" style="min-height:20px;margin-top:6px;font-size:14px"></div></div>
@@ -235,29 +255,11 @@
 <section id="home">
   <div style="font-size:26px;letter-spacing:14px">☁️🌤️☁️</div>
   <h1>🏘️ 아림 마을</h1>
-  <div class="sub">가고 싶은 건물을 눌러 봐!</div>
+  <div class="sub">건물을 누르면 걸어가요. 공원 빈 칸과 아림이네 집도 눌러 봐!</div>
   <div class="hcard" id="newCard" style="display:none;background:#fff8d9"></div>
   <div class="hcard" id="rvCard"></div>
-  <div class="town">
-    <button class="tb" onclick="goPlace('h')">
-      <div class="roof" style="background:#2fa38a">✚ 대학병원</div>
-      <div class="wall"><span style="background:#ffe6e2">🦴</span><span style="background:#efe9ff">🧠</span><span style="background:#e4f1ff">❤️</span><span style="background:#e1f6ee">🦷</span><span style="background:#fff0d6">🚑</span><span style="background:#e4f1ff">🫁</span><span class="door">🚪</span></div>
-      <div class="info"><b>아림대학교병원</b><span id="hRank">진료과 36개</span><div class="bar"><i id="hBar" style="background:#2fa38a"></i></div><span id="hCnt"></span></div>
-    </button>
-<button class="tb" onclick="goPlace('s')">
-      <div class="roof" style="background:#e9a01f">🛍️ 꾸미기 가게</div>
-      <div class="wall"><span style="background:#fff3d6">🌳</span><span style="background:#fff3d6">⛲</span><span style="background:#fff3d6">🎡</span><span class="door">🚪</span></div>
-      <div class="info"><b>꾸미기 가게</b><span>별로 마을을 꾸며요</span><div class="bar"><i style="background:#e9a01f;width:100%"></i></div><span id="sBal"></span></div>
-    </button>
-    <button class="tb" onclick="goPlace('p')">
-      <div class="roof" style="background:#7c6ee6">💊 약국</div>
-      <div class="wall"><span style="background:#efeaff">🔢</span><span style="background:#efeaff">⏰</span><span style="background:#efeaff">🥄</span><span class="door">🚪</span></div>
-      <div class="info"><b>아림 약국</b><span id="pRank2">수와 시계 놀이</span><div class="bar"><i id="pBar" style="background:#7c6ee6"></i></div><span id="pCnt"></span></div>
-    </button>
-    <div id="moreTown" style="display:contents"></div>
-  </div>
-  <div class="road">🌳🚑🌷🚗🌳</div>
-  <div class="hcard" id="parkCard"></div>
+  <div id="map"></div>
+  <div class="hcard" id="statCard"></div>
   <div class="hcard" id="bodyCard"></div>
   <div class="hstat" id="hstat"></div>
 </section>
@@ -363,10 +365,6 @@ window.PTS={};window.PROG={};
 window.onProg=function(k,n,t,r,p){
   PTS[k]=p||0;PROG[k]={n:n,t:t||1,r:r};
   if(k==="j"){const e=document.getElementById("joriPg");if(e)e.textContent="💮 "+n+" / "+t;}
-  if(!document.getElementById(k+"Rank")&&k!=="p")return;
-  const g=id=>document.getElementById(id);
-  if(k==="p"){g("pRank2").textContent=r;g("pCnt").textContent="⭐ 별 "+n+"개";g("pBar").style.width=Math.min(100,n/45*100)+"%";return;}
-  g(k+"Rank").textContent=r;g(k+"Cnt").textContent="💮 도장 "+n+" / "+t;g(k+"Bar").style.width=(n/t*100)+"%";
 };
 /* 하루 20분 놀이 시간 */
 (function(){
@@ -410,18 +408,7 @@ window.addEventListener("hashchange",fromHash);
     if(!opened.length){M.open[nx.key]=pts();M.newly=nx.key;save();return;}
     if(pts()>=Math.max(...opened)+STEP){M.open[nx.key]=pts();M.newly=nx.key;save();}
   }
-  function drawTown(){
-    const el=g("moreTown");if(!el)return;
-    const nx=BLD.find(b=>M.open[b.key]===undefined),need=nx?Math.max(...Object.values(M.open).concat([0]))+STEP-pts():0;
-    el.innerHTML=BLD.map(b=>{
-      const wall=`<div class="wall">${b.icons.map(i=>`<span style="background:${b.bg}">${i}</span>`).join("")}<span class="door">🚪</span></div>`;
-      if(isOpen(b.key)){const pr=(window.PROG||{})[b.key]||{n:0,t:1,r:""};
-        return `<button class="tb" onclick="goPlace('${b.key}')"><div class="roof" style="background:${b.color}">${b.emoji} ${b.name}</div>${wall}<div class="info"><b>${b.name}</b><span>${pr.r}</span><div class="bar"><i style="background:${b.color};width:${Math.min(100,pr.n/pr.t*100)}%"></i></div><span>⭐ ${pr.n} / ${pr.t}</span></div></button>`;}
-      const next=nx&&nx.key===b.key;
-      return `<div class="tb soon2"><div class="roof" style="background:#b9b2a9">🔒 ${b.name}</div>${wall}<div class="info"><b>${b.name}</b>${next?`마을 별 ⭐ ${Math.max(1,need)}개를 더 모으면 문을 열어요<button class="holdbtn mini" data-open="${b.key}"><span>보호자: 꾹 눌러 미리 열기</span></button>`:"차례를 기다리고 있어요"}</div></div>`;
-    }).join("");
-    el.querySelectorAll("[data-open]").forEach(x=>hold(x,()=>{M.open[x.dataset.open]=pts();M.newly=x.dataset.open;save();homeDraw();}));
-  }
+
   try{const v=JSON.parse(localStorage.getItem("arim-meta")||"null");if(v)M=Object.assign(M,v);}catch(e){}
   const save=()=>{try{localStorage.setItem("arim-meta",JSON.stringify(M));}catch(e){}};
   const BANK={};
@@ -429,7 +416,7 @@ window.addEventListener("hashchange",fromHash);
   const PR=["기억하고 있었네! 🌟","역시 아림 박사님! 🩺","머릿속에 쏙 들어 있었구나! 🧠","복습 대장이야! 💖"];
   const BODY=["제자리 뛰기 20번을 하고, 가슴에 손을 대서 심장이 얼마나 빨라졌는지 느껴 보기","비누로 손 씻기! '생일 축하 노래'를 두 번 부르는 동안 씻기","숨을 크게 5번 들이쉬고 내쉬면서, 배가 볼록해지는지 손으로 느껴 보기","한 발로 서서 10까지 세기. 반대쪽 발도!","내 몸에서 구부러지는 곳(관절)을 10군데 찾아서 움직여 보기","오늘 먹은 채소와 과일을 세어서 엄마 아빠에게 말하기","엄마나 아빠 가슴에 귀를 대고 심장 소리 듣기","거울을 보면서 윗니, 아랫니, 어금니까지 꼼꼼히 양치하기","물 한 컵을 천천히 마시고, 물이 몸속 어디로 가는지 말해 보기","손목에 손가락을 대고 콩닥콩닥 맥박 찾아보기","기지개를 쭉 켜고, 고양이처럼 등을 둥글게 말았다 펴기 5번","눈을 감고 한 발로 서 보기. 눈을 떴을 때와 무엇이 다른지 말하기","엄마 아빠와 손바닥 밀기 놀이 하고, 어느 근육에 힘이 들어갔는지 찾기","먼 곳(창밖)을 20초 동안 바라보며 눈 쉬게 하기"];
   function hold(btn,cb){let t=null;const stop=()=>{clearTimeout(t);t=null;btn.classList.remove("holding");};
-    btn.addEventListener("pointerdown",e=>{e.preventDefault();btn.classList.add("holding");t=setTimeout(()=>{stop();cb();},1500);});
+    btn.addEventListener("pointerdown",e=>{e.preventDefault();btn.classList.add("holding");t=setTimeout(()=>{stop();SFX("stamp");cb();},1500);});
     ["pointerup","pointerleave","pointercancel"].forEach(ev=>btn.addEventListener(ev,stop));
     btn.addEventListener("contextmenu",e=>e.preventDefault());}
   function getQ(id){const b=BANK[id.split(":")[0]];return b?b(id):null;}
@@ -448,7 +435,7 @@ window.addEventListener("hashchange",fromHash);
   function drawR(){
     const c=g("rvc");
     if(R.i>=R.ids.length){
-      M.rvDay=day();M.rv++;save();
+      M.rvDay=day();M.rv++;save();SFX("fanfare");
       c.innerHTML=`<h2>🔁 복습 완료!</h2><div class="qq">어제까지 배운 걸 잘 기억하고 있어요.<br>복습 별 ⭐ 하나를 받았어요!</div><button class="hbtn" id="rvClose">마을로 가기 🏘️</button>`;
       g("rvClose").onclick=()=>{g("rv").classList.remove("on");R=null;homeDraw();};return;}
     const id=R.ids[R.i],it=getQ(id),q=it.q;R.w=0;
@@ -484,7 +471,7 @@ window.addEventListener("hashchange",fromHash);
   }
 
   /* 꾸미기 가게와 공원 */
-  const SHOP=[["balloon","🎈","풍선",4],["tree","🌳","나무",5],["flower","🌷","꽃밭",5],["post","📮","우체통",6],["bench","🪑","벤치",8],["lamp","💡","가로등",8],["bike","🚲","자전거",10],["duck","🦆","오리 연못",12],["dog","🐕","강아지",15],["cat","🐈","고양이",15],["tent","🏕️","텐트",18],["bus","🚌","버스",20],["fountain","⛲","분수",20],["play","🛝","놀이터",25],["amb","🚑","구급차",30],["cafe","☕","카페",35],["heli","🚁","헬리콥터",40],["rainbow","🌈","무지개",50],["wheel","🎡","관람차",60]];
+  const SHOP=[["flower","🌷","꽃밭",4],["tree","🌳","나무",5],["bench","🪑","쉼터 벤치",6],["lamp","💡","가로등",8],["balloon","🚰","음수대",8],["post","🧼","손 씻는 곳",10],["bike","🚲","자전거",10],["duck","🦆","오리 연못",12],["dog","🐕","산책 강아지",15],["cat","🏃","운동 트랙",18],["fountain","⛲","분수",20],["bus","🚌","건강 검진 버스",20],["play","🛝","놀이터",25],["tent","❤️‍🩹","심장 충격기",25],["amb","🚑","구급차",30],["cafe","🩸","헌혈 버스",35],["heli","🚁","닥터 헬기",40],["wheel","🧘","체조 광장",45],["rainbow","🌈","무지개",50]];
   const SI=Object.fromEntries(SHOP.map(x=>[x[0],x])),SLOTS=15;
   const bal=()=>pts()-(M.spent||0);
   const placed=id=>M.park.filter(x=>x===id).length,spare=id=>(M.inv[id]||0)-placed(id);
@@ -519,10 +506,10 @@ window.addEventListener("hashchange",fromHash);
       <div class="ans" id="bans"><div class="pr">계산 성공! ${it[1]} ${it[2]}을(를) 샀어요 🎉</div><p>${ex}</p><button class="btn" id="bpark">공원에 놓으러 가기</button> <button class="btn soft" id="bmore">더 구경하기</button></div><button class="skip" id="bskip">사지 않기</button>`;
     c.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
       if(b.classList.contains("wrong")||g("bans").classList.contains("show"))return;
-      if(o[Number(b.dataset.i)][1]){b.classList.add("right");M.spent=(M.spent||0)+P;M.inv[id]=(M.inv[id]||0)+1;save();g("bskip").style.display="none";g("bmsg").textContent="";g("bans").classList.add("show");drawShop();}
+      if(o[Number(b.dataset.i)][1]){b.classList.add("right");M.spent=(M.spent||0)+P;M.inv[id]=(M.inv[id]||0)+1;save();SFX("coin");g("bskip").style.display="none";g("bmsg").textContent="";g("bans").classList.add("show");drawShop();}
       else{b.classList.add("wrong");g("bmsg").textContent="음, 다시 계산해 볼까? 💭";}});
     g("bmore").onclick=close;g("bskip").onclick=close;
-    g("bpark").onclick=()=>{close();goPlace("home");const pc=g("parkCard");pc&&pc.scrollIntoView({block:"center"});};
+    g("bpark").onclick=()=>{close();goPlace("home");const pc=g("map");pc&&pc.scrollIntoView({block:"center"});};
   }
   function drawPark(){
     const pc=g("parkCard");if(!pc)return;
@@ -533,7 +520,7 @@ window.addEventListener("hashchange",fromHash);
   }
   function slot(i){
     const c=g("tkc"),cur=M.park[i],av=SHOP.filter(x=>spare(x[0])>0);g("tk").classList.add("on");
-    const close=()=>{g("tk").classList.remove("on");drawPark();};
+    const close=()=>{g("tk").classList.remove("on");drawMap();};
     c.innerHTML=`<h2>🌳 공원 꾸미기</h2><div class="qq">${cur?"이 자리의 "+SI[cur][1]+" "+SI[cur][2]+"을(를) 바꿀까?":"여기에 무엇을 놓을까?"}</div>
       ${av.length?`<div class="pick3">${av.map(x=>`<button class="opt" data-id="${x[0]}">${x[1]}<div style="font-size:12px">${spare(x[0])}개</div></button>`).join("")}</div>`:`<div class="lab">놓을 수 있는 물건이 없어요.</div>`}
       ${cur?`<button class="btn soft" id="ptake">치우기 (보관함으로)</button>`:""} <button class="btn line" id="pshop">🛍️ 가게 가기</button><button class="skip" id="pskip">닫기</button>`;
@@ -541,9 +528,155 @@ window.addEventListener("hashchange",fromHash);
     const tk=g("ptake");if(tk)tk.onclick=()=>{M.park[i]="";save();close();};
     g("pshop").onclick=()=>{close();goPlace("s");};g("pskip").onclick=close;
   }
+  /* ===== 입체 마을 지도 · 캐릭터 · 효과음 ===== */
+  /* 효과음 (파일 없이 소리 합성) */
+  let AC=null;
+  const tone=(f,t0,d,type,v)=>{const o=AC.createOscillator(),gn=AC.createGain();o.type=type||"triangle";o.frequency.value=f;
+    gn.gain.setValueAtTime(0,AC.currentTime+t0);gn.gain.linearRampToValueAtTime(v||.16,AC.currentTime+t0+.015);gn.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t0+d);
+    o.connect(gn);gn.connect(AC.destination);o.start(AC.currentTime+t0);o.stop(AC.currentTime+t0+d+.03);};
+  const SND={ok:()=>{tone(660,0,.12);tone(880,.1,.18);},no:()=>{tone(196,0,.16,"sine",.2);tone(165,.12,.2,"sine",.2);},
+    stamp:()=>{tone(120,0,.12,"sine",.3);tone(1047,.1,.25);tone(1319,.22,.3);},fanfare:()=>{[523,659,784,1047].forEach((f,i)=>tone(f,i*.13,.22));tone(1319,.55,.4);},
+    coin:()=>{tone(988,0,.08,"square",.08);tone(1319,.07,.22,"square",.08);},pop:()=>{tone(520,0,.07,"sine",.12);},tick:()=>{tone(740,0,.06,"triangle",.1);}};
+  let lastS={};
+  function SFX(n){if(M.mute||!SND[n])return;const now=Date.now();if(lastS[n]&&now-lastS[n]<180)return;lastS[n]=now;
+    try{if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;AC=new C();}if(AC.state==="suspended")AC.resume();SND[n]();}catch(e){}}
+  window.SFX=SFX;
+  document.addEventListener("pointerdown",()=>{try{if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C();}if(AC&&AC.state==="suspended")AC.resume();}catch(e){}},{passive:true});
+  function watchSounds(){
+    new MutationObserver(ms=>{for(const m of ms){
+      if(m.type==="attributes"){const el=m.target,was=(m.oldValue||"").split(" "),has=c=>el.classList.contains(c)&&!was.includes(c);
+        if(el.classList.contains("opt")||el.classList.contains("slot")){if(has("right"))SFX("ok");else if(has("wrong"))SFX("no");}
+        else if(el.classList.contains("ans")&&has("show"))SFX("ok");
+        else if(el.classList.contains("room")&&has("done"))setTimeout(()=>SFX("stamp"),260);
+        else if(el.classList.contains("tbtn")){if(has("used"))SFX("tick");else if(has("shake"))SFX("no");}
+      }else{
+        if(m.target.classList&&m.target.classList.contains("msg")&&m.target.textContent)SFX("no");
+        m.addedNodes.forEach(nd=>{if(nd.nodeType===1&&(nd.classList.contains("result")||nd.querySelector&&nd.querySelector(".result")))SFX("ok");});
+      }}}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["class"],attributeOldValue:true});
+  }
+  function drawSnd(){const b=g("snd");if(b)b.textContent=M.mute?"🔇":"🔊";}
+  g("snd").onclick=()=>{M.mute=!M.mute;save();drawSnd();if(!M.mute)SFX("pop");};
+
+  /* 캐릭터 */
+  const AV={hair:["단발","긴 머리","양갈래","포니테일","숏컷"],hc:["#2b2220","#5a3a22","#8a5a33","#c98a4b"],skin:["#ffe0c7","#f6cfa8","#e8b88f"],coat:["#ff9ec0","#7fd1b9","#8ec5ff","#b79cf0","#ffcf6b"],acc:["없음","청진기","안경","리본"]};
+  if(!M.av)M.av={hair:0,hc:0,skin:0,coat:0,acc:1};
+  function avatar(a){
+    const H=AV.hc[a.hc],S=AV.skin[a.skin],C=AV.coat[a.coat];
+    const back=["M13 24 Q13 6 30 6 Q47 6 47 24 L47 37 Q47 41 43 41 L17 41 Q13 41 13 37Z","M12 24 Q12 5 30 5 Q48 5 48 24 L49 53 Q49 57 44 57 L16 57 Q11 57 11 53Z","M14 24 Q14 7 30 7 Q46 7 46 24 L46 30 L14 30Z","M14 24 Q14 7 30 7 Q46 7 46 24 L46 30 L14 30Z","M14 24 Q14 7 30 7 Q46 7 46 24 L46 29 L14 29Z"][a.hair];
+    let x=`<ellipse cx="30" cy="81" rx="15" ry="3" fill="#000" opacity=".12"/>`;
+    if(a.hair===2)x+=`<circle cx="9" cy="33" r="7.5" fill="${H}"/><circle cx="51" cy="33" r="7.5" fill="${H}"/><circle cx="13.5" cy="27" r="2.3" fill="#ff6fa5"/><circle cx="46.5" cy="27" r="2.3" fill="#ff6fa5"/>`;
+    if(a.hair===3)x+=`<ellipse cx="47" cy="12" rx="6" ry="11" fill="${H}" transform="rotate(35 47 12)"/><circle cx="43" cy="14" r="2.3" fill="#ff6fa5"/>`;
+    x+=`<path d="${back}" fill="${H}"/>
+      <rect x="22" y="64" width="6" height="14" rx="3" fill="${S}"/><rect x="32" y="64" width="6" height="14" rx="3" fill="${S}"/>
+      <ellipse cx="24.5" cy="79" rx="5" ry="3" fill="#e8688a"/><ellipse cx="35.5" cy="79" rx="5" ry="3" fill="#e8688a"/>
+      <path d="M19 44 Q30 40 41 44 L44 68 L16 68Z" fill="${C}"/>
+      <path d="M19 44 L27 43 L27 68 L15 68Z M41 44 L33 43 L33 68 L45 68Z" fill="#fff" stroke="#dcdcdc" stroke-width=".8"/>
+      <rect x="11" y="45" width="7" height="18" rx="3.5" fill="#fff" stroke="#dcdcdc" stroke-width=".8"/><rect x="42" y="45" width="7" height="18" rx="3.5" fill="#fff" stroke="#dcdcdc" stroke-width=".8"/>
+      <circle cx="14.5" cy="64" r="3.4" fill="${S}"/><circle cx="45.5" cy="64" r="3.4" fill="${S}"/>
+      <circle cx="30" cy="25" r="15" fill="${S}"/>
+      <path d="M15 25 Q15 9 30 9 Q45 9 45 25 Q39 17 30 18 Q21 17 15 25Z" fill="${H}"/>
+      <circle cx="24" cy="27" r="2.3" fill="#3b2f2a"/><circle cx="36" cy="27" r="2.3" fill="#3b2f2a"/><circle cx="24.8" cy="26.2" r=".8" fill="#fff"/><circle cx="36.8" cy="26.2" r=".8" fill="#fff"/>
+      <circle cx="20" cy="32" r="3" fill="#ffb3a0" opacity=".6"/><circle cx="40" cy="32" r="3" fill="#ffb3a0" opacity=".6"/>
+      <path d="M26 32 Q30 36 34 32" stroke="#d65d5a" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+    if(a.acc===1)x+=`<path d="M24 41 Q23 55 30 55 Q37 55 36 41" stroke="#5f6b7a" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="30" cy="57" r="2.8" fill="#9aa5b1" stroke="#5f6b7a" stroke-width=".8"/>`;
+    if(a.acc===2)x+=`<circle cx="24" cy="27" r="4.6" fill="none" stroke="#444" stroke-width="1.2"/><circle cx="36" cy="27" r="4.6" fill="none" stroke="#444" stroke-width="1.2"/><path d="M28.6 27 h2.8" stroke="#444" stroke-width="1.2"/>`;
+    if(a.acc===3)x+=`<path d="M40 11 l-7 -4 v8z M40 11 l7 -4 v8z" fill="#ff6fa5"/><circle cx="40" cy="11" r="2" fill="#e84d8a"/>`;
+    return x;
+  }
+  function editAvatar(){
+    const c=g("tkc");g("tk").classList.add("on");
+    const row=(key,label,items,sw)=>`<div class="avrow"><b>${label}</b><div>${items.map((v,i)=>sw?`<button class="sw${M.av[key]===i?" on":""}" data-k="${key}" data-i="${i}" style="background:${v}"></button>`:`<button class="chipb${M.av[key]===i?" on":""}" data-k="${key}" data-i="${i}">${v}</button>`).join("")}</div></div>`;
+    const draw=()=>{c.innerHTML=`<h2>🪞 내 캐릭터 꾸미기</h2><svg viewBox="0 0 60 84" style="width:120px;display:block;margin:4px auto">${avatar(M.av)}</svg>
+      ${row("hair","머리 모양",AV.hair)}${row("hc","머리 색",AV.hc,1)}${row("skin","피부",AV.skin,1)}${row("coat","옷 색",AV.coat,1)}${row("acc","꾸미기",AV.acc)}
+      <button class="hbtn" id="avOk">완성!</button>`;
+      c.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{M.av[b.dataset.k]=Number(b.dataset.i);save();SFX("tick");draw();});
+      g("avOk").onclick=()=>{g("tk").classList.remove("on");SFX("ok");homeDraw();};};
+    draw();
+  }
+
+  /* 지도 */
+  const TW=96,TH=48,OX=304,OY=84;
+  const MAPN={h:"대학병원",p:"약국",s:"가게",e:"119",v:"동물병원",f:"식당",c:"보건소",u:"의대",l:"연구소"};
+  const pill=(x,y,t,col,lock)=>{const w=t.length*15+(lock?38:22);return `<rect x="${x-w/2}" y="${y-16}" width="${w}" height="22" rx="11" fill="${lock?"#efeae4":"#fff"}" stroke="${col}" stroke-width="1.5"/><text x="${x}" y="${y}" font-size="15" text-anchor="middle" font-family="Jua,sans-serif" fill="${lock?"#8d857c":"#33302e"}">${lock?"🔒 ":""}${t}</text>`;};
+  const iso=(x,y)=>[OX+(x-y)*TW/2,OY+(x+y)*TH/2];
+  const P=a=>a.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+  const shade=(hex,f)=>{const n=parseInt(hex.slice(1),16),c=v=>Math.max(0,Math.min(255,Math.round(v*f)));return "rgb("+c(n>>16)+","+c(n>>8&255)+","+c(n&255)+")";};
+  const FIXED={h:{name:"대학병원",emoji:"🏥",color:"#2fa38a"},p:{name:"약국",emoji:"💊",color:"#7c6ee6"},s:{name:"꾸미기 가게",emoji:"🛍️",color:"#e9a01f"}};
+  const LOT={h:[0,0,2,74],u:[3,0,1,50],l:[4,0,1,42],p:[0,1,1,38],c:[1,1,1,44],e:[3,1,1,38],v:[4,1,1,34],f:[0,3,1,36],s:[1,3,1,32]};
+  const info=k=>FIXED[k]||BLD.find(b=>b.key===k);
+  const front=k=>{const L=LOT[k];return iso(L[0]+L[2]*.5,L[1]+1.12);};
+  function box(x,y,w,h,col,m){
+    m=m||.1;const A=iso(x+m,y+m),B=iso(x+w-m,y+m),C=iso(x+w-m,y+1-m),D=iso(x+m,y+1-m),up=p=>[p[0],p[1]-h];
+    const quad=(p0,p1,u0,u1,v0,v1)=>{const L=(u,v)=>[p0[0]+(p1[0]-p0[0])*u,p0[1]+(p1[1]-p0[1])*u-h*v];return P([L(u0,v0),L(u1,v0),L(u1,v1),L(u0,v1)]);};
+    let s=`<polygon points="${P([D,C,up(C),up(D)])}" fill="${col}"/><polygon points="${P([C,B,up(B),up(C)])}" fill="${shade(col,.78)}"/><polygon points="${P([up(A),up(B),up(C),up(D)])}" fill="${shade(col,1.22)}" stroke="#ffffff88" stroke-width="1.5"/>`;
+    const rows=Math.max(1,Math.round(h/24)),cols=w>1?4:2;
+    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const u=(c+.22)/cols,v=(r+.3)/rows;s+=`<polygon class="win" style="animation-delay:${(r*3+c)*.7}s" points="${quad(D,C,u,u+.56/cols,v,v+.5/rows)}" fill="#fff8d6"/>`;}
+    for(let r=0;r<rows;r++){const v=(r+.3)/rows;if(r>0||w>1)s+=`<polygon points="${quad(C,B,.58,.84,v,v+.5/rows)}" fill="#fff8d6" opacity=".85"/>`;}
+    s+=`<polygon points="${quad(C,B,.14,.42,0,Math.min(.6,22/h))}" fill="#8a6a50"/>`;
+    const rc=iso(x+w/2,y+.5);return {s:s,top:[rc[0],rc[1]-h]};
+  }
+  function drawMap(){
+    const el=g("map");if(!el)return;
+    const nx=BLD.find(b=>M.open[b.key]===undefined);
+    let s=`<polygon points="${P([iso(0,0),iso(5,0),iso(5,6),iso(0,6)])}" fill="#bfe6a8"/><polygon points="${P([iso(0,6),iso(5,6),[iso(5,6)[0],iso(5,6)[1]+10],[iso(0,6)[0],iso(0,6)[1]+10]])}" fill="#8fc97a"/><polygon points="${P([iso(5,0),iso(5,6),[iso(5,6)[0],iso(5,6)[1]+10],[iso(5,0)[0],iso(5,0)[1]+10]])}" fill="#7dba68"/>`;
+    s+=`<polygon points="${P([iso(2,0),iso(3,0),iso(3,6),iso(2,6)])}" fill="#cfc9c2"/><polygon points="${P([iso(0,2),iso(5,2),iso(5,3),iso(0,3)])}" fill="#cfc9c2"/>`;
+    s+=`<line x1="${iso(2.5,0)[0]}" y1="${iso(2.5,0)[1]}" x2="${iso(2.5,6)[0]}" y2="${iso(2.5,6)[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="8 8"/><line x1="${iso(0,2.5)[0]}" y1="${iso(0,2.5)[1]}" x2="${iso(5,2.5)[0]}" y2="${iso(5,2.5)[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="8 8"/>`;
+    /* 공원 */
+    s+=`<polygon points="${P([iso(3,3),iso(5,3),iso(5,6),iso(3,6)])}" fill="#d3f0bf"/>`;
+    const lab=[];
+    const items=[];
+    Object.keys(LOT).forEach(k=>{const L=LOT[k],b=info(k);if(!b)return;const open=isOpen(k);let gfx,top;
+      if(open){const bx=box(L[0],L[1],L[2],L[3],b.color);gfx=bx.s+`<text x="${bx.top[0]}" y="${bx.top[1]+9}" font-size="${L[2]>1?34:26}" text-anchor="middle">${b.emoji}</text>`;top=bx.top;}
+      else{const bx=box(L[0],L[1],L[2],10,"#c9c2b8",.14);const c=iso(L[0]+L[2]/2,L[1]+.5);gfx=bx.s+`<text x="${c[0]}" y="${c[1]-8}" font-size="24" text-anchor="middle">🚧</text>`;top=[c[0],c[1]-L[3]+6];}
+      items.push({d:L[0]+L[1]+L[2]*.5,s:`<g class="bd" data-b="${k}">${gfx}</g>`});
+      lab.push(`<g class="bd" data-b="${k}">${pill(top[0],top[1]-20,MAPN[k],open?b.color:"#b9b2a9",!open)}</g>`);
+    });
+    /* 아림이네 집 */
+    {const bx=box(0,5,1,26,"#ffb6c9",.16);const rc=bx.top;items.push({d:5.5,s:`<g class="bd" data-home="1">${bx.s}<polygon points="${rc[0]},${rc[1]-26} ${rc[0]-36},${rc[1]-2} ${rc[0]},${rc[1]+14} ${rc[0]+36},${rc[1]-2}" fill="#e8688a" stroke="#fff" stroke-width="1.5"/></g>`});
+      lab.push(`<g class="bd" data-home="1">${pill(rc[0],rc[1]-34,"우리 집","#e8688a",false)}</g>`);}
+    [[.5,4.5],[1.5,4.4],[1.75,5.3],[1.3,5.85]].forEach(t=>{const p=iso(t[0],t[1]);items.push({d:t[0]+t[1],s:`<text x="${p[0]}" y="${p[1]}" font-size="26" text-anchor="middle">🌳</text>`});});
+    /* 공원 칸 */
+    while(M.park.length<SLOTS)M.park.push("");
+    for(let i=0;i<SLOTS;i++){const cx=3+(i%3)*.6+.4,cy=3+Math.floor(i/3)*.56+.38,c=iso(cx,cy),it=M.park[i]&&SI[M.park[i]];
+      const dm=P([iso(cx-.26,cy-.26),iso(cx+.26,cy-.26),iso(cx+.26,cy+.26),iso(cx-.26,cy+.26)]);
+      items.push({d:cx+cy,s:`<g class="pslot" data-slot="${i}"><polygon points="${dm}" fill="${it?"#c4e8ad":"#e6f7da"}" stroke="#a9d392" stroke-width="1" stroke-dasharray="${it?"0":"3 3"}"/>${it?`<text x="${c[0]}" y="${c[1]+4}" font-size="24" text-anchor="middle">${it[1]}</text>`:`<text x="${c[0]}" y="${c[1]+5}" font-size="13" text-anchor="middle" fill="#9cc788">＋</text>`}</g>`});}
+    items.sort((a,b)=>a.d-b.d);
+    s+=items.map(i=>i.s).join("");
+    /* 움직이는 것들 */
+    const r0=iso(0,2.62),r1=iso(5,2.62),w0=iso(2.3,6),w1=iso(2.3,0),w2=iso(5,2.28),w3=iso(0,2.28);
+    s+=`<text font-size="24" text-anchor="middle">🚑<animateTransform attributeName="transform" type="translate" from="${r0[0]} ${r0[1]}" to="${r1[0]} ${r1[1]}" dur="11s" repeatCount="indefinite"/></text>
+        <text font-size="17" text-anchor="middle">🚶<animateTransform attributeName="transform" type="translate" from="${w0[0]} ${w0[1]}" to="${w1[0]} ${w1[1]}" dur="19s" repeatCount="indefinite"/></text>
+        <text font-size="17" text-anchor="middle">🧑‍⚕️<animateTransform attributeName="transform" type="translate" from="${w2[0]} ${w2[1]}" to="${w3[0]} ${w3[1]}" dur="23s" repeatCount="indefinite"/></text>`;
+    s+=lab.join("");
+    const at=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(1.25,5.55);
+    s+=`<g id="me" style="transform:translate(${at[0]-17}px,${at[1]-46}px)"><g transform="scale(.58)">${avatar(M.av)}</g></g>`;
+    s+=`<text font-size="30" opacity=".9">☁️<animateTransform attributeName="transform" type="translate" from="-40 30" to="600 30" dur="38s" repeatCount="indefinite"/></text><text font-size="22" opacity=".85">☁️<animateTransform attributeName="transform" type="translate" from="-40 66" to="600 66" dur="55s" begin="-20s" repeatCount="indefinite"/></text>`;
+    el.innerHTML=`<svg viewBox="0 0 560 374" id="mapsvg">${s}</svg>`;
+    el.querySelectorAll(".bd").forEach(b=>b.onclick=()=>{
+      if(b.dataset.home){SFX("pop");editAvatar();return;}
+      const k=b.dataset.b;
+      el.querySelectorAll(`.bd[data-b="${k}"]`).forEach(x=>{x.classList.remove("hop");void x.getBoundingClientRect();x.classList.add("hop");});
+      if(!isOpen(k)){SFX("no");lockInfo(k,nx);return;}
+      SFX("pop");const f=front(k);g("me").style.transform=`translate(${f[0]-17}px,${f[1]-46}px)`;M.at=k;save();
+      setTimeout(()=>goPlace(k),620);
+    });
+    el.querySelectorAll(".pslot").forEach(b=>b.onclick=()=>{SFX("pop");slot(Number(b.dataset.slot));});
+    /* 마을 현황 */
+    const sc=g("statCard");
+    if(sc)sc.innerHTML=`<h3>📋 마을 현황</h3>`+Object.keys(LOT).filter(k=>k!=="s"&&isOpen(k)).map(k=>{const b=info(k),pr=(window.PROG||{})[k]||{n:0,t:1,r:""};
+      return `<div class="strow"><span>${b.emoji} ${b.name.replace("아림 ","")}</span><span class="r">${pr.r||""}</span><span class="n">${k==="p"?"⭐ "+pr.n:pr.n+" / "+pr.t}</span></div>`;}).join("")+`<div class="strow"><span>🛍️ 꾸미기 가게</span><span class="r"></span><span class="n">쓸 수 있는 별 ⭐ ${bal()}</span></div>`;
+  }
+  function lockInfo(k,nx){
+    const b=info(k),c=g("tkc"),need=Math.max(1,Math.max(...Object.values(M.open).concat([0]))+STEP-pts()),next=nx&&nx.key===k;
+    g("tk").classList.add("on");
+    c.innerHTML=`<h2>🚧 ${b.emoji} ${b.name}</h2><div class="qq">${next?`아직 공사 중이에요.<br><b>마을 별 ⭐ ${need}개</b>를 더 모으면 문을 열어요!`:"앞 건물이 먼저 문을 연 다음에 지어져요. 차례를 기다리고 있어요."}</div>
+      ${next?`<button class="holdbtn" id="lkOpen"><span>보호자: 2초 꾹 눌러 미리 열기</span></button>`:""}<button class="skip" id="lkClose">닫기</button>`;
+    g("lkClose").onclick=()=>g("tk").classList.remove("on");
+    if(next)hold(g("lkOpen"),()=>{M.open[k]=pts();M.newly=k;save();g("tk").classList.remove("on");homeDraw();});
+  }
   /* 마을 화면 */
   function homeDraw(){
-    unlock();drawTown();drawShop();drawPark();
+    const hadNew=M.newly;unlock();if(M.newly&&M.newly!==hadNew)setTimeout(()=>SFX("fanfare"),300);drawMap();drawShop();drawSnd();
     const nb=BLD.find(b=>b.key===M.newly),nc=g("newCard");
     if(nb){nc.style.display="block";nc.innerHTML=`<h3>🎉 새 건물이 문을 열었어요!</h3><span class="big">${nb.emoji} ${nb.name}</span><button class="hbtn" id="newGo" style="background:${nb.color}">구경하러 가기</button>`;g("newGo").onclick=()=>{M.newly="";save();goPlace(nb.key);};}
     else nc.style.display="none";
@@ -566,7 +699,7 @@ window.addEventListener("hashchange",fromHash);
     addBld:b=>{BLD.push(b);(window.PLN=window.PLN||{})[b.key]=b.hash;(window.PBG=window.PBG||{})[b.key]=b.bg;},
     openTalk:openTalk,
     homeDraw:homeDraw,
-    start:()=>{homeDraw();if(M.rvDay!==day()&&cands().length&&g("home").style.display!=="none")openReview();}
+    start:()=>{watchSounds();homeDraw();if(M.rvDay!==day()&&cands().length&&g("home").style.display!=="none")openReview();}
   };
 })();
 (function(root){
