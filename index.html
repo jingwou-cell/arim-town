@@ -1770,9 +1770,10 @@ CFG.forEach(c=>{
 (function(){
   const g=id=>document.getElementById(id);
   const KEY="arim-lib",C="#3d8bd6",BG="#e3f0ff";
-  let S={books:{},log:[],kakao:""};
+  let S={books:{},log:[],kakao:"",sets:{}};
   try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v)S=Object.assign(S,v);}catch(e){}
-  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
+  if(!S.sets)S.sets={};
+  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));return true;}catch(e){alert("저장 공간이 가득 찼어요. 표지 사진 몇 개를 지우면 다시 저장할 수 있어요.");return false;}};
   const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const pad=n=>(n<10?"0":"")+n;
   const todayS=()=>{const n=new Date();return n.getFullYear()+"-"+pad(n.getMonth()+1)+"-"+pad(n.getDate());};
@@ -1784,6 +1785,7 @@ CFG.forEach(c=>{
   const RANKS=[[0,"📖 책 친구"],[10,"🐛 책벌레"],[30,"🦉 책 박사"],[60,"📚 이야기 대장"],[100,"🏛️ 도서관장"]];
   const TALK=["주인공은 누구였어? 어떤 친구였어?","가장 재미있었던 장면은 어디야?","내가 주인공이라면 어떻게 했을까?","이야기 다음에는 무슨 일이 일어날까?","책 제목을 내가 새로 짓는다면?","이 책을 누구에게 읽어 주고 싶어? 왜?","책에서 새로 알게 된 것이 있어?","그림에서 제일 마음에 드는 곳은 어디야?"];
   const PRAISE=["책 한 권이 통장에 쏙! 📚","오늘도 이야기 하나를 모았어요! 🌟","책 읽는 아림이 최고! 👏","머릿속 도서관이 커졌어요! 🧠✨"];
+  const PUBS=["아람북스","그레이트북스"];
   const total=()=>S.log.length;
   const talked=()=>S.log.filter(x=>x.talk).length;
   const bonus=()=>Math.floor(total()/10)*3;
@@ -1791,10 +1793,28 @@ CFG.forEach(c=>{
   const rank=()=>{let r=RANKS[0][1];RANKS.forEach(x=>{if(total()>=x[0])r=x[1];});return r;};
   const nextRank=()=>RANKS.find(x=>x[0]>total());
   const timesRead=id=>S.log.filter(x=>x.b===id).length;
+  const volId=(sid,v)=>"set:"+sid+":"+v;
+  const setRead=sid=>{const s=S.sets[sid];let k=0;for(let v=1;v<=s.n;v++)if(timesRead(volId(sid,v)))k++;return k;};
+  function volBook(sid,v){
+    const s=S.sets[sid],id=volId(sid,v),b=S.books[id]||{id,set:sid,vol:v,a:s.pub||"",isbn:""};
+    b.t=s.name+" "+v+"권"+(b.vt?" · "+b.vt:"");b.a=s.pub||"";S.books[id]=b;return b;
+  }
+  const imgOf=b=>b?(b.img||(b.set&&S.sets[b.set]&&S.sets[b.set].img)||""):"";
+
+  /* 사진을 작게 줄여서 저장 */
+  function photo(cb){
+    const inp=document.createElement("input");inp.type="file";inp.accept="image/*";inp.setAttribute("capture","environment");
+    inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;const im=new Image(),u=URL.createObjectURL(f);
+      im.onload=()=>{const H=220,sc=Math.min(1,H/im.height),cv=document.createElement("canvas");cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);
+        cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);cb(cv.toDataURL("image/jpeg",.62));};
+      im.onerror=()=>URL.revokeObjectURL(u);im.src=u;};
+    inp.click();
+  }
 
   (window.PLN=window.PLN||{}).b="library";(window.PBG=window.PBG||{}).b=BG;
   const st=document.createElement("style");
   st.textContent=`
+  #pb nav button{font-size:15px}
   .pb{background:#fff;border-radius:22px;box-shadow:0 3px 0 var(--line);overflow:hidden}
   .pb .pbh{background:${C};color:#fff;padding:14px 16px;font-family:'Jua',sans-serif}
   .pb .pbh .t{font-size:15px;opacity:.9}.pb .pbh .v{font-size:30px;margin-top:2px}
@@ -1808,35 +1828,51 @@ CFG.forEach(c=>{
   .pb .stp{display:inline-block;width:34px;height:34px;border:2px solid #e35d5d;color:#e35d5d;border-radius:50%;font-size:17px;line-height:30px;transform:rotate(-12deg)}
   .pb .bonus td{background:#fff8e1;color:#a26a00;font-family:'Jua',sans-serif}
   .pb .empty{padding:22px 16px;text-align:center;color:#7d736c;font-size:17px;line-height:1.6}
-  .cv{width:38px;height:52px;object-fit:cover;border-radius:4px;background:#e9eef5;display:inline-block;vertical-align:middle;font-size:22px;line-height:52px;text-align:center}
-  .cv.big{width:84px;height:116px;line-height:116px;font-size:40px;border-radius:8px;box-shadow:0 2px 6px #0002}
-  .lsr{display:flex;gap:6px}.lsr input{flex:1;min-width:0;font-size:17px;border:2px solid #cfe0f5;border-radius:14px;padding:11px 12px;font-family:inherit}
+  .cv{width:46px;height:62px;object-fit:cover;border-radius:4px;background:#e9eef5;display:inline-block;vertical-align:middle;font-size:24px;line-height:62px;text-align:center}
+  .cv.big{width:96px;height:132px;line-height:132px;font-size:44px;border-radius:8px;box-shadow:0 2px 6px #0002}
+  .cvw{position:relative;display:inline-block}
+  .cvw .camb{position:absolute;right:-8px;bottom:-8px;border:none;background:#fff;border-radius:50%;width:36px;height:36px;font-size:18px;box-shadow:0 2px 4px #0003;padding:0}
+  .lsr{display:flex;gap:6px}.lsr input,.lsr select{flex:1;min-width:0;font-size:17px;border:2px solid #cfe0f5;border-radius:14px;padding:11px 12px;font-family:inherit;background:#fff}
   .lsr button{margin-top:0}
   .bres{display:flex;gap:10px;align-items:center;width:100%;border:none;background:#f4f8ff;border-radius:16px;padding:9px;margin-top:8px;text-align:left}
   .bres b{display:block;font-family:'Jua',sans-serif;font-weight:normal;font-size:17px;line-height:1.3}
   .bres span{font-size:13px;color:#7d736c}
+  .bres .bar{height:8px;background:#e6eef8;border-radius:99px;margin-top:5px;overflow:hidden}.bres .bar i{display:block;height:100%;background:${C}}
   .again{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px}
-  .again button{flex:0 0 auto;width:78px;border:none;background:#fff;border-radius:14px;padding:6px 4px;box-shadow:0 2px 0 var(--line);font-size:12px;line-height:1.25}
-  .again button .cv{width:52px;height:70px;line-height:70px}
+  .again button{flex:0 0 auto;width:80px;border:none;background:#fff;border-radius:14px;padding:6px 4px;box-shadow:0 2px 0 var(--line);font-size:12px;line-height:1.25}
+  .again button .cv{width:56px;height:76px;line-height:76px}
   .feel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
   .feel .opt{text-align:center;font-size:16px;padding:9px 2px}.feel .opt i{display:block;font-style:normal;font-size:28px}
   .feel .opt.sel{background:#ffe6a8;box-shadow:inset 0 0 0 3px #f0b429}
   .lfld{display:block;font-size:14px;color:#7d736c;margin-top:8px}
-  .lfld input{display:block;width:100%;font-size:17px;border:2px solid #cfe0f5;border-radius:12px;padding:9px 10px;margin-top:3px;font-family:inherit}
+  .lfld input,.lfld select{display:block;width:100%;font-size:17px;border:2px solid #cfe0f5;border-radius:12px;padding:9px 10px;margin-top:3px;font-family:inherit;background:#fff}
   .lnote{font-size:13px;color:#8c8178;line-height:1.5;margin-top:10px}
   details.lset{margin-top:14px;font-size:14px;color:#6b625b}details.lset summary{cursor:pointer}
+  .shelf{align-items:start;display:grid;grid-template-columns:repeat(3,1fr);gap:14px 10px;background:linear-gradient(#0000 0,#0000 calc(100% - 10px),#c9a27e calc(100% - 10px));padding:4px 2px 0}
+  .shelf button{border:none;background:none;padding:0 0 14px;font-size:13px;line-height:1.3;position:relative;border-bottom:10px solid #c9a27e;margin-bottom:-10px}
+  .shelf .cv{width:100%;height:auto;aspect-ratio:3/4;line-height:normal;display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:0 3px 6px #0003;border-radius:6px}
+  .shelf .tt{display:block;margin-top:6px;font-family:'Jua',sans-serif;font-size:14px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .shelf .cnt{position:absolute;top:-6px;right:-4px;background:#e35d5d;color:#fff;border-radius:99px;font-size:12px;padding:2px 7px;font-family:'Jua',sans-serif}
+  .vols{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+  .vols button{border:none;border-radius:10px;aspect-ratio:3/4;background:#eef4ff;font-family:'Jua',sans-serif;font-size:17px;color:#5d7aa0;padding:0;position:relative;overflow:hidden}
+  .vols button.rd{background:#ffe6a8;color:#93600d}
+  .vols button img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .vols button .vn{position:relative;background:#fffc;border-radius:6px;padding:0 5px}
+  .vols button .ok{position:absolute;right:2px;top:1px;font-size:13px}
   `;
   document.head.appendChild(st);
 
   const root=document.createElement("div");root.className="place";root.id="pb";
   root.innerHTML=`<button class="backhome" onclick="goPlace('home')">← 🏘️ 아림 마을</button>
    <header class="bh"><h1 style="color:${C}">📚 아림 도서관</h1><div class="prog"><span class="rank" id="lbRank"></span><span id="lbSt"></span></div></header>
-   <nav><button data-t="pb" class="on">📒 독서통장</button><button data-t="add">➕ 책 넣기</button><button data-t="shelf">📚 내 책장</button></nav>
+   <nav><button data-t="pb" class="on">📒 통장</button><button data-t="add">➕ 책 넣기</button><button data-t="sets">📦 전집</button><button data-t="shelf">📚 책장</button></nav>
    <main><div id="lbBox"></div><div class="stamps" id="lbInfo"></div></main>`;
   document.body.insertBefore(root,g("rv"));
-  let tab="pb";
-  root.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{tab=b.dataset.t;root.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));show();});
-  const cover=(b,big)=>b&&b.img?`<img class="cv${big?" big":""}" src="${esc(b.img)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;cv${big?" big":""}&quot;>📕</span>'">`:`<span class="cv${big?" big":""}">📕</span>`;
+  let tab="pb",curSet="";
+  root.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{curSet="";goTab(b.dataset.t);});
+  function goTab(t){tab=t;root.querySelectorAll("nav button").forEach(y=>y.classList.toggle("on",y.dataset.t===t));show();}
+  const cover=(b,big)=>{const im=imgOf(b);return im?`<img class="cv${big?" big":""}" src="${esc(im)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;cv${big?" big":""}&quot;>📕</span>'">`:`<span class="cv${big?" big":""}">📕</span>`;};
+  const camCover=(b,btnId)=>`<span class="cvw">${cover(b,true)}<button class="camb" id="${btnId}" title="표지 사진 찍기">📷</button></span>`;
 
   function prog(){
     const n=total(),nr=nextRank();
@@ -1848,7 +1884,7 @@ CFG.forEach(c=>{
     if(c)c.textContent="📚 "+n+"권 저금";
     if(br)br.style.width=(nr?Math.min(100,n/nr[0]*100):100)+"%";
   }
-  function show(){({pb:passbook,add:addTab,shelf:shelf})[tab]();prog();}
+  function show(){({pb:passbook,add:addTab,sets:setsTab,shelf:shelf})[tab]();prog();}
 
   /* 독서통장 */
   function passbook(){
@@ -1859,12 +1895,12 @@ CFG.forEach(c=>{
     sorted.forEach(([x,i])=>{cnt++;const b=S.books[x.b]||{t:"(책)"},f=FE[x.f];
       rows+=`<tr class="row" data-i="${i}"><td>${shortD(x.d)}</td><td>${cover(b)}</td><td class="bt">${esc(b.t)}${x.re?" <small>🔁 또 읽었어요</small>":""}</td><td>${f?f[1]:""}${x.talk?"🗣️":""}</td><td><span class="stp">${cnt}</span></td></tr>`;
       if(cnt%10===0)rows+=`<tr class="bonus"><td colspan="5">🎁 ${cnt}권 저금 이자! 별 ⭐ 3개가 들어왔어요</td></tr>`;});
-    const recent=[];for(let i=S.log.length-1;i>=0&&recent.length<6;i--){const id=S.log[i].b;if(!recent.includes(id)&&S.books[id])recent.push(id);}
-    box.innerHTML=(recent.length?`<div class="stamps" style="text-align:left;margin:0 0 4px">🔁 또 읽었어? 눌러서 바로 저금해요</div><div class="again">${recent.map(id=>`<button data-re="${esc(id)}">${cover(S.books[id])}<div>${esc(S.books[id].t.slice(0,12))}</div></button>`).join("")}</div>`:"")
+    const recent=[];for(let i=S.log.length-1;i>=0&&recent.length<8;i--){const id=S.log[i].b;if(!recent.includes(id)&&S.books[id])recent.push(id);}
+    box.innerHTML=(recent.length?`<div class="stamps" style="text-align:left;margin:0 0 4px">🔁 또 읽었어? 표지를 눌러서 바로 저금해요</div><div class="again">${recent.map(id=>`<button data-re="${esc(id)}">${cover(S.books[id])}<div>${esc(S.books[id].t.slice(0,14))}</div></button>`).join("")}</div>`:"")
      +`<div class="pb"><div class="pbh"><div class="t">아림이의 독서통장</div><div class="v">📚 ${n}권</div><div class="s">이번 달 ${month}권 · ${nr?`${nr[1]}까지 ${nr[0]-n}권 남았어요`:"최고 단계에 올랐어요!"}</div></div>
-       ${n?`<table><tr><th>날짜</th><th></th><th>책</th><th>느낌</th><th>도장</th></tr>${rows}</table>`:`<div class="empty">아직 통장이 비어 있어요.<br>책을 읽고 <b>➕ 책 넣기</b>에서 첫 책을 저금해 봐!</div>`}</div>`;
+       ${n?`<table><tr><th>날짜</th><th></th><th>책</th><th>느낌</th><th>도장</th></tr>${rows}</table>`:`<div class="empty">아직 통장이 비어 있어요.<br>책을 읽고 <b>➕ 책 넣기</b>나 <b>📦 전집</b>에서 첫 책을 저금해 봐!</div>`}</div>`;
     g("lbInfo").innerHTML="책 1권 = ⭐ 1 · 책 이야기 미션 = ⭐ 1 · 10권마다 이자 ⭐ 3<br>모은 별은 꾸미기 가게에서 쓸 수 있어요";
-    box.querySelectorAll("[data-re]").forEach(b=>b.onclick=()=>record(b.dataset.re,true));
+    box.querySelectorAll("[data-re]").forEach(b=>b.onclick=()=>record(b.dataset.re));
     box.querySelectorAll("tr.row").forEach(r=>r.onclick=()=>entry(Number(r.dataset.i)));
   }
 
@@ -1875,7 +1911,8 @@ CFG.forEach(c=>{
     box.innerHTML=`<div class="qz"><div class="qtitle" style="margin-top:0">🔍 어떤 책을 읽었어?</div>
       <div class="lsr"><input id="lbQ" type="search" placeholder="책 제목, 지은이, ISBN" value="${esc(last.q)}" enterkeyhint="search"><button class="btn" id="lbGo">찾기</button></div>
       <div id="lbRes"></div>
-      <button class="btn line" id="lbHand" style="width:100%;margin-top:12px">✏️ 검색에 없으면 직접 쓰기</button>
+      <button class="btn line" id="lbHand" style="width:100%;margin-top:12px">✏️📷 검색에 없으면 직접 쓰고 표지 찍기</button>
+      <div class="lnote">아람북스·그레이트북스 같은 전집은 <b>📦 전집</b> 칸에서 번호만 눌러 넣으면 편해요.</div>
       <details class="lset"><summary>🔑 보호자 설정 · 검색이 잘 안 될 때</summary>
         <div class="lnote">기본은 구글 도서 검색이에요. 우리나라 그림책이 잘 안 나오면 카카오 책 검색 키(REST API 키)를 넣으면 더 잘 찾아요. 키는 이 기기에만 저장돼요.</div>
         <div class="lsr" style="margin-top:6px"><input id="lbKey" placeholder="카카오 REST API 키" value="${esc(S.kakao)}"><button class="btn soft" id="lbKeyOk" style="margin-right:0">저장</button></div>
@@ -1894,7 +1931,8 @@ CFG.forEach(c=>{
     if(!last.res){el.innerHTML="";return;}
     if(!last.res.length){el.innerHTML=`<div class="stamps">찾는 책이 없어요. 다른 낱말로 찾거나 직접 써 봐요.</div>`;return;}
     el.innerHTML=last.res.map((b,i)=>`<button class="bres" data-k="${i}">${cover(b)}<div><b>${esc(b.t)}</b><span>${esc([b.a,b.p].filter(Boolean).join(" · "))}</span></div></button>`).join("");
-    el.querySelectorAll(".bres").forEach(x=>x.onclick=()=>{const b=last.res[Number(x.dataset.k)];S.books[b.id]=Object.assign(S.books[b.id]||{},b);save();record(b.id,timesRead(b.id)>0);});
+    el.querySelectorAll(".bres").forEach(x=>x.onclick=()=>{const b=last.res[Number(x.dataset.k)],old=S.books[b.id];
+      S.books[b.id]=Object.assign({},b,old&&old.img&&old.img.startsWith("data:")?{img:old.img}:{});save();record(b.id);});
   }
   async function search(q){
     if(!q)return;last={q,res:null,err:""};const el=g("lbRes");if(el)el.innerHTML=`<div class="stamps">📖 책을 찾고 있어요…</div>`;
@@ -1921,77 +1959,131 @@ CFG.forEach(c=>{
     drawRes();
   }
   function hand(){
-    const c=g("tkc");g("tk").classList.add("on");
-    c.innerHTML=`<h2>✏️ 책 직접 쓰기</h2><label class="lfld">책 제목<input id="hT"></label><label class="lfld">지은이 (몰라도 괜찮아요)<input id="hA"></label>
+    const c=g("tkc");g("tk").classList.add("on");let img="";
+    c.innerHTML=`<h2>✏️ 책 직접 쓰기</h2><div style="text-align:center;margin:6px 0 10px"><span class="cvw" id="hCv"><span class="cv big">📕</span><button class="camb" id="hCam">📷</button></span><div class="lab" style="margin-top:12px">📷를 눌러 표지를 찍어요</div></div>
+      <label class="lfld">책 제목<input id="hT"></label><label class="lfld">지은이 (몰라도 괜찮아요)<input id="hA"></label>
       <div class="msg" id="hMsg"></div><button class="hbtn" id="hOk">다음</button><button class="skip" id="hNo">닫기</button>`;
+    g("hCam").onclick=()=>photo(d=>{img=d;g("hCv").querySelector(".cv").outerHTML=`<img class="cv big" src="${d}" alt="">`;});
     g("hNo").onclick=()=>g("tk").classList.remove("on");
     g("hOk").onclick=()=>{const t=g("hT").value.trim(),a=g("hA").value.trim();if(!t){g("hMsg").textContent="책 제목을 써 주세요.";return;}
-      const id="m:"+t+"|"+a;S.books[id]=S.books[id]||{id,t,a,p:"",img:"",isbn:""};save();record(id,timesRead(id)>0);};
+      const id="m:"+t+"|"+a;S.books[id]=Object.assign(S.books[id]||{id,t,a,p:"",isbn:""},img?{img}:{});if(!save())return;record(id);};
+  }
+
+  /* 전집 */
+  function setsTab(){
+    if(curSet&&S.sets[curSet])return setView(curSet);
+    const box=g("lbBox"),ids=Object.keys(S.sets);
+    box.innerHTML=`<div class="qz"><div class="qtitle" style="margin-top:0">📦 우리 집 전집</div>
+      ${ids.length?ids.map(sid=>{const s=S.sets[sid],k=setRead(sid);return `<button class="bres" data-s="${sid}">${s.img?`<img class="cv" src="${esc(s.img)}" alt="">`:`<span class="cv">📦</span>`}<div style="flex:1"><b>${esc(s.name)}</b><span>${esc(s.pub||"")} · ${s.n}권 중 ${k}권 읽었어요</span><div class="bar"><i style="width:${k/s.n*100}%"></i></div></div></button>`;}).join(""):`<div class="stamps">아직 등록한 전집이 없어요.</div>`}
+      <button class="btn" id="setAdd" style="width:100%;margin-top:12px">➕ 전집 등록하기</button></div>`;
+    g("lbInfo").textContent="전집을 한 번 등록해 두면, 다음부터는 몇 권인지 번호만 누르면 돼요.";
+    box.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{curSet=b.dataset.s;show();});
+    g("setAdd").onclick=()=>setForm();
+  }
+  function setForm(sid){
+    const s=sid?S.sets[sid]:{name:"",pub:"",n:60,img:""},c=g("tkc");g("tk").classList.add("on");let img=s.img||"";
+    const isPub=PUBS.includes(s.pub);
+    c.innerHTML=`<h2>📦 ${sid?"전집 고치기":"전집 등록하기"}</h2>
+      <div style="text-align:center;margin:6px 0 10px"><span class="cvw" id="sCv">${img?`<img class="cv big" src="${esc(img)}" alt="">`:`<span class="cv big">📦</span>`}<button class="camb" id="sCam">📷</button></span><div class="lab" style="margin-top:12px">책장에 꽂힌 전집이나 대표 표지를 찍어요</div></div>
+      <label class="lfld">출판사<select id="sP">${PUBS.map(p=>`<option${s.pub===p?" selected":""}>${p}</option>`).join("")}<option value="_"${s.pub&&!isPub?" selected":""}>기타 (직접 쓰기)</option></select></label>
+      <label class="lfld" id="sPoW" style="display:${s.pub&&!isPub?"block":"none"}">출판사 이름<input id="sPo" value="${esc(isPub?"":s.pub)}"></label>
+      <label class="lfld">전집 이름<input id="sN" placeholder="예: 자연관찰, 세계명작, 수학동화" value="${esc(s.name)}"></label>
+      <label class="lfld">모두 몇 권?<input id="sC" type="number" inputmode="numeric" min="1" max="200" value="${s.n}"></label>
+      <div class="msg" id="sMsg"></div><button class="hbtn" id="sOk" style="background:${C}">${sid?"고치기":"등록하기"}</button>
+      ${sid?`<button class="holdbtn mini" id="sDel"><span>보호자: 꾹 눌러 전집 지우기 (통장 기록은 남아요)</span></button>`:""}<button class="skip" id="sNo">닫기</button>`;
+    g("sP").onchange=()=>{g("sPoW").style.display=g("sP").value==="_"?"block":"none";};
+    g("sCam").onclick=()=>photo(d=>{img=d;g("sCv").querySelector(".cv").outerHTML=`<img class="cv big" src="${d}" alt="">`;});
+    g("sNo").onclick=()=>g("tk").classList.remove("on");
+    g("sOk").onclick=()=>{
+      const pub=g("sP").value==="_"?g("sPo").value.trim():g("sP").value,name=g("sN").value.trim(),n=Math.max(1,Math.min(200,parseInt(g("sC").value,10)||0));
+      if(!name){g("sMsg").textContent="전집 이름을 써 주세요.";return;}
+      const id=sid||("s"+Date.now().toString(36));
+      S.sets[id]=Object.assign(S.sets[id]||{},{name,pub,n,img});
+      Object.values(S.books).forEach(b=>{if(b.set===id)volBook(id,b.vol);});
+      if(!save())return;g("tk").classList.remove("on");curSet=id;goTab("sets");};
+    const d=g("sDel");if(d)window.TOWN.hold(d,()=>{delete S.sets[sid];save();g("tk").classList.remove("on");curSet="";goTab("sets");});
+  }
+  function setView(sid){
+    const s=S.sets[sid],box=g("lbBox"),k=setRead(sid);let cells="";
+    for(let v=1;v<=s.n;v++){const id=volId(sid,v),b=S.books[id],t=timesRead(id),im=b&&b.img;
+      cells+=`<button class="${t?"rd":""}" data-v="${v}">${im?`<img src="${esc(im)}" alt="">`:""}<span class="vn">${v}</span>${t?`<span class="ok">${t>1?"✔"+t:"✔"}</span>`:""}</button>`;}
+    box.innerHTML=`<div class="qz"><button class="btn line" id="svBack" style="margin-top:0">← 전집 목록</button>
+      <div style="display:flex;gap:12px;align-items:center;margin-top:10px">${s.img?`<img class="cv big" src="${esc(s.img)}" alt="">`:`<span class="cv big">📦</span>`}<div style="flex:1"><b style="font-family:Jua;font-weight:normal;font-size:21px">${esc(s.name)}</b><div class="lab">${esc(s.pub||"")}</div>
+      <div class="scene" style="font-size:16px;padding:8px 10px;margin-top:6px">${s.n}권 중 <b>${k}권</b> 읽었어요${k<s.n?`<br>다 읽으려면 몇 권 남았을까? 🤔`:"<br>🎉 전집을 다 읽었어요!"}</div></div></div>
+      <div class="vols">${cells}</div>
+      <button class="btn soft" id="svEdit" style="margin-top:12px">✏️ 전집 고치기</button></div>`;
+    g("lbInfo").textContent="읽은 권 번호를 누르면 저금돼요. 표지 사진을 찍으면 그 칸에 표지가 보여요.";
+    g("svBack").onclick=()=>{curSet="";show();};
+    g("svEdit").onclick=()=>setForm(sid);
+    box.querySelectorAll(".vols button").forEach(b=>b.onclick=()=>{const v=Number(b.dataset.v);volBook(sid,v);save();record(volId(sid,v));});
   }
 
   /* 저금하기: 아이가 느낌 고르기 → 보호자 확인 */
-  function record(id,re){
+  function record(id){
     const b=S.books[id],c=g("tkc");if(!b)return;g("tk").classList.add("on");
-    let f="";
-    c.innerHTML=`<h2>📒 독서통장에 저금하기</h2><div style="display:flex;gap:12px;align-items:center;margin:6px 0 4px">${cover(b,true)}<div><b style="font-family:Jua;font-weight:normal;font-size:20px">${esc(b.t)}</b><div class="lab">${esc(b.a||"")}${re?"<br>🔁 "+timesRead(id)+"번 읽은 책이에요":""}</div></div></div>
+    const re=timesRead(id)>0;let f="";
+    c.innerHTML=`<h2>📒 독서통장에 저금하기</h2><div style="display:flex;gap:16px;align-items:center;margin:6px 0 4px">${camCover(b,"rCam")}<div><b style="font-family:Jua;font-weight:normal;font-size:20px" id="rT">${esc(b.t)}</b><div class="lab">${esc(b.a||"")}${re?"<br>🔁 "+timesRead(id)+"번 읽은 책이에요":""}</div></div></div>
+      ${b.set?`<label class="lfld">이 권의 제목 (몰라도 괜찮아요)<input id="rVt" value="${esc(b.vt||"")}" placeholder="예: 꿀벌은 춤을 춰요"></label>`:""}
       <div class="qq">이 책을 읽고 <b>어떤 느낌</b>이 들었어?</div>
       <div class="feel">${FEEL.map(x=>`<button class="opt" data-f="${x[0]}"><i>${x[1]}</i>${x[2]}</button>`).join("")}</div>
       <label class="lfld">읽은 날<input type="date" id="rD" value="${todayS()}" max="${todayS()}"></label>
       <div class="msg" id="rMsg"></div>
       <button class="holdbtn" id="rOk"><span>👨‍👩‍👧 다 읽은 걸 확인한 엄마 아빠가 2초 동안 꾹!</span></button>
       <button class="skip" id="rNo">다음에 하기</button>`;
+    g("rCam").onclick=()=>photo(d=>{b.img=d;if(!save())return;g("rCam").parentNode.querySelector(".cv").outerHTML=`<img class="cv big" src="${d}" alt="">`;});
     c.querySelectorAll(".feel .opt").forEach(x=>x.onclick=()=>{f=x.dataset.f;c.querySelectorAll(".feel .opt").forEach(y=>y.classList.toggle("sel",y===x));g("rMsg").textContent="";});
     g("rNo").onclick=()=>{g("tk").classList.remove("on");show();};
     window.TOWN.hold(g("rOk"),()=>{
       if(!f){g("rMsg").textContent="먼저 아림이가 느낌을 골라 줘요 💭";return;}
+      const vt=g("rVt");if(vt){b.vt=vt.value.trim();volBook(b.set,b.vol);}
       const d=g("rD").value||todayS();
-      S.log.push({b:id,d:d>todayS()?todayS():d,f,re:timesRead(id)>0?1:0});save();
+      S.log.push({b:id,d:d>todayS()?todayS():d,f,re:re?1:0});save();
       done(S.log.length-1);
     });
   }
   function done(i){
     const n=total(),c=g("tkc"),x=S.log[i],b=S.books[x.b];
-    c.innerHTML=`<h2>💮 저금 완료!</h2><div class="qq">${pick(PRAISE)}<br><b>${esc(b.t)}</b>은(는) 통장의 <b>${n}번째</b> 책이에요.${n%10===0?`<br>🎁 ${n}권 저금 이자로 별 ⭐ 3개를 더 받았어요!`:""}</div>
+    c.innerHTML=`<h2>💮 저금 완료!</h2><div style="text-align:center;margin:4px 0">${cover(b,true)}</div><div class="qq">${pick(PRAISE)}<br><b>${esc(b.t)}</b>은(는) 통장의 <b>${n}번째</b> 책이에요.${n%10===0?`<br>🎁 ${n}권 저금 이자로 별 ⭐ 3개를 더 받았어요!`:""}</div>
       <div class="lab">책 이야기를 엄마 아빠에게 들려주면 별 ⭐ 하나를 더 받아요.</div>
       <button class="hbtn" id="dTalk" style="background:${C}">🗣️ 책 이야기 미션 하기</button>
-      <button class="skip" id="dNo">통장 보러 가기</button>`;
+      <button class="skip" id="dNo">${b.set?"전집으로 돌아가기":"통장 보러 가기"}</button>`;
     prog();
-    g("dNo").onclick=()=>{g("tk").classList.remove("on");goTab("pb");};
+    g("dNo").onclick=()=>{g("tk").classList.remove("on");b.set?show():goTab("pb");};
     g("dTalk").onclick=()=>talk(i);
   }
   function talk(i){
     const x=S.log[i],b=S.books[x.b];
-    window.TOWN.openTalk("bk:"+i+":"+x.b,"📚 "+b.t,shuffle(TALK).slice(0,2),()=>{x.talk=1;save();goTab("pb");});
+    window.TOWN.openTalk("bk:"+i+":"+x.b,"📚 "+b.t,shuffle(TALK).slice(0,2),()=>{x.talk=1;save();show();});
   }
-  function goTab(t){tab=t;root.querySelectorAll("nav button").forEach(y=>y.classList.toggle("on",y.dataset.t===t));show();}
 
   /* 통장 한 줄 보기 */
   function entry(i){
     const x=S.log[i];if(!x)return;const b=S.books[x.b]||{t:"(책)"},f=FE[x.f],c=g("tkc");g("tk").classList.add("on");
-    c.innerHTML=`<h2>📒 ${shortD(x.d)}에 읽은 책</h2><div style="display:flex;gap:12px;align-items:center;margin:6px 0">${cover(b,true)}<div><b style="font-family:Jua;font-weight:normal;font-size:20px">${esc(b.t)}</b><div class="lab">${esc(b.a||"")}<br>지금까지 ${timesRead(x.b)}번 읽었어요</div></div></div>
+    c.innerHTML=`<h2>📒 ${shortD(x.d)}에 읽은 책</h2><div style="display:flex;gap:16px;align-items:center;margin:6px 0">${camCover(b,"eCam")}<div><b style="font-family:Jua;font-weight:normal;font-size:20px">${esc(b.t)}</b><div class="lab">${esc(b.a||"")}<br>지금까지 ${timesRead(x.b)}번 읽었어요</div></div></div>
       <div class="qq">${f?`그때 느낌: ${f[1]} ${f[2]}`:""}</div>
       ${x.talk?`<div class="talkok">🗣️ 책 이야기 도장도 받았어요!</div>`:`<button class="hbtn" id="eTalk" style="background:${C}">🗣️ 책 이야기 미션 하기</button>`}
       <button class="hbtn" id="eRe" style="background:#ffe6a8;color:#93600d">🔁 오늘 또 읽었어요</button>
       <button class="holdbtn mini" id="eDel"><span>보호자: 잘못 넣었으면 꾹 눌러 지우기</span></button>
       <button class="skip" id="eNo">닫기</button>`;
+    g("eCam").onclick=()=>photo(d=>{if(!S.books[x.b])return;S.books[x.b].img=d;if(!save())return;entry(i);});
     const t=g("eTalk");if(t)t.onclick=()=>talk(i);
-    g("eRe").onclick=()=>record(x.b,true);
-    g("eNo").onclick=()=>g("tk").classList.remove("on");
+    g("eRe").onclick=()=>record(x.b);
+    g("eNo").onclick=()=>{g("tk").classList.remove("on");show();};
     window.TOWN.hold(g("eDel"),()=>{S.log.splice(i,1);save();g("tk").classList.remove("on");show();});
   }
 
-  /* 내 책장 */
+  /* 내 책장: 읽은 책 표지 모아 보기 */
   function shelf(){
     const box=g("lbBox"),ids=[...new Set(S.log.map(x=>x.b))].filter(id=>S.books[id]);
     ids.sort((a,b)=>timesRead(b)-timesRead(a));
     const fc={};S.log.forEach(x=>{if(x.f)fc[x.f]=(fc[x.f]||0)+1;});
     const top=Object.entries(fc).sort((a,b)=>b[1]-a[1])[0];
-    box.innerHTML=ids.length?`<div class="qz"><div class="qtitle" style="margin-top:0">📚 아림이가 읽은 책 ${ids.length}종류</div>
-      ${top?`<div class="scene" style="margin-bottom:8px">아림이는 <b>${FE[top[0]][1]} ${FE[top[0]][2]}</b> 느낌의 책을 가장 많이 만났어요.<br>다음엔 <b>어떤 느낌</b>의 책을 찾아볼까?</div>`:""}
-      ${ids.map(id=>{const b=S.books[id];return `<button class="bres" data-id="${esc(id)}">${cover(b)}<div><b>${esc(b.t)}</b><span>${esc(b.a||"")} · ${timesRead(id)}번 읽음</span></div></button>`;}).join("")}</div>`
-      :`<div class="qz"><div class="empty" style="text-align:center;font-size:17px;color:#7d736c">책장이 아직 비어 있어요 📕</div></div>`;
-    g("lbInfo").textContent="여러 번 읽은 책일수록 위에 있어요.";
-    box.querySelectorAll(".bres").forEach(x=>x.onclick=()=>record(x.dataset.id,true));
+    box.innerHTML=ids.length?`<div class="qz"><div class="qtitle" style="margin-top:0">📚 아림이 책장 · ${ids.length}권</div>
+      ${top?`<div class="scene" style="margin-bottom:12px">아림이는 <b>${FE[top[0]][1]} ${FE[top[0]][2]}</b> 느낌의 책을 가장 많이 만났어요.<br>다음엔 <b>어떤 느낌</b>의 책을 찾아볼까?</div>`:""}
+      <div class="shelf">${ids.map(id=>{const b=S.books[id],t=timesRead(id),im=imgOf(b);return `<button data-id="${esc(id)}">${im?`<img class="cv" src="${esc(im)}" alt="">`:`<span class="cv">📕</span>`}${t>1?`<span class="cnt">${t}번</span>`:""}<span class="tt">${esc(b.t)}</span></button>`;}).join("")}</div></div>`
+      :`<div class="qz"><div style="text-align:center;font-size:17px;color:#7d736c;padding:16px">책장이 아직 비어 있어요 📕</div></div>`;
+    g("lbInfo").textContent="여러 번 읽은 책일수록 앞에 꽂혀요. 표지가 없는 책은 눌러서 📷로 찍어 주세요.";
+    box.querySelectorAll(".shelf button").forEach(x=>x.onclick=()=>record(x.dataset.id));
   }
 
   show();
