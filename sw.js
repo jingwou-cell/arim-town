@@ -1,5 +1,5 @@
 // 아림 마을 오프라인 캐시. 내용을 고쳐서 다시 올릴 때는 아래 버전 숫자를 올려 주세요.
-const CACHE = "arim-town-v5";
+const CACHE = "arim-town-v6";
 const CORE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
@@ -9,8 +9,12 @@ self.addEventListener("activate", e => {
 });
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
+  const u = new URL(e.request.url);
+  // 도서관 책 검색은 늘 새로 받아 와요 (캐시하지 않음)
+  if (u.hostname === "dapi.kakao.com" || (u.hostname === "www.googleapis.com" && u.pathname.startsWith("/books"))) return;
+  const same = u.origin === self.location.origin;
   e.respondWith(caches.open(CACHE).then(async c => {
-    const hit = await c.match(e.request, {ignoreSearch: true});
+    const hit = await c.match(e.request, {ignoreSearch: same});
     const net = fetch(e.request).then(r => { if (r && (r.ok || r.type === "opaque")) c.put(e.request, r.clone()); return r; }).catch(() => hit);
     return hit || net;
   }));

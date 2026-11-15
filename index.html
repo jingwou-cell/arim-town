@@ -254,6 +254,11 @@
       <div class="wall"><span style="background:#efeaff">🔢</span><span style="background:#efeaff">⏰</span><span style="background:#efeaff">🥄</span><span class="door">🚪</span></div>
       <div class="info"><b>아림 약국</b><span id="pRank2">수와 시계 놀이</span><div class="bar"><i id="pBar" style="background:#7c6ee6"></i></div><span id="pCnt"></span></div>
     </button>
+    <button class="tb" onclick="goPlace('b')">
+      <div class="roof" style="background:#3d8bd6">📚 도서관</div>
+      <div class="wall"><span style="background:#e3f0ff">📒</span><span style="background:#e3f0ff">📖</span><span style="background:#e3f0ff">🦉</span><span class="door">🚪</span></div>
+      <div class="info"><b>아림 도서관</b><span id="libRank">독서통장</span><div class="bar"><i id="libBar" style="background:#3d8bd6"></i></div><span id="libCnt"></span></div>
+    </button>
     <div id="moreTown" style="display:contents"></div>
   </div>
   <div class="road">🌳🚑🌷🚗🌳</div>
@@ -403,7 +408,7 @@ window.addEventListener("hashchange",fromHash);
   let M={log:{},rvDay:0,rv:0,talk:{},bodyDay:0,body:0,open:{},newly:"",spent:0,inv:{},park:[]};
   const STEP=40,BLD=[];
   const pts=()=>Object.values(window.PTS||{}).reduce((a,b)=>a+(b||0),0);
-  const isOpen=k=>k==="home"||k==="h"||k==="j"||k==="p"||k==="s"||M.open[k]!==undefined;
+  const isOpen=k=>k==="home"||k==="h"||k==="j"||k==="p"||k==="s"||k==="b"||M.open[k]!==undefined;
   function unlock(){
     const nx=BLD.find(b=>M.open[b.key]===undefined);if(!nx)return;
     const opened=Object.values(M.open);
@@ -1759,6 +1764,240 @@ CFG.forEach(c=>{
   show();
 });
 })();
+</script>
+<script>
+/* 아림 도서관 · 독서통장 */
+(function(){
+  const g=id=>document.getElementById(id);
+  const KEY="arim-lib",C="#3d8bd6",BG="#e3f0ff";
+  let S={books:{},log:[],kakao:""};
+  try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v)S=Object.assign(S,v);}catch(e){}
+  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
+  const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const pad=n=>(n<10?"0":"")+n;
+  const todayS=()=>{const n=new Date();return n.getFullYear()+"-"+pad(n.getMonth()+1)+"-"+pad(n.getDate());};
+  const shortD=s=>{const a=s.split("-");return Number(a[1])+"/"+Number(a[2]);};
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  const FEEL=[["fun","😆","재밌어"],["warm","🥰","따뜻해"],["wow","😮","신기해"],["sad","😢","슬퍼"],["scary","😨","무서워"],["hmm","🤔","궁금해"]];
+  const FE=Object.fromEntries(FEEL.map(x=>[x[0],x]));
+  const RANKS=[[0,"📖 책 친구"],[10,"🐛 책벌레"],[30,"🦉 책 박사"],[60,"📚 이야기 대장"],[100,"🏛️ 도서관장"]];
+  const TALK=["주인공은 누구였어? 어떤 친구였어?","가장 재미있었던 장면은 어디야?","내가 주인공이라면 어떻게 했을까?","이야기 다음에는 무슨 일이 일어날까?","책 제목을 내가 새로 짓는다면?","이 책을 누구에게 읽어 주고 싶어? 왜?","책에서 새로 알게 된 것이 있어?","그림에서 제일 마음에 드는 곳은 어디야?"];
+  const PRAISE=["책 한 권이 통장에 쏙! 📚","오늘도 이야기 하나를 모았어요! 🌟","책 읽는 아림이 최고! 👏","머릿속 도서관이 커졌어요! 🧠✨"];
+  const total=()=>S.log.length;
+  const talked=()=>S.log.filter(x=>x.talk).length;
+  const bonus=()=>Math.floor(total()/10)*3;
+  const stars=()=>total()+talked()+bonus();
+  const rank=()=>{let r=RANKS[0][1];RANKS.forEach(x=>{if(total()>=x[0])r=x[1];});return r;};
+  const nextRank=()=>RANKS.find(x=>x[0]>total());
+  const timesRead=id=>S.log.filter(x=>x.b===id).length;
+
+  (window.PLN=window.PLN||{}).b="library";(window.PBG=window.PBG||{}).b=BG;
+  const st=document.createElement("style");
+  st.textContent=`
+  .pb{background:#fff;border-radius:22px;box-shadow:0 3px 0 var(--line);overflow:hidden}
+  .pb .pbh{background:${C};color:#fff;padding:14px 16px;font-family:'Jua',sans-serif}
+  .pb .pbh .t{font-size:15px;opacity:.9}.pb .pbh .v{font-size:30px;margin-top:2px}
+  .pb .pbh .s{font-size:14px;opacity:.95;margin-top:4px}
+  .pb table{width:100%;border-collapse:collapse;font-size:15px}
+  .pb th{background:#eef5ff;color:#5d7aa0;font-weight:normal;font-size:13px;padding:7px 4px}
+  .pb td{border-top:1px dashed #d6e3f3;padding:8px 4px;vertical-align:middle;text-align:center}
+  .pb td.bt{text-align:left;font-family:'Jua',sans-serif;font-size:16px;line-height:1.3}
+  .pb td.bt small{display:block;font-family:'Gowun Dodum',sans-serif;font-size:12px;color:#8c8178}
+  .pb tr.row{cursor:pointer}
+  .pb .stp{display:inline-block;width:34px;height:34px;border:2px solid #e35d5d;color:#e35d5d;border-radius:50%;font-size:17px;line-height:30px;transform:rotate(-12deg)}
+  .pb .bonus td{background:#fff8e1;color:#a26a00;font-family:'Jua',sans-serif}
+  .pb .empty{padding:22px 16px;text-align:center;color:#7d736c;font-size:17px;line-height:1.6}
+  .cv{width:38px;height:52px;object-fit:cover;border-radius:4px;background:#e9eef5;display:inline-block;vertical-align:middle;font-size:22px;line-height:52px;text-align:center}
+  .cv.big{width:84px;height:116px;line-height:116px;font-size:40px;border-radius:8px;box-shadow:0 2px 6px #0002}
+  .lsr{display:flex;gap:6px}.lsr input{flex:1;min-width:0;font-size:17px;border:2px solid #cfe0f5;border-radius:14px;padding:11px 12px;font-family:inherit}
+  .lsr button{margin-top:0}
+  .bres{display:flex;gap:10px;align-items:center;width:100%;border:none;background:#f4f8ff;border-radius:16px;padding:9px;margin-top:8px;text-align:left}
+  .bres b{display:block;font-family:'Jua',sans-serif;font-weight:normal;font-size:17px;line-height:1.3}
+  .bres span{font-size:13px;color:#7d736c}
+  .again{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px}
+  .again button{flex:0 0 auto;width:78px;border:none;background:#fff;border-radius:14px;padding:6px 4px;box-shadow:0 2px 0 var(--line);font-size:12px;line-height:1.25}
+  .again button .cv{width:52px;height:70px;line-height:70px}
+  .feel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .feel .opt{text-align:center;font-size:16px;padding:9px 2px}.feel .opt i{display:block;font-style:normal;font-size:28px}
+  .feel .opt.sel{background:#ffe6a8;box-shadow:inset 0 0 0 3px #f0b429}
+  .lfld{display:block;font-size:14px;color:#7d736c;margin-top:8px}
+  .lfld input{display:block;width:100%;font-size:17px;border:2px solid #cfe0f5;border-radius:12px;padding:9px 10px;margin-top:3px;font-family:inherit}
+  .lnote{font-size:13px;color:#8c8178;line-height:1.5;margin-top:10px}
+  details.lset{margin-top:14px;font-size:14px;color:#6b625b}details.lset summary{cursor:pointer}
+  `;
+  document.head.appendChild(st);
+
+  const root=document.createElement("div");root.className="place";root.id="pb";
+  root.innerHTML=`<button class="backhome" onclick="goPlace('home')">← 🏘️ 아림 마을</button>
+   <header class="bh"><h1 style="color:${C}">📚 아림 도서관</h1><div class="prog"><span class="rank" id="lbRank"></span><span id="lbSt"></span></div></header>
+   <nav><button data-t="pb" class="on">📒 독서통장</button><button data-t="add">➕ 책 넣기</button><button data-t="shelf">📚 내 책장</button></nav>
+   <main><div id="lbBox"></div><div class="stamps" id="lbInfo"></div></main>`;
+  document.body.insertBefore(root,g("rv"));
+  let tab="pb";
+  root.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{tab=b.dataset.t;root.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));show();});
+  const cover=(b,big)=>b&&b.img?`<img class="cv${big?" big":""}" src="${esc(b.img)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;cv${big?" big":""}&quot;>📕</span>'">`:`<span class="cv${big?" big":""}">📕</span>`;
+
+  function prog(){
+    const n=total(),nr=nextRank();
+    g("lbRank").textContent=rank();
+    g("lbSt").textContent="📚 "+n+"권 · ⭐ "+stars();
+    window.onProg&&window.onProg("b",n,nr?nr[0]:n||1,rank(),stars());
+    const a=g("libRank"),c=g("libCnt"),br=g("libBar");
+    if(a)a.textContent=rank();
+    if(c)c.textContent="📚 "+n+"권 저금";
+    if(br)br.style.width=(nr?Math.min(100,n/nr[0]*100):100)+"%";
+  }
+  function show(){({pb:passbook,add:addTab,shelf:shelf})[tab]();prog();}
+
+  /* 독서통장 */
+  function passbook(){
+    const box=g("lbBox"),n=total(),nr=nextRank(),m=todayS().slice(0,7);
+    const month=S.log.filter(x=>x.d.slice(0,7)===m).length;
+    let rows="",cnt=0;
+    const sorted=S.log.map((x,i)=>[x,i]).sort((a,b)=>a[0].d<b[0].d?-1:a[0].d>b[0].d?1:a[1]-b[1]);
+    sorted.forEach(([x,i])=>{cnt++;const b=S.books[x.b]||{t:"(책)"},f=FE[x.f];
+      rows+=`<tr class="row" data-i="${i}"><td>${shortD(x.d)}</td><td>${cover(b)}</td><td class="bt">${esc(b.t)}${x.re?" <small>🔁 또 읽었어요</small>":""}</td><td>${f?f[1]:""}${x.talk?"🗣️":""}</td><td><span class="stp">${cnt}</span></td></tr>`;
+      if(cnt%10===0)rows+=`<tr class="bonus"><td colspan="5">🎁 ${cnt}권 저금 이자! 별 ⭐ 3개가 들어왔어요</td></tr>`;});
+    const recent=[];for(let i=S.log.length-1;i>=0&&recent.length<6;i--){const id=S.log[i].b;if(!recent.includes(id)&&S.books[id])recent.push(id);}
+    box.innerHTML=(recent.length?`<div class="stamps" style="text-align:left;margin:0 0 4px">🔁 또 읽었어? 눌러서 바로 저금해요</div><div class="again">${recent.map(id=>`<button data-re="${esc(id)}">${cover(S.books[id])}<div>${esc(S.books[id].t.slice(0,12))}</div></button>`).join("")}</div>`:"")
+     +`<div class="pb"><div class="pbh"><div class="t">아림이의 독서통장</div><div class="v">📚 ${n}권</div><div class="s">이번 달 ${month}권 · ${nr?`${nr[1]}까지 ${nr[0]-n}권 남았어요`:"최고 단계에 올랐어요!"}</div></div>
+       ${n?`<table><tr><th>날짜</th><th></th><th>책</th><th>느낌</th><th>도장</th></tr>${rows}</table>`:`<div class="empty">아직 통장이 비어 있어요.<br>책을 읽고 <b>➕ 책 넣기</b>에서 첫 책을 저금해 봐!</div>`}</div>`;
+    g("lbInfo").innerHTML="책 1권 = ⭐ 1 · 책 이야기 미션 = ⭐ 1 · 10권마다 이자 ⭐ 3<br>모은 별은 꾸미기 가게에서 쓸 수 있어요";
+    box.querySelectorAll("[data-re]").forEach(b=>b.onclick=()=>record(b.dataset.re,true));
+    box.querySelectorAll("tr.row").forEach(r=>r.onclick=()=>entry(Number(r.dataset.i)));
+  }
+
+  /* 책 넣기 */
+  let last={q:"",res:null,err:""};
+  function addTab(){
+    const box=g("lbBox");
+    box.innerHTML=`<div class="qz"><div class="qtitle" style="margin-top:0">🔍 어떤 책을 읽었어?</div>
+      <div class="lsr"><input id="lbQ" type="search" placeholder="책 제목, 지은이, ISBN" value="${esc(last.q)}" enterkeyhint="search"><button class="btn" id="lbGo">찾기</button></div>
+      <div id="lbRes"></div>
+      <button class="btn line" id="lbHand" style="width:100%;margin-top:12px">✏️ 검색에 없으면 직접 쓰기</button>
+      <details class="lset"><summary>🔑 보호자 설정 · 검색이 잘 안 될 때</summary>
+        <div class="lnote">기본은 구글 도서 검색이에요. 우리나라 그림책이 잘 안 나오면 카카오 책 검색 키(REST API 키)를 넣으면 더 잘 찾아요. 키는 이 기기에만 저장돼요.</div>
+        <div class="lsr" style="margin-top:6px"><input id="lbKey" placeholder="카카오 REST API 키" value="${esc(S.kakao)}"><button class="btn soft" id="lbKeyOk" style="margin-right:0">저장</button></div>
+        <div class="lnote" id="lbKeyMsg">${S.kakao?"✅ 카카오 검색을 쓰고 있어요":"지금은 구글 도서 검색을 쓰고 있어요"}</div>
+      </details></div>`;
+    g("lbInfo").textContent="검색은 엄마 아빠와 함께! 책을 고르면 아림이가 느낌을 골라요.";
+    drawRes();
+    const go=()=>search(g("lbQ").value.trim());
+    g("lbGo").onclick=go;g("lbQ").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();go();}};
+    g("lbHand").onclick=hand;
+    g("lbKeyOk").onclick=()=>{S.kakao=g("lbKey").value.trim();save();g("lbKeyMsg").textContent=S.kakao?"✅ 카카오 검색을 쓰고 있어요":"지금은 구글 도서 검색을 쓰고 있어요";};
+  }
+  function drawRes(){
+    const el=g("lbRes");if(!el)return;
+    if(last.err){el.innerHTML=`<div class="msg" style="margin-top:10px">${esc(last.err)}</div>`;return;}
+    if(!last.res){el.innerHTML="";return;}
+    if(!last.res.length){el.innerHTML=`<div class="stamps">찾는 책이 없어요. 다른 낱말로 찾거나 직접 써 봐요.</div>`;return;}
+    el.innerHTML=last.res.map((b,i)=>`<button class="bres" data-k="${i}">${cover(b)}<div><b>${esc(b.t)}</b><span>${esc([b.a,b.p].filter(Boolean).join(" · "))}</span></div></button>`).join("");
+    el.querySelectorAll(".bres").forEach(x=>x.onclick=()=>{const b=last.res[Number(x.dataset.k)];S.books[b.id]=Object.assign(S.books[b.id]||{},b);save();record(b.id,timesRead(b.id)>0);});
+  }
+  async function search(q){
+    if(!q)return;last={q,res:null,err:""};const el=g("lbRes");if(el)el.innerHTML=`<div class="stamps">📖 책을 찾고 있어요…</div>`;
+    const digits=q.replace(/[-\s]/g,""),isbn=/^(\d{9}[\dXx]|\d{13})$/.test(digits);
+    try{
+      let res=[];
+      if(S.kakao){
+        const r=await fetch("https://dapi.kakao.com/v3/search/book?size=20&query="+encodeURIComponent(isbn?digits:q)+(isbn?"&target=isbn":""),{headers:{Authorization:"KakaoAK "+S.kakao}});
+        if(!r.ok)throw new Error(r.status===401?"카카오 키가 맞지 않아요. 보호자 설정을 확인해 주세요.":"검색이 잠깐 안 돼요. 조금 뒤에 다시 해 봐요.");
+        const j=await r.json();
+        res=(j.documents||[]).map(d=>{const is=(d.isbn||"").split(" ").filter(Boolean).pop()||"";return{id:is?"isbn:"+is:"k:"+d.title+"|"+(d.authors||[]).join(","),t:d.title,a:(d.authors||[]).join(", "),p:d.publisher||"",img:d.thumbnail||"",isbn:is};});
+      }else{
+        const ko=/[가-힣]/.test(q);
+        const r=await fetch("https://www.googleapis.com/books/v1/volumes?maxResults=20&printType=books&q="+encodeURIComponent(isbn?"isbn:"+digits:q)+(ko?"&langRestrict=ko":""));
+        if(!r.ok)throw new Error("검색이 잠깐 안 돼요. 조금 뒤에 다시 해 봐요.");
+        const j=await r.json();
+        res=(j.items||[]).map(it=>{const v=it.volumeInfo||{},ids=v.industryIdentifiers||[],is=((ids.find(x=>x.type==="ISBN_13")||ids.find(x=>x.type==="ISBN_10")||{}).identifier)||"";
+          const im=((v.imageLinks||{}).thumbnail||(v.imageLinks||{}).smallThumbnail||"").replace(/^http:/,"https:");
+          return{id:is?"isbn:"+is:"g:"+it.id,t:v.title+(v.subtitle?" : "+v.subtitle:""),a:(v.authors||[]).join(", "),p:v.publisher||"",img:im,isbn:is};});
+      }
+      const seen={};res=res.filter(b=>b.t&&!seen[b.id]&&(seen[b.id]=1));
+      last.res=res;
+    }catch(e){last.err=e&&e.message&&!/fetch|network|load/i.test(e.message)?e.message:"인터넷이 연결되어 있는지 확인해 주세요.";}
+    drawRes();
+  }
+  function hand(){
+    const c=g("tkc");g("tk").classList.add("on");
+    c.innerHTML=`<h2>✏️ 책 직접 쓰기</h2><label class="lfld">책 제목<input id="hT"></label><label class="lfld">지은이 (몰라도 괜찮아요)<input id="hA"></label>
+      <div class="msg" id="hMsg"></div><button class="hbtn" id="hOk">다음</button><button class="skip" id="hNo">닫기</button>`;
+    g("hNo").onclick=()=>g("tk").classList.remove("on");
+    g("hOk").onclick=()=>{const t=g("hT").value.trim(),a=g("hA").value.trim();if(!t){g("hMsg").textContent="책 제목을 써 주세요.";return;}
+      const id="m:"+t+"|"+a;S.books[id]=S.books[id]||{id,t,a,p:"",img:"",isbn:""};save();record(id,timesRead(id)>0);};
+  }
+
+  /* 저금하기: 아이가 느낌 고르기 → 보호자 확인 */
+  function record(id,re){
+    const b=S.books[id],c=g("tkc");if(!b)return;g("tk").classList.add("on");
+    let f="";
+    c.innerHTML=`<h2>📒 독서통장에 저금하기</h2><div style="display:flex;gap:12px;align-items:center;margin:6px 0 4px">${cover(b,true)}<div><b style="font-family:Jua;font-weight:normal;font-size:20px">${esc(b.t)}</b><div class="lab">${esc(b.a||"")}${re?"<br>🔁 "+timesRead(id)+"번 읽은 책이에요":""}</div></div></div>
+      <div class="qq">이 책을 읽고 <b>어떤 느낌</b>이 들었어?</div>
+      <div class="feel">${FEEL.map(x=>`<button class="opt" data-f="${x[0]}"><i>${x[1]}</i>${x[2]}</button>`).join("")}</div>
+      <label class="lfld">읽은 날<input type="date" id="rD" value="${todayS()}" max="${todayS()}"></label>
+      <div class="msg" id="rMsg"></div>
+      <button class="holdbtn" id="rOk"><span>👨‍👩‍👧 다 읽은 걸 확인한 엄마 아빠가 2초 동안 꾹!</span></button>
+      <button class="skip" id="rNo">다음에 하기</button>`;
+    c.querySelectorAll(".feel .opt").forEach(x=>x.onclick=()=>{f=x.dataset.f;c.querySelectorAll(".feel .opt").forEach(y=>y.classList.toggle("sel",y===x));g("rMsg").textContent="";});
+    g("rNo").onclick=()=>{g("tk").classList.remove("on");show();};
+    window.TOWN.hold(g("rOk"),()=>{
+      if(!f){g("rMsg").textContent="먼저 아림이가 느낌을 골라 줘요 💭";return;}
+      const d=g("rD").value||todayS();
+      S.log.push({b:id,d:d>todayS()?todayS():d,f,re:timesRead(id)>0?1:0});save();
+      done(S.log.length-1);
+    });
+  }
+  function done(i){
+    const n=total(),c=g("tkc"),x=S.log[i],b=S.books[x.b];
+    c.innerHTML=`<h2>💮 저금 완료!</h2><div class="qq">${pick(PRAISE)}<br><b>${esc(b.t)}</b>은(는) 통장의 <b>${n}번째</b> 책이에요.${n%10===0?`<br>🎁 ${n}권 저금 이자로 별 ⭐ 3개를 더 받았어요!`:""}</div>
+      <div class="lab">책 이야기를 엄마 아빠에게 들려주면 별 ⭐ 하나를 더 받아요.</div>
+      <button class="hbtn" id="dTalk" style="background:${C}">🗣️ 책 이야기 미션 하기</button>
+      <button class="skip" id="dNo">통장 보러 가기</button>`;
+    prog();
+    g("dNo").onclick=()=>{g("tk").classList.remove("on");goTab("pb");};
+    g("dTalk").onclick=()=>talk(i);
+  }
+  function talk(i){
+    const x=S.log[i],b=S.books[x.b];
+    window.TOWN.openTalk("bk:"+i+":"+x.b,"📚 "+b.t,shuffle(TALK).slice(0,2),()=>{x.talk=1;save();goTab("pb");});
+  }
+  function goTab(t){tab=t;root.querySelectorAll("nav button").forEach(y=>y.classList.toggle("on",y.dataset.t===t));show();}
+
+  /* 통장 한 줄 보기 */
+  function entry(i){
+    const x=S.log[i];if(!x)return;const b=S.books[x.b]||{t:"(책)"},f=FE[x.f],c=g("tkc");g("tk").classList.add("on");
+    c.innerHTML=`<h2>📒 ${shortD(x.d)}에 읽은 책</h2><div style="display:flex;gap:12px;align-items:center;margin:6px 0">${cover(b,true)}<div><b style="font-family:Jua;font-weight:normal;font-size:20px">${esc(b.t)}</b><div class="lab">${esc(b.a||"")}<br>지금까지 ${timesRead(x.b)}번 읽었어요</div></div></div>
+      <div class="qq">${f?`그때 느낌: ${f[1]} ${f[2]}`:""}</div>
+      ${x.talk?`<div class="talkok">🗣️ 책 이야기 도장도 받았어요!</div>`:`<button class="hbtn" id="eTalk" style="background:${C}">🗣️ 책 이야기 미션 하기</button>`}
+      <button class="hbtn" id="eRe" style="background:#ffe6a8;color:#93600d">🔁 오늘 또 읽었어요</button>
+      <button class="holdbtn mini" id="eDel"><span>보호자: 잘못 넣었으면 꾹 눌러 지우기</span></button>
+      <button class="skip" id="eNo">닫기</button>`;
+    const t=g("eTalk");if(t)t.onclick=()=>talk(i);
+    g("eRe").onclick=()=>record(x.b,true);
+    g("eNo").onclick=()=>g("tk").classList.remove("on");
+    window.TOWN.hold(g("eDel"),()=>{S.log.splice(i,1);save();g("tk").classList.remove("on");show();});
+  }
+
+  /* 내 책장 */
+  function shelf(){
+    const box=g("lbBox"),ids=[...new Set(S.log.map(x=>x.b))].filter(id=>S.books[id]);
+    ids.sort((a,b)=>timesRead(b)-timesRead(a));
+    const fc={};S.log.forEach(x=>{if(x.f)fc[x.f]=(fc[x.f]||0)+1;});
+    const top=Object.entries(fc).sort((a,b)=>b[1]-a[1])[0];
+    box.innerHTML=ids.length?`<div class="qz"><div class="qtitle" style="margin-top:0">📚 아림이가 읽은 책 ${ids.length}종류</div>
+      ${top?`<div class="scene" style="margin-bottom:8px">아림이는 <b>${FE[top[0]][1]} ${FE[top[0]][2]}</b> 느낌의 책을 가장 많이 만났어요.<br>다음엔 <b>어떤 느낌</b>의 책을 찾아볼까?</div>`:""}
+      ${ids.map(id=>{const b=S.books[id];return `<button class="bres" data-id="${esc(id)}">${cover(b)}<div><b>${esc(b.t)}</b><span>${esc(b.a||"")} · ${timesRead(id)}번 읽음</span></div></button>`;}).join("")}</div>`
+      :`<div class="qz"><div class="empty" style="text-align:center;font-size:17px;color:#7d736c">책장이 아직 비어 있어요 📕</div></div>`;
+    g("lbInfo").textContent="여러 번 읽은 책일수록 위에 있어요.";
+    box.querySelectorAll(".bres").forEach(x=>x.onclick=()=>record(x.dataset.id,true));
+  }
+
+  show();
+})();
+</script>
+<script>
 fromHash();
 TOWN.start();
 if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
