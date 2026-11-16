@@ -46,6 +46,7 @@
   .room.done .st{display:block}
   .room .pg{font-size:11px;color:#8a7f77;margin-top:2px;letter-spacing:1px}
   .room.done .pg{display:none}
+  .room.done.fresh .pg{display:block;color:#d9603f;letter-spacing:0;font-size:12px}
   .qhead{display:flex;align-items:center;gap:8px;margin-bottom:6px}
   .qhead h3{margin:0!important}
   .dots{margin-left:auto;font-size:13px;letter-spacing:2px;color:#e3a98f}
@@ -205,6 +206,9 @@
   .avrow .chipb{border:none;border-radius:999px;padding:7px 12px;margin:0 5px 5px 0;background:#f3eee9;font-family:'Jua',sans-serif;font-size:15px}
   .avrow .chipb.on{background:#ff8a65;color:#fff}
 
+  .wkrow{margin-top:8px}
+  .wkrow .chipb{border:none;border-radius:999px;padding:8px 12px;margin:0 6px 6px 0;background:#fff1c9;font-family:'Jua',sans-serif;font-size:15px;color:#7a5200}
+  .wkrow .chipb.off{background:#efeae4;color:#8d857c}
 
   body.bg-j{background:linear-gradient(#ffe3ec 0,#fff3ea 420px,#fff9f1 421px)}
   body.bg-home{background:linear-gradient(#bfe4ff 0,#e6f5ff 55%,#d9f0cf 55.1%,#e9f7e2 100%)}
@@ -710,48 +714,34 @@ window.addEventListener("hashchange",fromHash);
     if(next)hold(g("lkOpen"),()=>{M.open[k]=pts();M.newly=k;save();g("tk").classList.remove("on");homeDraw();});
   }
 
-  /* 주간 새 문제 꾸러미 (packs.json) */
-  let PACKS=[];
-  if(!M.wk)M.wk={};
+  /* 주간 새 문제 (packs.json): 공개일이 된 문제를 각 건물·진료과의 문제 뒤에 덧붙임 */
+  let PACKS=[],NEWQ=[],applied=false;const ADDR={};
   const dstr=()=>{const n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");};
   const kdate=id=>{const a=id.split("-");return Number(a[1])+"월 "+Number(a[2])+"일";};
-  const wkDone=p=>Math.min(p.q.length,M.wk[p.id]||0);
-  const wkPts=()=>{window.PTS.w=PACKS.reduce((a,p)=>a+wkDone(p),0);};
   function loadPacks(){
     return fetch("packs.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(j=>{
-      if(j&&Array.isArray(j.packs))PACKS=j.packs.filter(p=>p&&p.id&&Array.isArray(p.q)).sort((a,b)=>a.id<b.id?-1:1);wkPts();}).catch(()=>{});
+      if(j&&Array.isArray(j.packs))PACKS=j.packs.filter(p=>p&&p.id&&Array.isArray(p.q)).sort((a,b)=>a.id<b.id?-1:1);applyPacks();}).catch(()=>{});
   }
-  BANK.w=id=>{const a=id.split(":"),p=PACKS.find(x=>x.id===a[1]),x=p&&p.q[a[2]];return x?{q:[x.q,x.o[0],x.o[1],x.o[2],x.a],label:x.t||"새 문제"}:null;};
+  function applyPacks(){
+    if(applied)return;applied=true;const t=dstr();
+    PACKS.filter(p=>p.id<=t).forEach(p=>p.q.forEach(x=>{
+      if(!x||!x.r||!x.q||!Array.isArray(x.o)||x.o.length<3)return;
+      const a=x.r.split(":"),A=ADDR[a[0]];if(!A)return;
+      const i=A.add(a[1],[x.q,x.o[0],x.o[1],x.o[2],x.a||""]);if(i>=0)NEWQ.push({id:a[0]+":"+a[1]+":"+i,b:a[0],pack:p.id,title:p.title});}));
+    Object.values(ADDR).forEach(A=>{try{A.done();}catch(e){}});
+  }
   function drawWk(){
     const c=g("wkCard");if(!c)return;if(!PACKS.length){c.style.display="none";return;}
-    c.style.display="block";const t=dstr(),rel=PACKS.filter(p=>p.id<=t),nxt=PACKS.find(p=>p.id>t),cur=rel.find(p=>wkDone(p)<p.q.length);
-    if(cur)c.innerHTML=`<h3>📬 새 문제 꾸러미</h3><span class="big">${cur.title}</span><br>${wkDone(cur)} / ${cur.q.length} 문제를 풀었어요.<button class="hbtn" id="wkGo">${wkDone(cur)?"이어서 풀기":"열어 보기"}</button>`;
-    else if(rel.length)c.innerHTML=`<h3>📬 새 문제 꾸러미</h3>도착한 꾸러미를 모두 풀었어요! 🎉${nxt?`<br>다음 꾸러미는 ${kdate(nxt.id)}에 와요.`:""}`;
-    else c.innerHTML=`<h3>📬 새 문제 꾸러미</h3>${kdate(nxt.id)} 월요일에 첫 꾸러미가 도착해요!`;
-    const go=g("wkGo");if(go)go.onclick=()=>openWk(cur);
-  }
-  function openWk(p){
-    const c=g("rvc");g("rv").classList.add("on");
-    const close=()=>{g("rv").classList.remove("on");homeDraw();};
-    const draw=()=>{
-      const k=wkDone(p);
-      if(k>=p.q.length){SFX("fanfare");c.innerHTML=`<h2>📬 꾸러미 완료!</h2><div class="qq">'${p.title}' ${p.q.length}문제를 모두 풀었어요. 정말 대단해요!</div><button class="hbtn" id="wkClose">마을로 가기 🏘️</button>`;g("wkClose").onclick=close;return;}
-      const x=p.q[k];let w=0;
-      c.innerHTML=`<h2>📬 ${p.title} ${k+1} / ${p.q.length}</h2><div class="lab">${x.t||""}</div><div class="qq">${x.q}</div>
-        <div class="opts">${shuffle([0,1,2]).map(i=>`<button class="opt" data-k="${i}">${x.o[i]}</button>`).join("")}</div>
-        <div class="msg" id="wkmsg"></div>
-        <div class="ans" id="wkans"><div class="pr"></div><p>${x.a}</p><button class="btn" id="wkNext">${k+1<p.q.length?"다음 문제 →":"꾸러미 끝내기 🎉"}</button></div>
-        <button class="skip" id="wkSkip">그만하고 나중에 이어서 하기</button>`;
-      g("wkSkip").onclick=close;g("wkNext").onclick=draw;
-      c.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
-        if(b.classList.contains("wrong")||b.classList.contains("right"))return;
-        if(b.dataset.k==="0"){b.classList.add("right");c.querySelectorAll(".opt").forEach(y=>{if(y!==b)y.remove();});
-          M.wk[p.id]=k+1;const id="w:"+p.id+":"+k;if(!M.log[id])M.log[id]={d:day(),w:w};save();wkPts();
-          g("wkmsg").textContent="";const a=g("wkans");a.querySelector(".pr").textContent=PR[Math.floor(Math.random()*PR.length)].replace("기억하고 있었네","잘 생각했어요").replace("머릿속에 쏙 들어 있었구나","새로운 걸 알았네").replace("복습 대장이야","척척박사야");a.classList.add("show");
-        }else{w++;b.classList.add("wrong");g("wkmsg").textContent="음, 다시 생각해 볼까? 💭";}
-      });
-    };
-    draw();
+    const t=dstr(),nxt=PACKS.find(p=>p.id>t),left=NEWQ.filter(x=>!M.log[x.id]);
+    c.style.display="block";
+    if(left.length){
+      const by={};left.forEach(x=>{by[x.b]=(by[x.b]||0)+1;});
+      const last=left[left.length-1];
+      c.innerHTML=`<h3>📬 새 문제가 도착했어요!</h3>이번 주제: <b style="font-family:Jua;font-weight:normal">${last.title||""}</b><br>건물에 새 문제 ${left.length}개가 들어왔어요.<div class="wkrow">${Object.keys(by).map(k=>{const b=info(k);return b?`<button class="chipb${isOpen(k)?"":" off"}" data-b="${k}">${b.emoji} ${MAPN[k]||b.name} ${by[k]}${isOpen(k)?"":" 🔒"}</button>`:"";}).join("")}</div>`;
+      c.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{if(isOpen(b.dataset.b)){SFX("pop");goPlace(b.dataset.b);}else SFX("no");});
+    }else if(NEWQ.length)c.innerHTML=`<h3>📬 새 문제</h3>도착한 새 문제를 모두 풀었어요! 🎉${nxt?`<br>다음 새 문제는 ${kdate(nxt.id)}에 와요.`:""}`;
+    else if(nxt)c.innerHTML=`<h3>📬 새 문제</h3>${kdate(nxt.id)} 월요일에 건물마다 새 문제가 들어와요!`;
+    else c.style.display="none";
   }
   /* 마을 화면 */
   function homeDraw(){
@@ -774,7 +764,7 @@ window.addEventListener("hashchange",fromHash);
     reg:(k,f)=>{BANK[k]=f;},
     solved:(id,w)=>{if(!M.log[id]){M.log[id]={d:day(),w:w||0};save();}},
     talkDone:k=>!!M.talk[k],
-    hold:hold,isOpen:isOpen,drawShop:()=>drawShop(),
+    hold:hold,isOpen:isOpen,addr:(k,add,done)=>{ADDR[k]={add:add,done:done};},drawShop:()=>drawShop(),
     addBld:b=>{BLD.push(b);(window.PLN=window.PLN||{})[b.key]=b.hash;(window.PBG=window.PBG||{})[b.key]=b.bg;},
     openTalk:openTalk,
     homeDraw:homeDraw,
@@ -1234,7 +1224,7 @@ path:[["병리과 선생님은 주로 무엇으로 병을 찾을까?","현미경
  ["우리 몸을 이루는 가장 작은 벽돌은?","세포","뼈","머리카락","세포가 모여 조직이, 조직이 모여 장기가 돼요."]]
 };
 const QS={};D.forEach(d=>{QS[d.id]=(d.q?[[d.q,...OPT[d.id],d.a]]:[]).concat(QX[d.id]||[]);});
-const QN=5,QTOTAL=D.length*QN;
+const QN=5;const qlen=id=>QS[id].length,qtotal=()=>D.reduce((a,d)=>a+qlen(d.id),0);
 const DM=Object.fromEntries(D.map(d=>[d.id,d]));
 const PRAISES=["와, 생각하는 힘이 대단해요! 🌟","아림이 진짜 의사 선생님 같아! 🩺","스스로 생각해 본 게 제일 멋져요! 👏","궁금한 걸 끝까지 생각했네! 💖","오늘도 한 뼘 더 똑똑해졌어요! 🧠✨"];
 const PATIENTS=[["🐻","곰돌이가"],["🐰","토끼가"],["🐶","강아지가"],["🐱","고양이가"],["🐼","판다가"],["🦊","여우가"],["🐧","펭귄이"],["🐨","코알라가"],["🐯","호랑이가"],["🐹","햄스터가"]];
@@ -1245,7 +1235,7 @@ const $=id=>root.querySelector("#"+id);
 
 let st={s:{},q:{},guided:0,dx:0,dxn:0,mind:0};
 try{const x=JSON.parse(localStorage.getItem("arim-hospital1")||"null");if(x)st=Object.assign(st,x);}catch(e){}
-const solved=id=>Math.min(QN,Math.max(st.q[id]||0,st.s[id]?1:0));
+const solved=id=>Math.min(QS[id].length,Math.max(st.q[id]||0,st.s[id]?1:0));
 const save=()=>{try{localStorage.setItem("arim-hospital1",JSON.stringify(st));}catch(e){}};
 
 /* 건물 */
@@ -1267,15 +1257,15 @@ $("bld").addEventListener("click",roomClick);$("bld2").addEventListener("click",
 function refresh(){
   let n=0,t=0;
   D.forEach(d=>{const k=solved(d.id);t+=k;if(k>=QN)n++;
-    const el=root.querySelector(`.room[data-id="${d.id}"]`);el.classList.toggle("done",k>=QN);
-    el.querySelector(".pg").textContent=k?"●".repeat(k)+"○".repeat(QN-k):"";});
+    const el=root.querySelector(`.room[data-id="${d.id}"]`),L=qlen(d.id);el.classList.toggle("done",k>=QN);el.classList.toggle("fresh",k>=QN&&k<L);
+    el.querySelector(".pg").textContent=k>=QN?(k<L?"🆕 새 문제 "+(L-k):""):(k?"●".repeat(k)+"○".repeat(QN-k):"");});
   let r=RANKS[0][1],next=null;
   for(const [k,v] of RANKS){if(t>=k)r=v;else if(next===null)next=k;}
   $("pRank").textContent=r;window.onProg&&window.onProg("h",n,D.length,r,t+(st.dx||0)+(st.mind||0));
-  $("pSt").textContent="💮 도장 "+n+"/"+D.length+" · 퀴즈 "+t+"/"+QTOTAL+(next?" (승진까지 "+(next-t)+"문제)":"");
+  $("pSt").textContent="💮 도장 "+n+"/"+D.length+" · 퀴즈 "+t+"/"+qtotal()+(next?" (승진까지 "+(next-t)+"문제)":"");
   $("pGd").textContent="🛎️ 안내 "+st.guided+" · 🔍 추리 ⭐"+st.dx+" · 💗 마음 "+st.mind;
   if(window.TOWN)D.forEach(d=>root.querySelector(`.room[data-id="${d.id}"]`).classList.toggle("talk",TOWN.talkDone("h:"+d.id)));
-  $("finish").classList.toggle("show",t>=QTOTAL);
+  $("finish").classList.toggle("show",t>=qtotal());
 }
 $("reset").onclick=()=>{st={s:{},q:{},guided:0,dx:0,dxn:0,mind:0};save();refresh();window.scrollTo({top:0,behavior:"smooth"});};
 
@@ -1306,21 +1296,22 @@ function openDept(id){
   renderQ(id);
   sheet.classList.add("open");card.scrollTop=0;
 }
-function dots(k,cur){let s="";for(let i=0;i<QN;i++)s+=i<k?"<b>●</b>":(i===cur?"◉":"○");return s;}
+function dots(k,cur,n){n=n||QN;if(n>8)return "";let s="";for(let i=0;i<n;i++)s+=i<k?"<b>●</b>":(i===cur?"◉":"○");return s;}
 let qw=0;
 function renderQ(id){
   const k=solved(id),box=$("qbox");
-  if(k>=QN){
+  const QL=qlen(id);
+  if(k>=QL){
     const T=window.TOWN,td=T&&T.talkDone("h:"+id);
-    box.innerHTML=`<div class="qhead"><h3>💮 퀴즈 완료!</h3><span class="dots">${dots(QN,-1)}</span></div><p>이 진료과의 퀴즈 5개를 모두 풀었어요. 견학 도장을 받았어요!</p>`
+    box.innerHTML=`<div class="qhead"><h3>💮 퀴즈 완료!</h3><span class="dots">${dots(QL,-1,QL)}</span></div><p>이 진료과의 퀴즈 ${QL}개를 모두 풀었어요. 견학 도장을 받았어요!</p>`
       +(T?(td?`<div class="talkok">🗣️ 설명 도장도 받았어요!</div>`:`<button class="talkbtn" data-act="talk" data-id="${id}">🗣️ 엄마 아빠에게 설명하기 미션</button>`):"");
     return;}
   qw=0;
   const q=QS[id][k];
-  box.innerHTML=`<div class="qhead"><h3>🤔 퀴즈 ${k+1} / ${QN}</h3><span class="dots">${dots(k,k)}</span></div><p>${q[0]}</p>
+  box.innerHTML=`<div class="qhead"><h3>${k>=QN?"🆕 새 퀴즈":"🤔 퀴즈"} ${k+1} / ${QL}</h3><span class="dots">${dots(k,k,QL)}</span></div><p>${q[0]}</p>
    <div class="opts" style="margin-top:10px">${shuffle([1,2,3]).map(i=>`<button class="opt" data-act="pick" data-id="${id}" data-k="${i}">${q[i]}</button>`).join("")}</div>
    <div class="msg" id="qmsg"></div>
-   <div class="ans" id="ans"><div class="pr"></div><p>${q[4]}</p><button class="btn" data-act="next" data-id="${id}">${k+1<QN?"다음 문제 →":"도장 받기 💮"}</button></div>`;
+   <div class="ans" id="ans"><div class="pr"></div><p>${q[4]}</p><button class="btn" data-act="next" data-id="${id}">${k+1===QN?"도장 받기 💮":(k+1<QL?"다음 문제 →":"다 풀었어요 🎉")}</button></div>`;
 }
 card.addEventListener("click",e=>{
   const b=e.target.closest("[data-act]");if(!b)return;
@@ -1450,6 +1441,7 @@ $("mindbox").addEventListener("click",e=>{
   if(b.dataset.m==="2"){md.done=true;st.mind++;save();refresh();renderMind();}
   else{b.classList.add("wrong");$("mdmsg").textContent="그러면 친구 마음이 어떨까? 다시 생각해 봐 💭";}
 });
+window.TOWN&&TOWN.addr&&TOWN.addr("h",(dept,item)=>{if(!QS[dept])return -1;QS[dept].push(item);return QS[dept].length-1;},()=>refresh());
 window.TOWN&&TOWN.reg("h",qid=>{const a=qid.split(":"),q=QS[a[1]]&&QS[a[1]][a[2]];return q?{q:q,label:DM[a[1]].e+" "+DM[a[1]].name}:null;});
 refresh();
 
@@ -1898,18 +1890,19 @@ CFG.forEach(c=>{
   document.body.insertBefore(root,document.getElementById("rv"));
   const q=s=>root.querySelector(s),box=q("[data-box]"),info=q("[data-info]");
   let tab=c.tabs[0];
+  c.tabs.forEach(t=>{if(t.items)t.base=t.items.length;});
   const fin=t=>t.type==="cmp"?0:t.items.length;
   const got=t=>t.type==="cmp"?0:t.type==="mission"?t.items.filter((x,i)=>st.m[t.id+":"+i]).length:Math.min(t.items.length,st.i[t.id]||0);
-  const total=c.tabs.reduce((a,t)=>a+fin(t),0);
+  const totalF=()=>c.tabs.reduce((a,t)=>a+fin(t),0);
   function prog(){
-    const d=c.tabs.reduce((a,t)=>a+got(t),0),f=d/total,r=c.ranks[f>=1?3:f>=.6?2:f>=.25?1:0];
+    const total=totalF(),d=c.tabs.reduce((a,t)=>a+got(t),0),f=d/total,r=c.ranks[f>=1?3:f>=.6?2:f>=.25?1:0];
     q("[data-r]").textContent=r;q("[data-s]").textContent="⭐ "+d+" / "+total+(st.n?" · 연습 "+st.n:"");
     window.onProg&&window.onProg(c.key,d,total,r,d+st.n);
   }
   function show(){({quiz:quiz,order:order,mission:mission,cmp:cmp})[tab.type]();prog();}
   function quiz(){
     const N=tab.items.length,k=st.i[tab.id]||0,pr=k>=N,idx=pr?rnd(0,N-1):k,it=tab.items[idx];let w=0,done=false;
-    box.innerHTML=`<div class="qtitle" style="margin-top:0">${pr?"🔁 연습 문제":"문제 "+(k+1)+" / "+N}</div><div class="scene">${it[0]}</div>
+    box.innerHTML=`<div class="qtitle" style="margin-top:0">${pr?"🔁 연습 문제":(k>=tab.base?"🆕 새 문제 ":"문제 ")+(k+1)+" / "+N}</div><div class="scene">${it[0]}</div>
       <div class="opts" style="margin-top:10px">${shuffle([1,2,3]).map(i=>`<button class="opt" data-k="${i}">${it[i]}</button>`).join("")}</div>
       <div class="msg" data-msg></div><div class="ans" data-ans><div class="pr"></div><p>${it[4]}</p><button class="btn" data-next>다음 →</button></div>`;
     info.textContent=pr?"모든 문제를 풀었어요! 지금은 섞어서 다시 풀어 보는 연습이에요.":"";
@@ -1966,6 +1959,7 @@ CFG.forEach(c=>{
   root.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{tab=c.tabs.find(t=>t.id===b.dataset.t);root.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));show();});
   if(window.TOWN){
     TOWN.reg(c.key,qid=>{const a=qid.split(":"),t=c.tabs.find(x=>x.id===a[1]),it=t&&t.type==="quiz"&&t.items[a[2]];return it?{q:it,label:c.emoji+" "+c.short}:null;});
+    TOWN.addr&&TOWN.addr(c.key,(tid,item)=>{const t=c.tabs.find(x=>x.id===tid);if(!t||t.type!=="quiz")return -1;t.items.push(item);return t.items.length-1;},()=>show());
     TOWN.addBld({key:c.key,hash:c.hash,name:c.short,emoji:c.emoji,color:c.color,bg:c.bg,icons:c.icons});
   }
   show();
