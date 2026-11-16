@@ -286,6 +286,7 @@
   <div class="sub">건물을 누르면 걸어가요. 공원 빈 칸과 아림이네 집도 눌러 봐!</div>
   <div class="hcard" id="newCard" style="display:none;background:#fff8d9"></div>
   <div class="hcard" id="rvCard"></div>
+  <div class="hcard" id="wkCard" style="display:none"></div>
   <div id="map"></div>
   <div class="hcard" id="statCard"></div>
   <div class="hcard" id="bodyCard"></div>
@@ -708,9 +709,53 @@ window.addEventListener("hashchange",fromHash);
     g("lkClose").onclick=()=>g("tk").classList.remove("on");
     if(next)hold(g("lkOpen"),()=>{M.open[k]=pts();M.newly=k;save();g("tk").classList.remove("on");homeDraw();});
   }
+
+  /* 주간 새 문제 꾸러미 (packs.json) */
+  let PACKS=[];
+  if(!M.wk)M.wk={};
+  const dstr=()=>{const n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");};
+  const kdate=id=>{const a=id.split("-");return Number(a[1])+"월 "+Number(a[2])+"일";};
+  const wkDone=p=>Math.min(p.q.length,M.wk[p.id]||0);
+  const wkPts=()=>{window.PTS.w=PACKS.reduce((a,p)=>a+wkDone(p),0);};
+  function loadPacks(){
+    return fetch("packs.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(j=>{
+      if(j&&Array.isArray(j.packs))PACKS=j.packs.filter(p=>p&&p.id&&Array.isArray(p.q)).sort((a,b)=>a.id<b.id?-1:1);wkPts();}).catch(()=>{});
+  }
+  BANK.w=id=>{const a=id.split(":"),p=PACKS.find(x=>x.id===a[1]),x=p&&p.q[a[2]];return x?{q:[x.q,x.o[0],x.o[1],x.o[2],x.a],label:x.t||"새 문제"}:null;};
+  function drawWk(){
+    const c=g("wkCard");if(!c)return;if(!PACKS.length){c.style.display="none";return;}
+    c.style.display="block";const t=dstr(),rel=PACKS.filter(p=>p.id<=t),nxt=PACKS.find(p=>p.id>t),cur=rel.find(p=>wkDone(p)<p.q.length);
+    if(cur)c.innerHTML=`<h3>📬 새 문제 꾸러미</h3><span class="big">${cur.title}</span><br>${wkDone(cur)} / ${cur.q.length} 문제를 풀었어요.<button class="hbtn" id="wkGo">${wkDone(cur)?"이어서 풀기":"열어 보기"}</button>`;
+    else if(rel.length)c.innerHTML=`<h3>📬 새 문제 꾸러미</h3>도착한 꾸러미를 모두 풀었어요! 🎉${nxt?`<br>다음 꾸러미는 ${kdate(nxt.id)}에 와요.`:""}`;
+    else c.innerHTML=`<h3>📬 새 문제 꾸러미</h3>${kdate(nxt.id)} 월요일에 첫 꾸러미가 도착해요!`;
+    const go=g("wkGo");if(go)go.onclick=()=>openWk(cur);
+  }
+  function openWk(p){
+    const c=g("rvc");g("rv").classList.add("on");
+    const close=()=>{g("rv").classList.remove("on");homeDraw();};
+    const draw=()=>{
+      const k=wkDone(p);
+      if(k>=p.q.length){SFX("fanfare");c.innerHTML=`<h2>📬 꾸러미 완료!</h2><div class="qq">'${p.title}' ${p.q.length}문제를 모두 풀었어요. 정말 대단해요!</div><button class="hbtn" id="wkClose">마을로 가기 🏘️</button>`;g("wkClose").onclick=close;return;}
+      const x=p.q[k];let w=0;
+      c.innerHTML=`<h2>📬 ${p.title} ${k+1} / ${p.q.length}</h2><div class="lab">${x.t||""}</div><div class="qq">${x.q}</div>
+        <div class="opts">${shuffle([0,1,2]).map(i=>`<button class="opt" data-k="${i}">${x.o[i]}</button>`).join("")}</div>
+        <div class="msg" id="wkmsg"></div>
+        <div class="ans" id="wkans"><div class="pr"></div><p>${x.a}</p><button class="btn" id="wkNext">${k+1<p.q.length?"다음 문제 →":"꾸러미 끝내기 🎉"}</button></div>
+        <button class="skip" id="wkSkip">그만하고 나중에 이어서 하기</button>`;
+      g("wkSkip").onclick=close;g("wkNext").onclick=draw;
+      c.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+        if(b.classList.contains("wrong")||b.classList.contains("right"))return;
+        if(b.dataset.k==="0"){b.classList.add("right");c.querySelectorAll(".opt").forEach(y=>{if(y!==b)y.remove();});
+          M.wk[p.id]=k+1;const id="w:"+p.id+":"+k;if(!M.log[id])M.log[id]={d:day(),w:w};save();wkPts();
+          g("wkmsg").textContent="";const a=g("wkans");a.querySelector(".pr").textContent=PR[Math.floor(Math.random()*PR.length)].replace("기억하고 있었네","잘 생각했어요").replace("머릿속에 쏙 들어 있었구나","새로운 걸 알았네").replace("복습 대장이야","척척박사야");a.classList.add("show");
+        }else{w++;b.classList.add("wrong");g("wkmsg").textContent="음, 다시 생각해 볼까? 💭";}
+      });
+    };
+    draw();
+  }
   /* 마을 화면 */
   function homeDraw(){
-    const hadNew=M.newly;unlock();if(M.newly&&M.newly!==hadNew)setTimeout(()=>SFX("fanfare"),300);drawMap();drawShop();drawSnd();
+    const hadNew=M.newly;unlock();if(M.newly&&M.newly!==hadNew)setTimeout(()=>SFX("fanfare"),300);drawMap();drawShop();drawSnd();drawWk();
     const nb=BLD.find(b=>b.key===M.newly),nc=g("newCard");
     if(nb){nc.style.display="block";nc.innerHTML=`<h3>🎉 새 건물이 문을 열었어요!</h3><span class="big">${nb.emoji} ${nb.name}</span><button class="hbtn" id="newGo" style="background:${nb.color}">구경하러 가기</button>`;g("newGo").onclick=()=>{M.newly="";save();goPlace(nb.key);};}
     else nc.style.display="none";
@@ -733,7 +778,7 @@ window.addEventListener("hashchange",fromHash);
     addBld:b=>{BLD.push(b);(window.PLN=window.PLN||{})[b.key]=b.hash;(window.PBG=window.PBG||{})[b.key]=b.bg;},
     openTalk:openTalk,
     homeDraw:homeDraw,
-    start:()=>{watchSounds();homeDraw();if(M.rvDay!==day()&&cands().length&&g("home").style.display!=="none")openReview();}
+    start:()=>{watchSounds();homeDraw();loadPacks().then(()=>{homeDraw();if(M.rvDay!==day()&&cands().length&&g("home").style.display!=="none"&&!g("rv").classList.contains("on"))openReview();});}
   };
 })();
 (function(root){
