@@ -381,7 +381,78 @@
 </div>
 <div class="ov" id="rv"><div class="ovc" id="rvc"></div></div>
 <div class="ov" id="tk"><div class="ovc" id="tkc"></div></div>
-<script>
+<script>/* 기기 간 이어하기: 가족 대시보드와 같은 Firebase·가족 코드를 써서 진행 기록을 맞춤 */
+(function(){
+  const KEYS=["arim-hospital1","arim-joriwon1","arim-pharm1","arim-meta","arim-time","arim-ctl","arim-b-e","arim-b-v","arim-b-f","arim-b-c","arim-b-u","arim-b-l"];
+  const CODE_OK=/^[A-Za-z0-9]{16,64}$/;
+  const S={state:"off",msg:"연결 준비 중",last:0};
+  const ls=k=>{try{return localStorage.getItem(k);}catch(e){return null;}};
+  const lset=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
+  const code=()=>{const c=ls("fd-code")||"";return CODE_OK.test(c)?c:"";};
+  const readAll=()=>{const o={};KEYS.forEach(k=>{const v=ls(k);if(v){try{o[k]=JSON.parse(v);}catch(e){}}});return o;};
+  const sortObj=v=>Array.isArray(v)?v.map(sortObj):(v&&typeof v==="object"?Object.keys(v).sort().reduce((o,k)=>{o[k]=sortObj(v[k]);return o;},{}):v);
+  const snap=o=>JSON.stringify(KEYS.map(k=>o[k]===undefined?null:sortObj(o[k])));
+  const tday=()=>{const n=new Date();return n.getFullYear()+"-"+(n.getMonth()+1)+"-"+n.getDate();};
+  let cfg=null,lts=Number(ls("arim-sync-ts")||0),lastSnap=snap(readAll()),dirty=false,busy=false;
+  const isO=v=>v&&typeof v==="object"&&!Array.isArray(v);
+  function mg(a,b,path,newer){
+    if(a===undefined||a===null)return b;if(b===undefined||b===null)return a;
+    if(path==="arim-time"){if(a.d!==b.d)return b.d===tday()?b:a;return {d:a.d,s:Math.max(a.s||0,b.s||0),x:Math.max(a.x||0,b.x||0)};}
+    if(path==="arim-meta.mute")return a;
+    if(typeof a==="number"&&typeof b==="number"){
+      if(/^arim-meta\.open\./.test(path)||/^arim-meta\.log\.[^.]+\.d$/.test(path))return Math.min(a,b);
+      if(path==="arim-ctl.limit")return newer?b:a;
+      return Math.max(a,b);}
+    if(isO(a)&&isO(b)){
+      if(path==="arim-meta.av")return newer?b:a;
+      const o={};new Set(Object.keys(a).concat(Object.keys(b))).forEach(k=>{o[k]=mg(a[k],b[k],path+"."+k,newer);});return o;}
+    return newer?b:a;
+  }
+  const mergeAll=(l,r,newer)=>{const o={};KEYS.forEach(k=>{const v=mg(l[k],r[k],k,newer);if(v!==undefined&&v!==null)o[k]=v;});return o;};
+  const url=()=>"https://firestore.googleapis.com/v1/projects/"+cfg.projectId+"/databases/(default)/documents/families/"+code()+"/town/state?key="+encodeURIComponent(cfg.apiKey);
+  async function pull(){
+    const r=await fetch(url(),{cache:"no-store"});
+    if(r.status===404)return null;if(!r.ok)throw new Error(r.status===403?"권한 없음":"오류 "+r.status);
+    const f=(await r.json()).fields||{};
+    return {data:JSON.parse((f.data&&f.data.stringValue)||"{}"),at:Number((f.at&&f.at.integerValue)||0)};
+  }
+  async function push(obj){
+    const r=await fetch(url(),{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:{data:{stringValue:JSON.stringify(obj)},at:{integerValue:String(Date.now())}}})});
+    if(!r.ok)throw new Error(r.status===403?"권한 없음":"오류 "+r.status);
+  }
+  async function sync(initial){
+    if(!cfg){S.state="off";S.msg="이 주소에서는 쓸 수 없어요";return;}
+    if(!code()){S.state="off";S.msg="가족 코드가 없어요";return;}
+    if(busy)return;busy=true;
+    try{
+      const local=readAll(),rem=await pull();
+      if(!rem){await push(local);}
+      else{
+        const merged=mergeAll(local,rem.data,rem.at>lts);
+        if(initial&&snap(merged)!==snap(local)){
+          KEYS.forEach(k=>{if(merged[k]!==undefined)lset(k,JSON.stringify(merged[k]));});
+          lastSnap=snap(merged);
+          let last=0;try{last=Number(sessionStorage.getItem("arim-sync-rl")||0);}catch(e){}
+          if(Date.now()-last>15000){try{sessionStorage.setItem("arim-sync-rl",String(Date.now()));}catch(e){}location.reload();return;}
+        }
+        if(snap(merged)!==snap(rem.data))await push(merged);
+      }
+      dirty=false;S.state="ok";S.last=Date.now();S.msg="연결됨";
+    }catch(e){S.state="err";S.msg="연결 실패: "+(e&&e.message||"인터넷 확인");}
+    finally{busy=false;}
+  }
+  setInterval(()=>{const s=snap(readAll());if(s!==lastSnap){lastSnap=s;lts=Date.now();lset("arim-sync-ts",String(lts));dirty=true;}},5000);
+  setInterval(()=>{if(dirty&&document.visibilityState==="visible")sync(false);},30000);
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&dirty)sync(false);});
+  window.SYNC={status:()=>S,code:code,now:()=>sync(false),
+    setCode:c=>{c=(c||"").trim();if(!CODE_OK.test(c))return false;lset("fd-code",c);sync(true);return true;},
+    off:()=>{try{localStorage.removeItem("fd-code");}catch(e){}S.state="off";S.msg="가족 코드가 없어요";}};
+  const sc=document.createElement("script");sc.src="family-dashboard/firebase-config.js";
+  sc.onload=()=>{cfg=window.FD_FIREBASE&&window.FD_FIREBASE.projectId?window.FD_FIREBASE:null;sync(true);};
+  sc.onerror=()=>{S.state="off";S.msg="이 주소에서는 쓸 수 없어요";};
+  document.head.appendChild(sc);
+})();
+
 const PL={home:"",h:"hospital",j:"joriwon",p:"pharmacy"};
 window.goPlace=function(k,nohash){
   if(window.TOWN&&!TOWN.isOpen(k))k="home";
@@ -443,7 +514,14 @@ window.onProg=function(k,n,t,r,p){
     c.innerHTML=`<h2>⚙️ 보호자 설정</h2><div class="lab">오늘 쓴 시간 ${used}분 · 하루 ${limitMin()}분${RC.limitMin>0?" (원격 설정)":""}</div>
       <div class="avrow"><b>하루 사용 시간</b><div>${[10,15,20,30].map(v=>`<button class="chipb${(CT.limit||20)===v?" on":""}" data-lim="${v}">${v}분</button>`).join("")}</div></div>
       <div class="avrow"><b>오늘</b><div>${dayLocked()?`<button class="chipb" id="pcUn">오늘 잠금 풀기</button>`:`<button class="chipb" id="pcLock">오늘은 그만 쓰기 (지금 잠그기)</button>`}</div></div>
+      <div class="avrow"><b>다른 기기와 이어하기</b><div id="pcSync"></div></div>
       <button class="hbtn" id="pcClose">닫기</button>`;
+    const Y=window.SYNC,ys=g("pcSync");
+    if(!Y)ys.textContent="쓸 수 없어요.";
+    else if(Y.code()){const s=Y.status();ys.innerHTML=`<div class="lab">가족 코드 ${Y.code().slice(0,4)}… · ${s.msg}${s.last?" · "+new Date(s.last).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"})+" 맞춤":""}</div><button class="chipb" id="syNow">지금 맞추기</button><button class="chipb" id="syOff">연결 끊기</button>`;
+      g("syNow").onclick=()=>{Y.now();setTimeout(panel,1800);};g("syOff").onclick=()=>{Y.off();panel();};}
+    else{ys.innerHTML=`<div class="lab">가족 대시보드에서 쓰는 가족 코드(영문·숫자 16자 이상)를 두 기기에 똑같이 넣으면 기록이 이어져요.</div><input id="syIn" type="text" maxlength="64" autocomplete="off" autocapitalize="off" spellcheck="false" style="width:100%;font-size:16px;border-radius:12px;border:2px solid #e3d9d0;padding:9px;margin-bottom:6px"><button class="chipb" id="syGo">연결하기</button><div class="msg" id="syMsg"></div>`;
+      g("syGo").onclick=()=>{if(Y.setCode(g("syIn").value)){g("syMsg").textContent="연결하는 중이에요…";setTimeout(panel,2000);}else g("syMsg").textContent="영문과 숫자로 16자 이상이어야 해요.";};}
     c.querySelectorAll("[data-lim]").forEach(b=>b.onclick=()=>{CT.limit=Number(b.dataset.lim);saveC();draw();panel();});
     const lk=g("pcLock");if(lk)lk.onclick=()=>{CT.lockDay=pd();CT.unlockDay="";saveC();g("tk").classList.remove("on");draw();};
     const un=g("pcUn");if(un)un.onclick=()=>{CT.unlockDay=pd();CT.lockDay="";saveC();draw();panel();};
