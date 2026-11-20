@@ -294,7 +294,6 @@
   <div class="hcard" id="wkCard" style="display:none"></div>
   <div id="map"></div>
   <div class="hcard" id="statCard"></div>
-  <div class="hcard" id="bodyCard"></div>
   <div class="hstat" id="hstat"></div>
   <button class="skip" id="pset" style="margin-top:10px">⚙️ 보호자 설정</button>
 </section>
@@ -514,6 +513,7 @@ window.onProg=function(k,n,t,r,p){
     c.innerHTML=`<h2>⚙️ 보호자 설정</h2><div class="lab">오늘 쓴 시간 ${used}분 · 하루 ${limitMin()}분${RC.limitMin>0?" (원격 설정)":""}</div>
       <div class="avrow"><b>하루 사용 시간</b><div>${[10,15,20,30].map(v=>`<button class="chipb${(CT.limit||20)===v?" on":""}" data-lim="${v}">${v}분</button>`).join("")}</div></div>
       <div class="avrow"><b>오늘</b><div>${dayLocked()?`<button class="chipb" id="pcUn">오늘 잠금 풀기</button>`:`<button class="chipb" id="pcLock">오늘은 그만 쓰기 (지금 잠그기)</button>`}</div></div>
+      ${window.TOWN&&TOWN.nextBld()?`<div class="avrow"><b>잠긴 건물</b><div><button class="chipb" id="pcOpen">${TOWN.nextBld()} 미리 열기</button></div></div>`:""}
       <div class="avrow"><b>다른 기기와 이어하기</b><div id="pcSync"></div></div>
       <button class="hbtn" id="pcClose">닫기</button>`;
     const Y=window.SYNC,ys=g("pcSync");
@@ -527,6 +527,7 @@ window.onProg=function(k,n,t,r,p){
     const lk=g("pcLock");if(lk)lk.onclick=()=>{CT.lockDay=pd();CT.unlockDay="";saveC();g("tk").classList.remove("on");draw();};
     const un=g("pcUn");if(un)un.onclick=()=>{CT.unlockDay=pd();CT.lockDay="";saveC();draw();panel();};
     g("pcClose").onclick=()=>g("tk").classList.remove("on");
+    const po=g("pcOpen");if(po)po.onclick=()=>{TOWN.openNext();panel();};
   }
   const ps=g("pset");
   if(ps)ps.onclick=()=>{
@@ -822,9 +823,8 @@ window.addEventListener("hashchange",fromHash);
     const b=info(k),c=g("tkc"),need=Math.max(1,Math.max(...Object.values(M.open).concat([0]))+STEP-pts()),next=nx&&nx.key===k;
     g("tk").classList.add("on");
     c.innerHTML=`<h2>🚧 ${b.emoji} ${b.name}</h2><div class="qq">${next?`아직 공사 중이에요.<br><b>마을 별 ⭐ ${need}개</b>를 더 모으면 문을 열어요!`:"앞 건물이 먼저 문을 연 다음에 지어져요. 차례를 기다리고 있어요."}</div>
-      ${next?`<button class="holdbtn" id="lkOpen"><span>보호자: 2초 꾹 눌러 미리 열기</span></button>`:""}<button class="skip" id="lkClose">닫기</button>`;
+      <button class="skip" id="lkClose">닫기</button>`;
     g("lkClose").onclick=()=>g("tk").classList.remove("on");
-    if(next)hold(g("lkOpen"),()=>{M.open[k]=pts();M.newly=k;save();g("tk").classList.remove("on");homeDraw();});
   }
 
   /* 주간 새 문제 (packs.json): 공개일이 된 문제를 각 건물·진료과의 문제 뒤에 덧붙임 */
@@ -867,17 +867,13 @@ window.addEventListener("hashchange",fromHash);
     else if(n)rc.innerHTML=`<h3>🔁 오늘의 복습</h3>전에 배운 문제 ${n}개가 기다리고 있어요.<button class="hbtn" id="rvGo">복습하러 가기</button>`;
     else rc.innerHTML=`<h3>🔁 오늘의 복습</h3>오늘 퀴즈를 풀면, 내일부터 복습 문제가 나와요.`;
     const go=g("rvGo");if(go)go.onclick=openReview;
-    const bc=g("bodyCard"),ms=BODY[t%BODY.length];
-    if(M.bodyDay===t)bc.innerHTML=`<h3>🏃 오늘의 몸 미션</h3><span class="big">${ms}</span><br>미션 성공! 🎉`;
-    else{bc.innerHTML=`<h3>🏃 오늘의 몸 미션</h3><span class="big">${ms}</span><button class="holdbtn" id="bodyOk"><span>👨‍👩‍👧 다 하면 엄마 아빠가 2초 동안 꾹!</span></button>`;
-      hold(g("bodyOk"),()=>{M.bodyDay=t;M.body++;save();homeDraw();});}
-    g("hstat").textContent="🌟 마을 별 "+pts()+" · ⭐ 복습 별 "+M.rv+" · 🗣️ 설명 도장 "+Object.keys(M.talk).length+" · 🏃 몸 미션 "+M.body;
+    g("hstat").textContent="🌟 마을 별 "+pts()+" · ⭐ 복습 별 "+M.rv;
   }
   window.TOWN={
     reg:(k,f)=>{BANK[k]=f;},
     solved:(id,w)=>{if(!M.log[id]){M.log[id]={d:day(),w:w||0};save();}},
     talkDone:k=>!!M.talk[k],
-    hold:hold,isOpen:isOpen,addr:(k,add,done)=>{ADDR[k]={add:add,done:done};},drawShop:()=>drawShop(),
+    hold:hold,isOpen:isOpen,nextBld:()=>{const b=BLD.find(x=>M.open[x.key]===undefined);return b?b.emoji+" "+b.name:"";},openNext:()=>{const b=BLD.find(x=>M.open[x.key]===undefined);if(b){M.open[b.key]=pts();M.newly=b.key;save();homeDraw();}},addr:(k,add,done)=>{ADDR[k]={add:add,done:done};},drawShop:()=>drawShop(),
     addBld:b=>{BLD.push(b);(window.PLN=window.PLN||{})[b.key]=b.hash;(window.PBG=window.PBG||{})[b.key]=b.bg;},
     openTalk:openTalk,
     homeDraw:homeDraw,
@@ -1374,10 +1370,9 @@ function refresh(){
     el.querySelector(".pg").textContent=k>=QN?(k<L?"🆕 새 문제 "+(L-k):""):(k?"●".repeat(k)+"○".repeat(QN-k):"");});
   let r=RANKS[0][1],next=null;
   for(const [k,v] of RANKS){if(t>=k)r=v;else if(next===null)next=k;}
-  $("pRank").textContent=r;window.onProg&&window.onProg("h",n,D.length,r,t+(st.dx||0)+(st.mind||0));
+  $("pRank").textContent=r;window.onProg&&window.onProg("h",n,D.length,r,t+(st.dxn||0)+(st.mind||0));
   $("pSt").textContent="💮 도장 "+n+"/"+D.length+" · 퀴즈 "+t+"/"+qtotal()+(next?" (승진까지 "+(next-t)+"문제)":"");
   $("pGd").textContent="🛎️ 안내 "+st.guided+" · 🔍 추리 ⭐"+st.dx+" · 💗 마음 "+st.mind;
-  if(window.TOWN)D.forEach(d=>root.querySelector(`.room[data-id="${d.id}"]`).classList.toggle("talk",TOWN.talkDone("h:"+d.id)));
   $("finish").classList.toggle("show",t>=qtotal());
 }
 $("reset").onclick=()=>{st={s:{},q:{},guided:0,dx:0,dxn:0,mind:0};save();refresh();window.scrollTo({top:0,behavior:"smooth"});};
@@ -1416,8 +1411,7 @@ function renderQ(id){
   const QL=qlen(id);
   if(k>=QL){
     const T=window.TOWN,td=T&&T.talkDone("h:"+id);
-    box.innerHTML=`<div class="qhead"><h3>💮 퀴즈 완료!</h3><span class="dots">${dots(QL,-1,QL)}</span></div><p>이 진료과의 퀴즈 ${QL}개를 모두 풀었어요. 견학 도장을 받았어요!</p>`
-      +(T?(td?`<div class="talkok">🗣️ 설명 도장도 받았어요!</div>`:`<button class="talkbtn" data-act="talk" data-id="${id}">🗣️ 엄마 아빠에게 설명하기 미션</button>`):"");
+    box.innerHTML=`<div class="qhead"><h3>💮 퀴즈 완료!</h3><span class="dots">${dots(QL,-1,QL)}</span></div><p>이 진료과의 퀴즈 ${QL}개를 모두 풀었어요. 견학 도장을 받았어요!</p>`;
     return;}
   qw=0;
   const q=QS[id][k];
@@ -1432,7 +1426,6 @@ card.addEventListener("click",e=>{
   if(b.dataset.act==="close")closeSheet();
   else if(b.dataset.act==="goto"){openDept(id);}
   else if(b.dataset.act==="next"){renderQ(id);$("qbox").scrollIntoView({block:"nearest"});}
-  else if(b.dataset.act==="talk"){const d=DM[id];window.TOWN&&TOWN.openTalk("h:"+id,d.e+" "+d.name,d.dz.slice(0,3).map(z=>"'"+z[1]+"'이(가) 뭔지 알려 줘"),()=>{renderQ(id);refresh();});}
   else if(b.dataset.act==="pick"){
     if(b.classList.contains("wrong")||b.classList.contains("right"))return;
     if(b.dataset.k==="1"){
@@ -1473,54 +1466,100 @@ $("quiz").addEventListener("click",e=>{
   else{b.classList.add("wrong");$("msg").textContent="음, 다시 생각해 볼까? 💭 "+DM[b.dataset.o].name+"는 다른 곳을 치료해요.";}
 });
 /* 진단 추리 */
-const TOOLS={ask:["🗣️","더 물어보기"],temp:["🌡️","체온 재기"],steth:["🩺","청진기"],look:["🔦","귀·목 보기"],img:["🩻","사진 찍기"],blood:["🩸","피검사"],urine:["🧪","소변 검사"]};
-const NORM={temp:"36.7도예요. 열이 없어요.",steth:"심장과 폐 소리가 깨끗해요.",look:"귀와 목 안은 깨끗해요.",img:"사진에 이상한 곳이 없어요.",blood:"피검사 결과는 정상이에요.",urine:"오줌은 깨끗해요."};
+const TOOLS={ask:["🗣️","더 물어보기"],temp:["🌡️","체온 재기"],steth:["🩺","청진기"],look:["🔦","눈·귀·목 보기"],skin:["🖐️","피부·겉모습 보기"],img:["🩻","사진 찍기"],blood:["🩸","피검사"],urine:["🧪","소변 검사"],ecg:["📈","심전도"],bp:["🫀","혈압 재기"],eye:["👁️","시력 검사"],eeg:["📊","뇌파 검사"],endo:["📹","내시경"],swab:["🧫","면봉 검사"]};
+const NORM={temp:"36.6도예요. 열이 없어요.",steth:"심장과 폐 소리가 깨끗해요.",look:"눈, 귀, 목 안은 깨끗해요.",skin:"피부와 겉모습에 이상한 곳이 없어요.",img:"사진에 이상한 곳이 없어요.",blood:"피검사 결과는 정상이에요.",urine:"오줌은 깨끗해요.",ecg:"심장 박자가 규칙적이에요.",bp:"혈압은 정상이에요.",eye:"시력은 좋아요.",eeg:"뇌파는 정상이에요.",endo:"위 안쪽은 깨끗해요.",swab:"균이나 바이러스가 나오지 않았어요."};
 const CASES=[
-{say:"기침이 나고 숨이 차요.",c:["천식","폐렴","감기"],a:0,dept:"pul",r:{ask:"먼지가 많은 곳이나 밤에 더 심해져요. 열은 안 나요.",steth:"숨을 내쉴 때 '쌕쌕' 소리가 나요."},ex:"열이 없고 쌕쌕 소리가 나면 숨길이 좁아진 천식이에요."},
-{say:"기침이 심하고 힘이 하나도 없어요.",c:["천식","폐렴","감기"],a:1,dept:"pul",r:{ask:"사흘째 열이 나고 누런 가래가 나와요.",temp:"39.2도! 열이 높아요.",steth:"한쪽 폐에서 '부글부글' 소리가 나요.",img:"오른쪽 폐에 하얀 부분이 보여요.",blood:"균과 싸우는 백혈구가 많이 늘었어요."},ex:"높은 열, 부글부글 소리, 사진의 하얀 부분은 폐렴의 단서예요."},
-{say:"배가 아파요.",c:["충수염","변비","위장염"],a:0,dept:"gs",r:{ask:"배꼽 주변이 아프다가 오른쪽 아랫배로 옮겨 갔어요.",temp:"37.9도. 열이 조금 있어요.",img:"초음파에서 충수가 퉁퉁 부어 있어요.",blood:"균과 싸우는 백혈구가 늘었어요."},ex:"아픈 곳이 오른쪽 아랫배로 옮겨 가고 충수가 부어 있으면 충수염이에요."},
-{say:"배가 빵빵하고 아파요.",c:["충수염","변비","위장염"],a:1,dept:"ped",r:{ask:"나흘째 똥을 못 눴어요. 열은 없어요.",img:"큰창자에 똥이 가득 차 있어요."},ex:"열이 없고 며칠째 똥을 못 눴다면 변비예요."},
-{say:"배가 아프고 토했어요.",c:["충수염","변비","위장염"],a:2,dept:"gi",r:{ask:"어제 상한 것 같은 음식을 먹었어요. 설사도 해요.",temp:"37.8도. 열이 조금 있어요.",steth:"배에서 꾸르륵 소리가 아주 바쁘게 나요.",urine:"오줌 색이 진해요. 몸에 물이 모자라요."},ex:"상한 음식을 먹고 토하고 설사하면 위장염이에요. 물을 조금씩 자주 마셔요."},
-{say:"자꾸 피곤하고 목이 말라요.",c:["당뇨병","빈혈","요로감염"],a:0,dept:"endo",r:{ask:"물을 아주 많이 마시고 오줌을 자주 눠요. 살도 빠졌어요.",blood:"피 속 설탕이 아주 높아요.",urine:"오줌에 설탕이 섞여 나와요."},ex:"피와 오줌에 설탕이 많으면 당뇨병이에요. 인슐린 열쇠가 모자란 거예요."},
-{say:"자꾸 피곤하고 어지러워요.",c:["당뇨병","빈혈","부정맥"],a:1,dept:"hem",r:{ask:"얼굴이 하얗다는 말을 자주 들어요. 고기와 채소를 잘 안 먹어요.",steth:"심장이 조금 빨리 뛰지만 박자는 일정해요.",blood:"산소를 나르는 적혈구가 모자라요."},ex:"적혈구가 모자라면 빈혈이에요. 산소 배달이 부족해서 피곤해요."},
-{say:"오줌 눌 때 아파요.",c:["요로감염","요로 결석","당뇨병"],a:0,dept:"uro",r:{ask:"따끔따끔하고 자꾸 화장실에 가고 싶어요.",temp:"38.0도. 열이 있어요.",img:"초음파에서 돌은 보이지 않아요.",urine:"오줌에서 세균이 보여요."},ex:"오줌에 세균이 있고 따끔하면 요로감염이에요."},
-{say:"옆구리가 너무너무 아파요.",c:["요로 결석","요로감염","충수염"],a:0,dept:"uro",r:{ask:"갑자기 데굴데굴 구를 만큼 아팠어요. 오줌이 붉어요.",img:"오줌길에 작은 돌이 걸려 있어요.",urine:"오줌에 피가 조금 섞여 있어요."},ex:"사진에서 돌이 보이면 요로 결석이에요. 돌이 오줌길을 긁어서 피가 섞여요."},
-{say:"넘어져서 팔이 아파요.",c:["골절","염좌(삠)","타박상(멍)"],a:0,dept:"os",r:{ask:"팔이 퉁퉁 붓고 조금도 못 움직이겠어요.",img:"엑스레이에서 팔뼈에 금이 보여요."},ex:"엑스레이에서 뼈에 금이 보이면 골절이에요. 깁스로 고정해요."},
-{say:"발목을 삐끗했어요.",c:["골절","염좌(삠)","타박상(멍)"],a:1,dept:"os",r:{ask:"붓고 아프지만 살살 디딜 수는 있어요.",img:"엑스레이에서 뼈는 멀쩡해요."},ex:"뼈는 멀쩡한데 붓고 아프면 인대가 늘어난 염좌예요."},
-{say:"열이 나고 자꾸 보채요.",c:["중이염","편도염","독감"],a:0,dept:"ent",r:{ask:"감기에 걸린 뒤부터 귀를 자꾸 만지고 아파해요.",temp:"38.5도. 열이 있어요.",look:"고막이 빨갛게 부풀어 있어요.",blood:"균과 싸우는 백혈구가 조금 늘었어요."},ex:"고막이 빨갛게 부풀어 있으면 중이염이에요."},
-{say:"목이 아프고 열이 나요.",c:["중이염","편도염","독감"],a:1,dept:"ent",r:{ask:"침을 삼킬 때 아파요. 기침은 거의 없어요.",temp:"38.8도. 열이 높아요.",look:"목 안의 편도가 빨갛게 붓고 하얀 점이 있어요."},ex:"편도가 붓고 하얀 점이 보이면 편도염이에요."}
+{s:"기침이 나고 숨이 차요.",c:["천식","폐렴","감기","기관지염"],a:0,d:"pul",r:{ask:"밤이나 먼지 많은 곳에서 심해져요. 예전에도 여러 번 그랬어요.",steth:"숨을 내쉴 때 '쌕쌕' 소리가 나요.",img:"폐 사진은 깨끗해요."},ex:"열이 없고 폐 사진은 깨끗한데 쌕쌕 소리가 되풀이되면 숨길이 좁아지는 천식이에요.",tx:["흡입기로 숨길을 넓히는 약을 들이마셔요","항생제를 먹어요","가래약만 먹고 기다려요"]},
+{s:"기침이 심하고 힘이 하나도 없어요.",c:["감기","폐렴","천식","독감"],a:1,d:"pul",r:{ask:"사흘째 기침하고 누런 가래가 나와요.",temp:"39.2도! 열이 높아요.",steth:"한쪽 폐에서 '부글부글' 소리가 나요.",img:"오른쪽 폐에 하얀 부분이 보여요.",blood:"균과 싸우는 백혈구가 많이 늘었어요."},ex:"한쪽 폐의 부글부글 소리와 사진의 하얀 부분은 폐 속까지 균이 들어간 폐렴의 단서예요.",tx:["항생제를 먹고 푹 쉬어요","흡입기만 써요","독감 바이러스 약을 먹어요"]},
+{s:"콧물이 나고 기침을 해요.",c:["감기","폐렴","독감","알레르기 비염"],a:0,d:"ped",r:{ask:"이틀 전부터 맑은 콧물과 가벼운 기침이 나요. 잘 놀고 잘 먹어요.",temp:"37.6도. 미열이 있어요.",steth:"폐 소리는 깨끗해요.",look:"목이 살짝 빨개요.",swab:"독감 바이러스는 나오지 않았어요."},ex:"열이 높지 않고 폐가 깨끗하고 잘 논다면 가벼운 감기예요.",tx:["푹 쉬고 물을 많이 마셔요","항생제를 먹어요","독감 바이러스 약을 먹어요"]},
+{s:"갑자기 열이 나고 온몸이 아파요.",c:["감기","독감","폐렴","편도염"],a:1,d:"inf",r:{ask:"어제 갑자기 시작됐어요. 온몸이 쑤시고, 반 친구들도 많이 결석했어요.",temp:"39.5도! 열이 아주 높아요.",steth:"폐 소리는 깨끗해요.",look:"목이 조금 빨갛지만 편도는 안 부었어요.",swab:"코 검사에서 독감 바이러스가 나왔어요."},ex:"갑자기 시작된 높은 열과 몸살, 그리고 면봉 검사에서 나온 바이러스가 독감의 단서예요.",tx:["독감 바이러스 약을 먹고 집에서 쉬어요","항생제를 먹어요","흡입기를 써요"]},
+{s:"재채기와 콧물이 멈추지 않아요.",c:["감기","알레르기 비염","독감","부비동염"],a:1,d:"alg",r:{ask:"해마다 봄이면 그래요. 눈도 가렵고, 열은 없어요.",look:"코 안이 창백하게 부어 있고 맑은 콧물이 고여 있어요.",blood:"알레르기 수치가 높아요.",swab:"바이러스는 나오지 않았어요."},ex:"해마다 같은 계절에 되풀이되고 열이 없고 눈이 가려우면 알레르기 비염이에요.",tx:["알레르기 약을 먹고 꽃가루를 피해요","항생제를 먹어요","독감 바이러스 약을 먹어요"]},
+{s:"열이 나고 자꾸 보채요.",c:["중이염","편도염","독감","감기"],a:0,d:"ent",r:{ask:"감기에 걸린 뒤부터 한쪽 귀를 자꾸 만져요.",temp:"38.5도. 열이 있어요.",look:"한쪽 고막이 빨갛게 부풀어 있어요. 목은 괜찮아요.",swab:"독감 바이러스는 나오지 않았어요."},ex:"고막이 빨갛게 부풀어 있으면 귀 안쪽에 균이 들어간 중이염이에요.",tx:["필요하면 항생제를 먹고 지켜봐요","편도를 떼는 수술을 해요","독감 바이러스 약을 먹어요"]},
+{s:"목이 아프고 열이 나요.",c:["중이염","편도염","독감","감기"],a:1,d:"ent",r:{ask:"침을 삼킬 때 아파요. 기침과 콧물은 거의 없어요.",temp:"38.8도. 열이 높아요.",look:"편도가 빨갛게 붓고 하얀 점이 있어요. 고막은 깨끗해요.",swab:"목 검사에서 세균이 나왔어요."},ex:"기침 없이 편도가 붓고 하얀 점이 있으며 세균이 나오면 편도염이에요.",tx:["항생제를 정해진 날까지 먹어요","독감 바이러스 약을 먹어요","흡입기를 써요"]},
+{s:"코가 막히고 머리가 아파요.",c:["감기","알레르기 비염","부비동염","편두통"],a:2,d:"ent",r:{ask:"감기가 2주 넘게 안 낫고 누런 콧물이 나와요. 고개를 숙이면 얼굴이 아파요.",temp:"37.8도. 미열이 있어요.",look:"코 안쪽에 누런 고름이 보여요.",img:"코 옆 뼈 속 빈방이 뿌옇게 차 있어요."},ex:"오래가는 누런 콧물과 사진에서 뿌옇게 찬 빈방은 부비동염(축농증)의 단서예요.",tx:["약을 먹고 소금물로 코를 씻어요","두통 약만 먹어요","알레르기 약만 먹어요"]},
+{s:"배가 아파요.",c:["충수염","변비","위장염","요로감염"],a:0,d:"gs",r:{ask:"배꼽 주변이 아프다가 오른쪽 아랫배로 옮겨 갔어요. 걸으면 더 아파요.",temp:"37.9도. 열이 조금 있어요.",img:"초음파에서 충수가 퉁퉁 부어 있어요.",blood:"균과 싸우는 백혈구가 늘었어요.",urine:"오줌은 깨끗해요."},ex:"아픈 곳이 오른쪽 아랫배로 옮겨 가고 초음파에서 충수가 부어 있으면 충수염이에요.",tx:["수술로 부은 충수를 떼어 내요","죽을 먹으며 기다려요","채소와 물을 많이 먹어요"]},
+{s:"배가 빵빵하고 아파요.",c:["충수염","변비","위장염","요로감염"],a:1,d:"ped",r:{ask:"나흘째 똥을 못 눴어요. 왼쪽 아랫배가 아파요.",steth:"배에서 나는 장 소리가 느려요.",img:"큰창자에 똥이 가득 차 있어요.",urine:"오줌은 깨끗해요."},ex:"열이 없고 며칠째 똥을 못 눴으며 사진에 똥이 가득하면 변비예요.",tx:["채소와 물을 많이 먹고, 필요하면 변비 약을 써요","수술을 해요","항생제를 먹어요"]},
+{s:"배가 아프고 토했어요.",c:["충수염","변비","위장염","위궤양"],a:2,d:"gi",r:{ask:"어제 상한 것 같은 음식을 먹었어요. 설사도 해요.",temp:"37.8도. 열이 조금 있어요.",steth:"배에서 꾸르륵 소리가 아주 바쁘게 나요.",img:"초음파에서 충수는 정상이에요.",urine:"오줌 색이 진해요. 몸에 물이 모자라요."},ex:"상한 음식을 먹은 뒤의 구토와 설사, 바쁜 장 소리는 위장염의 단서예요.",tx:["물을 조금씩 자주 마시고 부드러운 죽을 먹어요","수술로 충수를 떼어 내요","변비 약을 먹어요"]},
+{s:"명치가 쓰리고 아파요.",c:["위궤양","위장염","변비","충수염"],a:0,d:"gi",r:{ask:"배가 고플 때 더 쓰리고, 뭘 먹으면 조금 나아져요. 설사는 없어요.",endo:"위 벽에 움푹 팬 상처가 보여요.",blood:"적혈구가 조금 모자라요.",img:"초음파에서 충수는 정상이에요."},ex:"빈속에 더 쓰리고 내시경에서 위 벽의 상처가 보이면 위궤양이에요.",tx:["위액을 줄이는 약을 먹어요","변비 약을 먹어요","수술로 충수를 떼어 내요"]},
+{s:"너무 피곤하고 입맛이 없어요.",c:["간염","빈혈","당뇨병","감기"],a:0,d:"gi",r:{ask:"오줌 색이 콜라처럼 진해졌어요.",look:"눈 흰자가 노랗게 보여요.",blood:"간 수치가 많이 올라갔어요. 적혈구와 피 속 설탕은 정상이에요.",urine:"오줌 색이 아주 진하지만 설탕은 없어요."},ex:"눈 흰자가 노랗고 간 수치가 높으면 간이 아픈 간염이에요.",tx:["푹 쉬면서 간을 보호하는 치료를 받아요","철분 약을 먹어요","인슐린 주사를 맞아요"]},
+{s:"자꾸 피곤하고 목이 말라요.",c:["당뇨병","빈혈","요로감염","갑상샘 질환"],a:0,d:"endo",r:{ask:"물을 아주 많이 마시고 오줌을 자주 눠요. 많이 먹는데 살이 빠졌어요.",blood:"피 속 설탕이 아주 높아요.",urine:"오줌에 설탕이 섞여 나와요. 세균은 없어요."},ex:"피와 오줌에 설탕이 많으면 인슐린 열쇠가 모자란 당뇨병이에요.",tx:["인슐린으로 피 속 설탕을 조절해요","철분 약을 먹어요","항생제를 먹어요"]},
+{s:"자꾸 피곤하고 어지러워요.",c:["당뇨병","빈혈","부정맥","갑상샘 질환"],a:1,d:"hem",r:{ask:"얼굴이 하얗다는 말을 자주 들어요. 고기와 채소를 잘 안 먹어요.",steth:"심장이 조금 빨리 뛰지만 박자는 일정해요.",look:"눈꺼풀 안쪽이 창백해요.",blood:"산소를 나르는 적혈구가 모자라요. 피 속 설탕은 정상이에요.",ecg:"심장 박자는 규칙적이에요."},ex:"적혈구가 모자라면 산소 배달이 부족해서 피곤하고 어지러운 빈혈이에요.",tx:["철분이 많은 음식과 철분 약을 먹어요","인슐린 주사를 맞아요","심장 박동기를 넣어요"]},
+{s:"가슴이 두근거리고 어지러워요.",c:["빈혈","부정맥","천식","갑상샘 질환"],a:1,d:"car",r:{ask:"가만히 있는데도 심장이 갑자기 마구 뛰다가 멈칫하는 것 같아요.",steth:"심장 박자가 들쑥날쑥해요. 폐 소리는 깨끗해요.",ecg:"심전도 그림이 불규칙하게 그려져요.",blood:"적혈구와 갑상샘 호르몬은 정상이에요."},ex:"심전도에서 박자가 불규칙하게 그려지면 심장의 전기 신호가 엉킨 부정맥이에요.",tx:["박자를 맞추는 약을 먹거나 심장 박동기를 넣어요","철분 약을 먹어요","흡입기를 써요"]},
+{s:"가만히 있어도 덥고 심장이 빨리 뛰어요.",c:["부정맥","갑상샘 질환","당뇨병","빈혈"],a:1,d:"endo",r:{ask:"많이 먹는데 살이 빠지고, 손이 떨리고 땀이 많이 나요.",steth:"심장이 빠르지만 박자는 일정해요.",look:"목 앞쪽이 볼록하게 부어 있어요.",blood:"갑상샘 호르몬이 너무 많아요. 피 속 설탕은 정상이에요.",ecg:"빠르지만 규칙적이에요."},ex:"목 앞이 붓고 갑상샘 호르몬이 너무 많으면 몸이 지나치게 빨리 돌아가는 갑상샘 질환이에요.",tx:["갑상샘 호르몬을 줄이는 약을 먹어요","인슐린 주사를 맞아요","심장 박동기를 넣어요"]},
+{s:"살짝 부딪혔는데 멍이 크게 들었어요.",c:["혈우병","빈혈","타박상(멍)","골절"],a:0,d:"hem",r:{ask:"코피도 한번 나면 잘 안 멈춰요. 아기 때부터 그랬어요.",img:"뼈는 멀쩡해요.",blood:"피를 굳히는 응고 인자가 모자라요. 적혈구 수는 괜찮아요.",skin:"작은 충격에 비해 멍이 아주 크고 여러 군데에 있어요."},ex:"작은 충격에도 큰 멍이 들고 피가 잘 안 멈추며 응고 인자가 모자라면 혈우병이에요.",tx:["모자란 응고 인자를 주사로 넣어요","깁스를 해요","철분 약을 먹어요"]},
+{s:"오줌 눌 때 아파요.",c:["요로감염","요로 결석","당뇨병","충수염"],a:0,d:"uro",r:{ask:"따끔따끔하고 자꾸 화장실에 가고 싶어요.",temp:"38.0도. 열이 있어요.",img:"초음파에서 돌은 보이지 않아요.",urine:"오줌에서 세균이 보여요. 설탕은 없어요."},ex:"오줌에 세균이 있고 따끔하면 오줌길에 균이 들어온 요로감염이에요.",tx:["항생제를 먹고 물을 많이 마셔요","충격파로 돌을 부숴요","인슐린 주사를 맞아요"]},
+{s:"옆구리가 너무너무 아파요.",c:["요로 결석","요로감염","충수염","변비"],a:0,d:"uro",r:{ask:"갑자기 데굴데굴 구를 만큼 아팠어요. 오줌이 붉어요.",img:"오줌길에 작은 돌이 걸려 있어요.",urine:"오줌에 피가 섞여 있고 세균은 없어요."},ex:"사진에서 돌이 보이고 오줌에 피가 섞이면 요로 결석이에요.",tx:["물을 많이 마시고, 큰 돌은 충격파로 부숴요","항생제만 먹어요","수술로 충수를 떼어 내요"]},
+{s:"아침마다 눈이 퉁퉁 부어요.",c:["신증후군","알레르기","결막염","요로감염"],a:0,d:"neph",r:{ask:"다리도 붓고 양말 자국이 깊게 남아요. 오줌에 거품이 많아요.",look:"눈은 빨갛지 않고 가렵지도 않아요.",urine:"오줌으로 단백질이 많이 빠져나가요. 세균은 없어요.",blood:"피 속 단백질이 모자라요.",bp:"혈압이 조금 높아요."},ex:"눈이 가렵지 않은데 온몸이 붓고 오줌으로 단백질이 빠져나가면 콩팥 거름망이 헐거워진 신증후군이에요.",tx:["콩팥 거름망을 튼튼하게 하는 약을 먹고 싱겁게 먹어요","안약을 넣어요","알레르기 약을 먹어요"]},
+{s:"넘어져서 팔이 아파요.",c:["골절","염좌(삠)","타박상(멍)","성장통"],a:0,d:"os",r:{ask:"팔이 퉁퉁 붓고 조금도 못 움직이겠어요.",img:"엑스레이에서 팔뼈에 금이 보여요.",skin:"멍이 들고 많이 부었어요."},ex:"엑스레이에서 뼈에 금이 보이면 골절이에요.",tx:["뼈를 맞추고 깁스로 고정해요","얼음찜질만 해요","주물러 줘요"]},
+{s:"발목을 삐끗했어요.",c:["골절","염좌(삠)","타박상(멍)","성장통"],a:1,d:"os",r:{ask:"붓고 아프지만 살살 디딜 수는 있어요.",img:"엑스레이에서 뼈는 멀쩡해요.",skin:"바깥 복숭아뼈 아래가 붓고 멍이 들었어요."},ex:"뼈는 멀쩡한데 관절이 붓고 아프면 인대가 늘어난 염좌예요.",tx:["쉬면서 얼음찜질하고 압박 붕대를 감아요","뼈를 맞추는 수술을 해요","주물러 주기만 해요"]},
+{s:"밤마다 다리가 아파요.",c:["골절","소아 특발성 관절염","성장통","염좌(삠)"],a:2,d:"ped",r:{ask:"낮에는 잘 뛰어놀아요. 밤에 양쪽 다리가 아프고, 주물러 주면 나아져요.",img:"엑스레이에서 뼈는 멀쩡해요.",skin:"붓거나 빨갛거나 따뜻한 곳이 없어요.",blood:"염증 수치는 정상이에요."},ex:"검사가 모두 정상이고, 밤에만 양쪽이 아프고 주무르면 나아지면 성장통이에요. 다른 병이 아니라는 걸 확인하는 것도 진단이에요.",tx:["따뜻하게 주물러 주면서 지켜봐요","깁스를 해요","염증 약을 오래 먹어요"]},
+{s:"아침마다 무릎이 뻣뻣하고 아파요.",c:["성장통","소아 특발성 관절염","골절","염좌(삠)"],a:1,d:"rheum",r:{ask:"몇 주째 아침에 절뚝거리다가 낮에는 조금 나아져요. 다친 적은 없어요.",skin:"한쪽 무릎이 붓고 만지면 따뜻해요.",img:"뼈는 멀쩡하지만 관절에 물이 차 있어요.",blood:"염증 수치가 높아요."},ex:"다치지 않았는데 한쪽 관절이 붓고 따뜻하며 염증 수치가 높으면 관절염이에요. 성장통은 붓지 않아요.",tx:["염증을 가라앉히는 약을 먹고 관절 운동을 해요","깁스를 해요","주물러 주기만 해요"]},
+{s:"한쪽 어깨가 더 높아 보여요.",c:["척추측만증","골절","염좌(삠)","성장통"],a:0,d:"os",r:{ask:"아프지는 않아요. 옷이 자꾸 한쪽으로 흘러내려요.",skin:"허리를 숙이면 등 한쪽이 더 튀어나와요.",img:"엑스레이에서 등뼈가 S자로 휘어 있어요."},ex:"아프지 않은데 등이 한쪽만 튀어나오고 사진에서 등뼈가 휘어 있으면 척추측만증이에요.",tx:["휜 정도에 따라 지켜보거나 보조기를 입어요","깁스를 해요","얼음찜질을 해요"]},
+{s:"머리를 부딪힌 뒤 어지러워요.",c:["뇌진탕","편두통","뇌출혈","빈혈"],a:0,d:"ns",r:{ask:"킥보드에서 넘어졌어요. 잠깐 멍했고 속이 울렁거려요.",look:"눈동자 크기가 양쪽 같고 불빛에 잘 반응해요.",img:"CT에서 머릿속에 피가 고인 곳은 없어요.",blood:"적혈구는 충분해요."},ex:"머리를 다친 뒤 어지럽지만 CT에서 피가 고인 곳이 없으면 뇌진탕이에요. 피가 고였다면 뇌출혈이에요.",tx:["조용히 쉬면서 며칠 동안 잘 지켜봐요","수술로 고인 피를 빼요","철분 약을 먹어요"]},
+{s:"머리 한쪽이 욱신욱신 아파요.",c:["편두통","뇌진탕","부비동염","근시"],a:0,d:"neu",r:{ask:"다친 적은 없어요. 빛과 소리가 싫고 속이 울렁거려요. 엄마도 가끔 그래요.",look:"코 안은 깨끗하고 누런 콧물도 없어요.",img:"머리 사진은 정상이에요.",eye:"시력은 좋아요."},ex:"다치지 않았고 검사가 모두 정상인데 빛과 소리가 싫은 욱신거리는 두통은 편두통이에요.",tx:["조용하고 어두운 곳에서 쉬고 두통 약을 먹어요","안경을 맞춰요","코를 소금물로 씻어요"]},
+{s:"머리가 아프고 눈을 자꾸 찡그려요.",c:["편두통","근시","결막염","뇌진탕"],a:1,d:"eye",r:{ask:"칠판 글씨가 뿌옇게 보여요. 책은 잘 보여요.",eye:"멀리 있는 글자를 잘 읽지 못해요.",look:"눈은 빨갛지 않고 눈곱도 없어요.",img:"머리 사진은 정상이에요."},ex:"가까운 것은 잘 보이는데 먼 글자를 못 읽으면 근시예요. 잘 보려고 찡그리다 머리가 아파진 거예요.",tx:["안경을 맞춰요","안약을 넣어요","두통 약만 먹어요"]},
+{s:"눈이 빨갛고 가려워요.",c:["결막염","근시","알레르기 비염","신증후군"],a:0,d:"eye",r:{ask:"아침에 눈곱이 잔뜩 껴서 눈이 잘 안 떠졌어요. 반 친구도 눈병에 걸렸어요.",look:"눈 흰자가 빨갛고 눈곱이 많아요. 코는 괜찮아요.",eye:"시력은 좋아요.",urine:"오줌은 깨끗해요."},ex:"눈이 빨갛고 눈곱이 많으며 주변에 눈병이 돌면 옮는 결막염이에요.",tx:["안약을 넣고 수건을 따로 써요","안경을 맞춰요","싱겁게 먹어요"]},
+{s:"잠깐 멍해지고 불러도 대답을 안 해요.",c:["뇌전증","중이염","빈혈","뇌진탕"],a:0,d:"neu",r:{ask:"몇 초 동안 멈췄다가 아무 일 없던 것처럼 다시 놀아요. 하루에도 여러 번 그래요. 다친 적은 없어요.",look:"고막은 깨끗하고 소리도 잘 들어요.",eeg:"뇌파에 번쩍번쩍 튀는 신호가 보여요.",blood:"적혈구는 충분해요."},ex:"귀는 잘 들리는데 잠깐씩 멈추고 뇌파에 튀는 신호가 보이면 뇌전증이에요.",tx:["뇌의 전기 신호를 차분하게 하는 약을 먹어요","귀에 약을 넣어요","철분 약을 먹어요"]},
+{s:"온몸에 빨간 것이 나고 가려워요.",c:["수두","아토피 피부염","두드러기","수족구병"],a:0,d:"ped",r:{ask:"열이 나면서 시작됐어요. 유치원 친구가 지난주에 걸렸어요.",temp:"38.2도. 열이 있어요.",skin:"빨간 점, 물집, 딱지가 섞여서 몸통까지 온몸에 퍼져 있어요.",look:"입안에도 물집이 조금 있어요."},ex:"열과 함께 빨간 점·물집·딱지가 섞여 온몸에 퍼지면 수두예요.",tx:["가려움 약을 먹고 딱지가 앉을 때까지 집에서 쉬어요","보습제만 발라요","원인 음식을 피해요"]},
+{s:"입이 아파서 밥을 못 먹겠어요.",c:["수족구병","수두","편도염","충치"],a:0,d:"ped",r:{ask:"열이 조금 나고 침을 많이 흘려요.",temp:"37.9도. 열이 조금 있어요.",look:"입안에 물집이 여러 개 있어요. 편도는 안 부었고 이도 깨끗해요.",skin:"손바닥과 발바닥에만 작은 물집이 있어요. 몸통은 깨끗해요."},ex:"물집이 입안, 손바닥, 발바닥에만 있으면 수족구병이에요. 수두는 몸통까지 퍼져요.",tx:["시원하고 부드러운 음식을 먹으며 쉬어요","썩은 이를 치료해요","항생제를 먹어요"]},
+{s:"피부가 너무 가려워요.",c:["아토피 피부염","수두","두드러기","수족구병"],a:0,d:"derm",r:{ask:"아기 때부터 그랬고 겨울에 더 심해요.",skin:"팔 안쪽과 무릎 뒤가 건조하고 긁어서 거칠어졌어요. 물집은 없어요.",blood:"알레르기 수치가 조금 높아요."},ex:"열과 물집 없이 오래전부터 접히는 곳이 건조하고 가려우면 아토피 피부염이에요.",tx:["보습제를 자주 바르고 연고를 발라요","일주일 동안 집에서 격리해요","항생제를 먹어요"]},
+{s:"갑자기 온몸이 부풀고 가려워요.",c:["두드러기","수두","아토피 피부염","수족구병"],a:0,d:"alg",r:{ask:"한 시간 전에 새우를 처음 먹었어요.",skin:"모기 물린 것처럼 넓게 부푼 자국이 여기저기 있고, 자리가 옮겨 다녀요. 물집은 없어요.",steth:"숨소리는 깨끗해요.",bp:"혈압은 정상이에요."},ex:"새 음식을 먹은 뒤 부푼 자국이 옮겨 다니고 열이 없으면 두드러기예요.",tx:["알레르기 약을 먹고 원인 음식을 피해요","보습제만 발라요","집에서 일주일 격리해요"]},
+{s:"땅콩을 먹고 나서 입술이 붓고 숨이 차요.",c:["아나필락시스","두드러기","천식","감기"],a:0,d:"er",r:{ask:"먹고 몇 분 만에 시작됐어요. 목이 조이는 느낌이에요.",steth:"숨길이 좁아져서 쌕쌕 소리가 나요.",skin:"온몸에 두드러기가 났어요.",bp:"혈압이 떨어지고 있어요."},ex:"두드러기에 더해 숨이 차고 혈압이 떨어지면 아주 급한 아나필락시스예요. 피부만 부푼 두드러기와 달라요.",tx:["에피네프린 주사를 바로 맞아요","알레르기 약을 먹고 집에 가요","흡입기만 써요"]},
+{s:"이가 아파요.",c:["충치","치은염","편도염","부비동염"],a:0,d:"dent",r:{ask:"찬물을 마시면 시리고, 단 걸 먹으면 아파요.",look:"어금니에 까만 구멍이 있어요. 잇몸과 편도는 괜찮아요.",img:"이 사진에서 구멍이 깊게 보여요."},ex:"이에 까만 구멍이 있고 차거나 단 것에 시리면 충치예요.",tx:["썩은 곳을 긁어내고 메워요","잇몸 치료만 해요","항생제를 먹어요"]},
+{s:"더운 날 뛰어놀다가 어지럽고 머리가 아파요.",c:["열탈진","뇌진탕","빈혈","편두통"],a:0,d:"er",r:{ask:"물을 거의 안 마셨어요. 머리를 다친 적은 없어요.",temp:"38.4도. 몸이 뜨거워요.",skin:"땀을 많이 흘려 축축하고 얼굴이 빨개요.",urine:"오줌 색이 아주 진해요. 몸에 물이 모자라요.",blood:"적혈구는 충분해요."},ex:"더운 곳에서 땀을 많이 흘리고 몸에 물이 모자라면 열탈진이에요.",tx:["시원한 곳에서 쉬면서 물을 마셔요","철분 약을 먹어요","어두운 방에서 두통 약만 먹어요"]},
+{s:"한쪽 코에서만 냄새 나는 콧물이 나와요.",c:["코 속 이물질","감기","부비동염","알레르기 비염"],a:0,d:"ent",r:{ask:"며칠 전에 작은 구슬을 가지고 놀았어요. 한쪽 코만 그래요.",look:"한쪽 콧속에 동그란 구슬이 보여요.",img:"코 옆 뼈 속 빈방은 깨끗해요."},ex:"한쪽 코에서만 냄새 나는 콧물이 나오면 코에 무언가 들어갔는지 꼭 확인해요.",tx:["의사 선생님이 도구로 꺼내요","항생제를 먹어요","알레르기 약을 먹어요"]},
+{s:"사타구니가 볼록 튀어나왔어요.",c:["탈장","타박상(멍)","충수염","변비"],a:0,d:"gs",r:{ask:"울거나 힘줄 때 더 튀어나오고, 누우면 들어가요. 아프지는 않아요.",skin:"사타구니에 말랑한 혹이 만져져요. 멍은 없어요.",img:"초음파에서 창자가 배 벽의 틈으로 나와 있어요."},ex:"힘줄 때 튀어나오고 누우면 들어가는 말랑한 혹은 탈장이에요.",tx:["수술로 창자를 넣고 틈을 막아요","연고를 발라요","변비 약을 먹어요"]},
+{s:"할아버지가 건강검진을 받으러 왔어요. 아픈 곳은 없대요.",c:["고혈압","빈혈","당뇨병","부정맥"],a:0,d:"car",r:{ask:"짜게 먹는 걸 좋아하고 운동은 잘 안 한대요.",bp:"혈압이 많이 높아요.",blood:"피 속 설탕과 적혈구는 정상이에요.",ecg:"심장 박자는 규칙적이에요."},ex:"고혈압은 아프지 않아서 혈압을 재 봐야만 알 수 있어요.",tx:["싱겁게 먹고 운동하고 혈압 약을 먹어요","인슐린 주사를 맞아요","철분 약을 먹어요"]}
 ];
-let dx=null,lastCase=-1;
-function newCase(){let i;do{i=Math.floor(Math.random()*CASES.length);}while(i===lastCase);lastCase=i;
-  dx={cs:CASES[i],p:pick(PATIENTS),used:[],wrong:[],done:false,opts:shuffle([0,1,2])};renderDx();}
+const DXLV=[["🔎 새내기 탐정",3,3],["🕵️ 꼬마 명탐정",4,2],["🏅 명탐정",4,2]];
+const dxLevel=()=>st.dxn<8?0:(st.dxn<20?1:2);
+let dx=null;
+function newCase(){
+  if(!Array.isArray(st.dxDeck)||!st.dxDeck.length)st.dxDeck=shuffle(CASES.map((c,i)=>i));
+  const i=st.dxDeck.pop();save();
+  const cs=CASES[i]||CASES[0],lv=dxLevel(),nc=DXLV[lv][1];
+  let cand=[0,1,2,3];if(nc===3)cand=shuffle(cand.filter(x=>x!==cs.a)).slice(0,2).concat([cs.a]);
+  const info=Object.keys(cs.r).filter(t=>t!=="ask"),fill=shuffle(Object.keys(TOOLS).filter(t=>t!=="ask"&&!info.includes(t)));
+  const tools=["ask"].concat(shuffle(info.concat(fill.slice(0,Math.max(0,5-info.length))).slice(0,5)));
+  dx={cs:cs,p:pick(PATIENTS),lv:lv,max:DXLV[lv][2],used:[],wrong:[],step:1,opts:shuffle(cand),tools:tools,tx:shuffle([0,1,2]),txw:[]};renderDx();
+}
 function renderDx(){
-  const c=dx.cs,left=3-dx.used.length;
-  let h=`<div class="pt"><div class="face">${dx.p[0]}</div><div class="bubble"><b>${dx.p[1]} 진료실에 왔어요!</b><br>"${c.say}"</div></div>`;
-  if(!dx.done){
-    h+=`<div class="qtitle">🔎 검사 고르기<span class="left">${"●".repeat(left)+"○".repeat(3-left)}</span></div>
-      <div class="tgrid">${Object.keys(TOOLS).map(t=>`<button class="tbtn${dx.used.includes(t)?" used":""}" data-t="${t}" ${left<=0||dx.used.includes(t)?"disabled":""}>${TOOLS[t][0]} ${TOOLS[t][1]}</button>`).join("")}</div>
-      <div class="msg">${left>0?"검사는 3번까지 할 수 있어요. 꼭 필요한 검사를 골라 봐!":"검사를 다 썼어요. 단서를 모아서 진단해 봐!"}</div>`;
+  const c=dx.cs,left=dx.max-dx.used.length;
+  let h=`<div class="pt"><div class="face">${dx.p[0]}</div><div class="bubble"><b>${dx.p[1]} 진료실에 왔어요!</b><br>"${c.s}"</div></div>`;
+  if(dx.step===1){
+    h+=`<div class="qtitle">🔎 검사 고르기<span class="left">${"●".repeat(left)+"○".repeat(dx.max-left)}</span></div>
+      <div class="tgrid">${dx.tools.map(t=>`<button class="tbtn${dx.used.includes(t)?" used":""}" data-t="${t}" ${left<=0||dx.used.includes(t)?"disabled":""}>${TOOLS[t][0]} ${TOOLS[t][1]}</button>`).join("")}</div>
+      <div class="msg">${left>0?"검사는 "+dx.max+"번만 할 수 있어요. 꼭 필요한 검사를 골라 봐!":"검사를 다 썼어요. 단서를 모아서 진단해 봐!"}</div>`;
   }
   if(dx.used.length)h+=`<div class="clues">${dx.used.map(t=>`<div class="clue"><b>${TOOLS[t][0]} ${TOOLS[t][1]}</b><br>${c.r[t]||NORM[t]}</div>`).join("")}</div>`;
-  if(!dx.done){
+  if(dx.step===1){
     h+=`<div class="qtitle">🩺 어떤 병일까?</div><div class="opts">${dx.opts.map(i=>`<button class="opt${dx.wrong.includes(i)?" wrong":""}" data-c="${i}">${c.c[i]}</button>`).join("")}</div><div class="msg" id="dxmsg"></div>`;
+  }else if(dx.step===2){
+    h+=`<div class="result"><b>진단: ${c.c[c.a]}</b><br>${c.ex}</div><div class="qtitle">💊 어떻게 치료할까?</div><div class="opts">${dx.tx.map(i=>`<button class="opt${dx.txw.includes(i)?" wrong":""}" data-x="${i}">${c.tx[i]}</button>`).join("")}</div><div class="msg" id="dxmsg"></div>`;
   }else{
-    const s=Math.max(1,3-dx.wrong.length),d=DM[c.dept];
-    h+=`<div class="result"><b>${"⭐".repeat(s)} 진단: ${c.c[c.a]}</b><br>${c.ex}<br>👩‍⚕️ ${d.f}층 ${d.e} ${d.name}에서 치료해요.</div>
+    const s=Math.max(1,3-dx.wrong.length-dx.txw.length),d=DM[c.d];
+    h+=`<div class="result"><b>${"⭐".repeat(s)} 진단: ${c.c[c.a]}</b><br>${c.ex}<br>💊 ${c.tx[0]}.<br>👩‍⚕️ ${d.f?d.f+"층":"별관"} ${d.e} ${d.name}에서 치료해요.</div>
         <button class="btn soft" id="nextCase">다음 환자 🚪</button><button class="btn line" id="dxDept">${d.name} 구경하기</button>`;
   }
   $("dxbox").innerHTML=h;
-  $("dxinfo").textContent=st.dxn?"진단한 환자 "+st.dxn+"명 · 추리 별 ⭐"+st.dx:"환자 말만 듣고는 알 수 없어요. 검사로 단서를 모아서 병을 찾아 줘!";
+  const lv=dxLevel(),nx=lv===0?8-st.dxn:(lv===1?20-st.dxn:0);
+  $("dxinfo").textContent=DXLV[lv][0]+" · 진단한 환자 "+st.dxn+"명 · ⭐"+st.dx+(nx>0?" · "+nx+"명 더 진단하면 다음 단계":" · 가장 어려운 단계예요");
 }
+function dxFinish(){dx.step=3;st.dx+=Math.max(1,3-dx.wrong.length-dx.txw.length);st.dxn++;save();refresh();renderDx();}
 $("dxbox").addEventListener("click",e=>{
   if(e.target.closest("#nextCase")){newCase();return;}
-  if(e.target.closest("#dxDept")){openDept(dx.cs.dept);return;}
+  if(e.target.closest("#dxDept")){openDept(dx.cs.d);return;}
   const t=e.target.closest(".tbtn");
   if(t&&!t.disabled){dx.used.push(t.dataset.t);renderDx();return;}
-  const b=e.target.closest(".opt");if(!b||dx.done||b.classList.contains("wrong"))return;
-  const i=Number(b.dataset.c);
-  if(i===dx.cs.a){dx.done=true;st.dx+=Math.max(1,3-dx.wrong.length);st.dxn++;save();refresh();renderDx();}
-  else{dx.wrong.push(i);renderDx();$("dxmsg").textContent=dx.used.length<3?"음, 단서가 더 필요할까? 검사를 더 해 봐 💭":"단서를 다시 차근차근 읽어 봐 💭";}
+  const b=e.target.closest(".opt");if(!b||b.classList.contains("wrong"))return;
+  if(dx.step===1&&b.dataset.c!==undefined){
+    const i=Number(b.dataset.c);
+    if(i===dx.cs.a){if(dx.lv===2){dx.step=2;renderDx();}else dxFinish();}
+    else{dx.wrong.push(i);renderDx();$("dxmsg").textContent=dx.used.length<dx.max?"음, 단서가 더 필요할까? 검사를 더 해 봐 💭":"단서를 다시 차근차근 읽어 봐 💭";}
+  }else if(dx.step===2&&b.dataset.x!==undefined){
+    const i=Number(b.dataset.x);
+    if(i===0)dxFinish();else{dx.txw.push(i);renderDx();$("dxmsg").textContent="그 치료는 다른 병에 쓰는 거예요. 다시 생각해 봐 💭";}
+  }
 });
 
 /* 마음 읽기 */
@@ -1717,14 +1756,13 @@ function openRoom(id){
    <div class="box b-q"><h3>🤔 퀴즈!</h3><p>${d.q}</p>
    <div class="opts" style="margin-top:10px">${(done?[0]:shuffle([0,1,2])).map(k=>`<button class="opt${done?" right":""}" data-act="pick" data-id="${id}" data-k="${k}">${d.o[k]}</button>`).join("")}</div>
    <div class="msg" id="qmsg"></div>
-   <div class="ans${done?" show":""}" id="ans"><div class="pr">${done?"견학 도장을 받았어요 💮":""}</div><p>${d.a}</p></div>${done&&window.TOWN?(TOWN.talkDone("j:"+id)?`<div class="talkok">🗣️ 설명 도장도 받았어요!</div>`:`<button class="talkbtn" data-act="talk" data-id="${id}">🗣️ 엄마 아빠에게 설명하기 미션</button>`):""}</div>
+   <div class="ans${done?" show":""}" id="ans"><div class="pr">${done?"견학 도장을 받았어요 💮":""}</div><p>${d.a}</p></div></div>
    ${d.link?`<button class="go" onclick="goPlace('h')">${d.link[0]}</button>`:""}`;
   sheet.classList.add("open");card.scrollTop=0;
 }
 card.addEventListener("click",e=>{
   const b=e.target.closest("[data-act]");if(!b)return;
   if(b.dataset.act==="close")closeSheet();
-  else if(b.dataset.act==="talk"){const d=DM[b.dataset.id];window.TOWN&&TOWN.openTalk("j:"+d.id,d.e+" "+d.name,d.items.slice(0,3).map(z=>"'"+z[1]+"'이(가) 뭔지 알려 줘"),()=>{openRoom(d.id);refresh();});}
   else if(b.dataset.act==="pick"){
     if(st.s[b.dataset.id]||b.classList.contains("wrong"))return;
     if(b.dataset.k==="0"){
@@ -1732,7 +1770,6 @@ card.addEventListener("click",e=>{
       $("qmsg").textContent="";const a=$("ans");a.querySelector(".pr").textContent=pick(PRAISES)+" 견학 도장 💮";a.classList.add("show");
       st.s[b.dataset.id]=1;save();refresh();
       window.TOWN&&TOWN.solved("j:"+b.dataset.id+":0",card.querySelectorAll(".opt.wrong").length);
-      if(window.TOWN)$("ans").insertAdjacentHTML("afterend",`<button class="talkbtn" data-act="talk" data-id="${b.dataset.id}">🗣️ 엄마 아빠에게 설명하기 미션</button>`);
     }else{b.classList.add("wrong");$("qmsg").textContent="음, 다시 생각해 볼까? 💭";}
   }
 });
@@ -1860,11 +1897,7 @@ const CFG=[
   {t:"뜨거운 것에 데었을 때",s:["뜨거운 것에서 멀어져요","흐르는 시원한 물에 식혀요","깨끗한 천으로 살짝 덮어요","어른과 병원에 가요"],ex:"가장 먼저 열을 식히는 것이 중요해요."},
   {t:"무릎에서 피가 날 때",s:["어른을 불러요","깨끗한 물로 씻어요","깨끗한 천으로 꾹 눌러요","반창고를 붙여요"],ex:"씻기 → 누르기 → 덮기 순서예요."},
   {t:"쓰러진 사람을 봤을 때",s:["어깨를 두드리며 불러 봐요","큰 소리로 어른을 불러요","119에 신고해요","구급대가 올 때까지 곁에 있어요"],ex:"혼자 해결하려 하지 말고 빨리 알려요."},
-  {t:"구급차가 환자를 옮기는 순서",s:["119 신고","구급차 출동","구급대원의 응급처치","병원 응급실 도착"],ex:"구급대원은 병원에 가는 동안에도 치료를 해요."}]},
- {id:"say",label:"🗣️ 말하기",type:"mission",items:[
-  "우리 집 주소를 엄마 아빠에게 또박또박 말하기",
-  "엄마나 아빠의 전화번호를 외워서 말하기",
-  "\"○○가 다쳤어요. 여기는 ○○이에요.\" 하고 119 신고 문장 연습하기 (진짜 전화는 걸지 않아요)"]}]},
+  {t:"구급차가 환자를 옮기는 순서",s:["119 신고","구급차 출동","구급대원의 응급처치","병원 응급실 도착"],ex:"구급대원은 병원에 가는 동안에도 치료를 해요."}]}]},
 {key:"v",hash:"vet",name:"아림 동물병원",short:"동물병원",emoji:"🐾",color:"#e08a1e",bg:"#fff3de",icons:["🐶","🐱","🐰"],
  ranks:["🐾 동물병원 견학생","🐶 꼬마 수의사","🩺 수의사","🏅 동물병원 원장"],
  tabs:[
@@ -1978,13 +2011,7 @@ const CFG=[
   ["실험: 코를 막고 사과와 양파를 먹으면?","맛을 구별하기 어려워요","더 맛있어요","더 매워요","맛의 많은 부분은 사실 냄새예요."],
   ["실험: 눈을 감고 한 발로 서면?","눈을 떴을 때보다 더 흔들려요","더 잘 서요","똑같아요","몸의 균형은 귀와 눈이 함께 잡아요."],
   ["실험: 숨을 크게 들이쉬었을 때와 내쉬었을 때 가슴둘레를 쟀어요. 더 큰 쪽은?","들이쉬었을 때","내쉬었을 때","똑같아요","폐에 공기가 차서 가슴이 부풀어요."],
-  ["과학자가 같은 실험을 여러 번 되풀이하는 이유는?","우연이 아니라 진짜인지 확인하려고","심심해서","실험 도구가 남아서","여러 번 해도 같은 결과가 나와야 믿을 수 있어요."]]},
- {id:"home",label:"🏠 집에서 실험",type:"mission",items:[
-  "맥박 실험: 가만히 있을 때 10초 동안 맥박을 세고, 제자리 뛰기 30번 뒤에 다시 세어서 비교하기",
-  "침 실험: 밥 한 숟가락을 30번 넘게 씹고 맛이 어떻게 변하는지 말하기",
-  "식초 달걀 실험: 날달걀을 식초에 담가 이틀 동안 관찰하기 (어른과 함께)",
-  "균형 실험: 눈 뜨고 한 발 서기와 눈 감고 한 발 서기 중 어느 쪽이 오래 버티는지 비교하기",
-  "코 막고 맛보기 실험: 눈을 가리고 코를 막은 채 과일 두 가지를 맛보고 맞히기"]}]}
+  ["과학자가 같은 실험을 여러 번 되풀이하는 이유는?","우연이 아니라 진짜인지 확인하려고","심심해서","실험 도구가 남아서","여러 번 해도 같은 결과가 나와야 믿을 수 있어요."]]}]}
 ];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
