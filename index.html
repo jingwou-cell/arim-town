@@ -486,12 +486,11 @@
     #map{margin:14px 0 0}
   }
   @media (min-width:900px) and (orientation:landscape){
-    #home{max-width:1320px;display:grid;grid-template-columns:minmax(0,2.2fr) minmax(300px,1fr);column-gap:20px;align-items:start;padding:10px 18px 30px;text-align:left}
-    #home > *{grid-column:2}
-    #home > #map{grid-column:1;grid-row:1 / span 20;position:sticky;top:10px;margin:0}
+    #home{max-width:1320px;padding:8px 18px 30px}
     #home > .hdeco{display:none}
-    #home h1{margin-top:44px;font-size:30px}
-    #mapsvg{max-height:calc(100vh - 28px)}
+    #home h1{margin:2px 0 0;font-size:28px}
+    #map{margin:8px 0 0}
+    .hcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 16px;align-items:start}
     main,nav{max-width:900px}
     .qz{font-size:18px}
     .sheet .card.wide{max-width:1120px}
@@ -503,6 +502,7 @@
     .card.wide .scwrap{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
     .card.wide .scwrap .box:first-child{margin-top:0}
   }
+  @media (max-width:820px){#map{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}#map::-webkit-scrollbar{display:none}#mapsvg{width:820px;max-width:none}#home .sub::after{content:" 지도를 옆으로 밀면 더 보여요 👉";color:#d6457e}}
 </style>
 </head>
 <body class="bg-home">
@@ -516,12 +516,14 @@
   <div class="hdeco" style="font-size:26px;letter-spacing:14px">☁️🌤️☁️</div>
   <h1>🏘️ 아림 마을</h1>
   <div class="sub">건물을 누르면 걸어가요. 공원 빈 칸과 아림이네 집도 눌러 봐!</div>
+  <div id="map"></div>
+  <div class="hcards">
   <div class="hcard" id="newCard" style="display:none;background:#fff8d9"></div>
   <div class="hcard" id="tpCard" style="display:none;background:#fff1ef"></div>
   <div class="hcard" id="rvCard"></div>
   <div class="hcard" id="wkCard" style="display:none"></div>
-  <div id="map"></div>
   <div class="hcard" id="statCard"></div>
+  </div>
   <div class="hstat" id="hstat"></div>
   <button class="skip" id="pset" style="margin-top:10px">⚙️ 보호자 설정</button>
 </section>
@@ -968,18 +970,18 @@ window.addEventListener("hashchange",fromHash);
   }
 
   /* 지도 */
-  const TW=96,TH=48,OX=304,OY=84;
+  const TW=96,TH=48,OX=392,OY=104,GW=9,GD=8,RX=4,RY=3;
   const MAPN={h:"대학병원",p:"약국",s:"가게",e:"119",v:"동물병원",f:"식당",c:"보건소",u:"의대",l:"연구소"};
   const pill=(x,y,t,col,lock)=>{const w=t.length*15+(lock?38:22);return `<rect x="${x-w/2}" y="${y-16}" width="${w}" height="22" rx="11" fill="${lock?"#efeae4":"#fff"}" stroke="${col}" stroke-width="1.5"/><text x="${x}" y="${y}" font-size="15" text-anchor="middle" font-family="Jua,sans-serif" fill="${lock?"#8d857c":"#33302e"}">${lock?"🔒 ":""}${t}</text>`;};
   const iso=(x,y)=>[OX+(x-y)*TW/2,OY+(x+y)*TH/2];
   const P=a=>a.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
   const shade=(hex,f)=>{const n=parseInt(hex.slice(1),16),c=v=>Math.max(0,Math.min(255,Math.round(v*f)));return "rgb("+c(n>>16)+","+c(n>>8&255)+","+c(n&255)+")";};
   const FIXED={h:{name:"대학병원",emoji:"🏥",color:"#2fa38a"},p:{name:"약국",emoji:"💊",color:"#7c6ee6"},s:{name:"꾸미기 가게",emoji:"🛍️",color:"#e9a01f"}};
-  const LOT={h:[0,0,2,74],u:[3,0,1,50],l:[4,0,1,42],p:[0,1,1,38],c:[1,1,1,44],e:[3,1,1,38],v:[4,1,1,34],f:[0,3,1,36],s:[1,3,1,32]};
+  const LOT={h:[0.5,0.35,2,78],c:[2.85,1.8,1,46],p:[0.6,1.8,1,40],u:[5.5,0.4,1,54],l:[7.5,0.4,1,44],e:[5.5,1.8,1,40],v:[7.5,1.8,1,36],f:[0.6,4.5,1,38],s:[2.6,4.5,1,34]};const HOME0=[1.45,7.5];
   const info=k=>FIXED[k]||BLD.find(b=>b.key===k);
   const front=k=>{const L=LOT[k];return iso(L[0]+L[2]*.5,L[1]+1.12);};
   function box(x,y,w,h,col,m,plain){
-    m=m||.2;const A=iso(x+m,y+m),B=iso(x+w-m,y+m),C=iso(x+w-m,y+1-m),D=iso(x+m,y+1-m),up=p=>[p[0],p[1]-h];
+    m=m||.1;const A=iso(x+m,y+m),B=iso(x+w-m,y+m),C=iso(x+w-m,y+1-m),D=iso(x+m,y+1-m),up=p=>[p[0],p[1]-h];
     const quad=(p0,p1,u0,u1,v0,v1)=>{const L=(u,v)=>[p0[0]+(p1[0]-p0[0])*u,p0[1]+(p1[1]-p0[1])*u-h*v];return P([L(u0,v0),L(u1,v0),L(u1,v1),L(u0,v1)]);};
     const gc=iso(x+w/2,y+.5);
     let s=`<ellipse cx="${gc[0]+6}" cy="${gc[1]+8}" rx="${40*w+8}" ry="${20+4*w}" fill="#000" opacity=".1"/>`;
@@ -1011,15 +1013,20 @@ window.addEventListener("hashchange",fromHash);
     walking=false;
     const el=g("map");if(!el)return;
     const nx=BLD.find(b=>M.open[b.key]===undefined);
-    let s=`<polygon points="${P([iso(0,0),iso(5,0),iso(5,6),iso(0,6)])}" fill="#bfe6a8"/><polygon points="${P([iso(0,6),iso(5,6),[iso(5,6)[0],iso(5,6)[1]+10],[iso(0,6)[0],iso(0,6)[1]+10]])}" fill="#8fc97a"/><polygon points="${P([iso(5,0),iso(5,6),[iso(5,6)[0],iso(5,6)[1]+10],[iso(5,0)[0],iso(5,0)[1]+10]])}" fill="#7dba68"/>`;
-    s+=`<polygon points="${P([iso(2,0),iso(3,0),iso(3,6),iso(2,6)])}" fill="#cfc9c2"/><polygon points="${P([iso(0,2),iso(5,2),iso(5,3),iso(0,3)])}" fill="#cfc9c2"/>`;
-    s+=`<line x1="${iso(2.5,0)[0]}" y1="${iso(2.5,0)[1]}" x2="${iso(2.5,6)[0]}" y2="${iso(2.5,6)[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="8 8"/><line x1="${iso(0,2.5)[0]}" y1="${iso(0,2.5)[1]}" x2="${iso(5,2.5)[0]}" y2="${iso(5,2.5)[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="8 8"/>`;
-    [[1.86,0,2,6],[3,0,3.14,6]].forEach(q=>{s+=`<polygon points="${P([iso(q[0],q[1]),iso(q[2],q[1]),iso(q[2],q[3]),iso(q[0],q[3])])}" fill="#e9e3da"/>`;});
-    [[0,1.86,5,2],[0,3,5,3.14]].forEach(q=>{s+=`<polygon points="${P([iso(q[0],q[1]),iso(q[2],q[1]),iso(q[2],q[3]),iso(q[0],q[3])])}" fill="#e9e3da"/>`;});
-    for(let i=0;i<5;i++){const u=2.08+i*.18;s+=`<polygon points="${P([iso(u,1.8),iso(u+.09,1.8),iso(u+.09,1.98),iso(u,1.98)])}" fill="#fff"/><polygon points="${P([iso(u,3.02),iso(u+.09,3.02),iso(u+.09,3.2),iso(u,3.2)])}" fill="#fff"/><polygon points="${P([iso(1.8,u),iso(1.98,u),iso(1.98,u+.09),iso(1.8,u+.09)])}" fill="#fff"/><polygon points="${P([iso(3.02,u),iso(3.2,u),iso(3.2,u+.09),iso(3.02,u+.09)])}" fill="#fff"/>`;}
-    [[1.92,1.92],[3.08,1.92],[1.92,3.08],[3.08,3.08]].forEach(q=>{const p=iso(q[0],q[1]);s+=`<path d="M${p[0]} ${p[1]}v-22" stroke="#8a97a8" stroke-width="2"/><circle cx="${p[0]}" cy="${p[1]-24}" r="4" fill="#ffe27a" stroke="#fff"/>`;});
+    const R=(x0,y0,x1,y1)=>P([iso(x0,y0),iso(x1,y0),iso(x1,y1),iso(x0,y1)]),e0=iso(0,GD),e1=iso(GW,GD),e2=iso(GW,0);
+    let s=`<polygon points="${R(0,0,GW,GD)}" fill="#bfe6a8"/><polygon points="${P([e0,e1,[e1[0],e1[1]+12],[e0[0],e0[1]+12]])}" fill="#8fc97a"/><polygon points="${P([e2,e1,[e1[0],e1[1]+12],[e2[0],e2[1]+12]])}" fill="#7dba68"/>`;
+    for(let x=0;x<GW;x++)for(let y=0;y<GD;y++)if((x+y)%2===0)s+=`<polygon points="${R(x,y,x+1,y+1)}" fill="#c6eab0"/>`;
+    s+=`<polygon points="${R(RX,0,RX+1,GD)}" fill="#cfc9c2"/><polygon points="${R(0,RY,GW,RY+1)}" fill="#cfc9c2"/>`;
+    {const a=iso(RX+.5,0),b=iso(RX+.5,GD),c2=iso(0,RY+.5),d=iso(GW,RY+.5);s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="8 8"/><line x1="${c2[0]}" y1="${c2[1]}" x2="${d[0]}" y2="${d[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="8 8"/>`;}
+    [[RX-.14,0,RX,GD],[RX+1,0,RX+1.14,GD],[0,RY-.14,GW,RY],[0,RY+1,GW,RY+1.14]].forEach(q=>{s+=`<polygon points="${R(q[0],q[1],q[2],q[3])}" fill="#e9e3da"/>`;});
+    s+=`<polygon points="${R(RX,RY,RX+1,RY+1)}" fill="#cfc9c2"/>`;
+    for(let i=0;i<5;i++){const u=RX+.08+i*.18,v=RY+.08+i*.18;s+=`<polygon points="${R(u,RY-.2,u+.09,RY-.02)}" fill="#fff"/><polygon points="${R(u,RY+1.02,u+.09,RY+1.2)}" fill="#fff"/><polygon points="${R(RX-.2,v,RX-.02,v+.09)}" fill="#fff"/><polygon points="${R(RX+1.02,v,RX+1.2,v+.09)}" fill="#fff"/>`;}
+    /* 건물 앞 오솔길 */
+    Object.keys(LOT).forEach(k=>{const L=LOT[k],cx=L[0]+L[2]/2,y0=L[1]+.9,y1=L[1]<RY?RY-.14:L[1]+1.5;s+=`<polygon points="${R(cx-.13,y0,cx+.13,Math.max(y0+.2,y1))}" fill="#efe6d6"/>`;});
+    s+=`<polygon points="${R(1.27,7.2,1.53,GD)}" fill="#efe6d6"/>`;
+    [[RX-.08,RY-.08],[RX+1.08,RY-.08],[RX-.08,RY+1.08],[RX+1.08,RY+1.08],[RX-.08,.4],[RX+1.08,7.5],[.4,RY-.08],[8.6,RY+1.08]].forEach(q=>{const p=iso(q[0],q[1]);s+=`<path d="M${p[0]} ${p[1]}v-24" stroke="#8a97a8" stroke-width="2"/><circle cx="${p[0]}" cy="${p[1]-26}" r="4.5" fill="#ffe27a" stroke="#fff"/>`;});
     /* 공원 */
-    s+=`<polygon points="${P([iso(3,3),iso(5,3),iso(5,6),iso(3,6)])}" fill="#d3f0bf"/>`;
+    s+=`<polygon points="${R(5.35,4.3,8.75,7.75)}" fill="#d3f0bf" stroke="#b5dd9d" stroke-width="2"/>`;
     const lab=[];
     const items=[];
     Object.keys(LOT).forEach(k=>{const L=LOT[k],b=info(k);if(!b)return;const open=isOpen(k);let gfx,top;
@@ -1029,33 +1036,33 @@ window.addEventListener("hashchange",fromHash);
       lab.push(`<g class="bd" data-b="${k}">${pill(top[0],top[1]-20,MAPN[k],open?b.color:"#b9b2a9",!open)}</g>`);
     });
     /* 아림이네 집 */
-    {const bx=box(0,5,1,26,"#ffb6c9",.18,true);const rc=bx.top;items.push({d:5.5,s:`<g class="bd" data-home="1">${bx.s}<polygon points="${rc[0]},${rc[1]-26} ${rc[0]-36},${rc[1]-2} ${rc[0]},${rc[1]+14} ${rc[0]+36},${rc[1]-2}" fill="#e8688a" stroke="#fff" stroke-width="1.5"/></g>`});
+    {const bx=box(0.9,6.25,1,28,"#ffb6c9",.12,true);const rc=bx.top;items.push({d:7.65,s:`<g class="bd" data-home="1">${bx.s}<polygon points="${rc[0]},${rc[1]-30} ${rc[0]-42},${rc[1]-2} ${rc[0]},${rc[1]+17} ${rc[0]+42},${rc[1]-2}" fill="#e8688a" stroke="#fff" stroke-width="1.5"/></g>`});
       lab.push(`<g class="bd" data-home="1">${pill(rc[0],rc[1]-34,"우리 집","#e8688a",false)}</g>`);}
-    [[.5,4.5],[1.5,4.4],[1.75,5.3],[1.3,5.85]].forEach(t=>{const p=iso(t[0],t[1]);items.push({d:t[0]+t[1],s:`<text x="${p[0]}" y="${p[1]}" font-size="26" text-anchor="middle">🌳</text>`});});
+    [[3.45,.45],[3.5,3-.5],[.25,1.5],[8.75,1.5],[6.95,.9],[6.95,2.4],[.25,3-.45],[8.75,2.6],[2.05,4.75],[.3,5.9],[3.6,5.9],[2.4,6.6],[3.55,7.5],[.3,7.6],[2.75,7.55],[5.15,7.85],[8.9,4.15]].forEach(t=>{const p=iso(t[0],t[1]);items.push({d:t[0]+t[1],s:`<text x="${p[0]}" y="${p[1]}" font-size="26" text-anchor="middle">🌳</text>`});});
     /* 공원 칸 */
     while(M.park.length<SLOTS)M.park.push("");
-    for(let i=0;i<SLOTS;i++){const cx=3+(i%3)*.6+.4,cy=3+Math.floor(i/3)*.56+.38,c=iso(cx,cy),it=M.park[i]&&SI[M.park[i]];
+    for(let i=0;i<SLOTS;i++){const cx=5.5+(i%3)*1.1+.45,cy=4.4+Math.floor(i/3)*.66+.36,c=iso(cx,cy),it=M.park[i]&&SI[M.park[i]];
       const dm=P([iso(cx-.26,cy-.26),iso(cx+.26,cy-.26),iso(cx+.26,cy+.26),iso(cx-.26,cy+.26)]);
       items.push({d:cx+cy,s:`<g class="pslot" data-slot="${i}"><polygon points="${dm}" fill="${it?"#c4e8ad":"#e6f7da"}" stroke="#a9d392" stroke-width="1" stroke-dasharray="${it?"0":"3 3"}"/>${it?`<text x="${c[0]}" y="${c[1]+4}" font-size="24" text-anchor="middle">${it[1]}</text>`:`<text x="${c[0]}" y="${c[1]+5}" font-size="13" text-anchor="middle" fill="#9cc788">＋</text>`}</g>`});}
     items.sort((a,b)=>a.d-b.d);
     s+=items.map(i=>i.s).join("");
     /* 움직이는 것들 */
-    const r0=iso(0,2.62),r1=iso(5,2.62),w0=iso(2.3,6),w1=iso(2.3,0),w2=iso(5,2.28),w3=iso(0,2.28);
-    s+=`<text font-size="24" text-anchor="middle">🚑<animateTransform attributeName="transform" type="translate" from="${r0[0]} ${r0[1]}" to="${r1[0]} ${r1[1]}" dur="11s" repeatCount="indefinite"/></text>
-        <text font-size="17" text-anchor="middle">🚶<animateTransform attributeName="transform" type="translate" from="${w0[0]} ${w0[1]}" to="${w1[0]} ${w1[1]}" dur="19s" repeatCount="indefinite"/></text>
-        <text font-size="17" text-anchor="middle">🧑‍⚕️<animateTransform attributeName="transform" type="translate" from="${w2[0]} ${w2[1]}" to="${w3[0]} ${w3[1]}" dur="23s" repeatCount="indefinite"/></text>`;
+    const r0=iso(0,RY+.66),r1=iso(GW,RY+.66),w0=iso(RX-.07,GD),w1=iso(RX-.07,0),w2=iso(GW,RY-.07),w3=iso(0,RY-.07);
+    s+=`<text font-size="24" text-anchor="middle">🚑<animateTransform attributeName="transform" type="translate" from="${r0[0]} ${r0[1]}" to="${r1[0]} ${r1[1]}" dur="15s" repeatCount="indefinite"/></text>
+        <text font-size="17" text-anchor="middle">🚶<animateTransform attributeName="transform" type="translate" from="${w0[0]} ${w0[1]}" to="${w1[0]} ${w1[1]}" dur="26s" repeatCount="indefinite"/></text>
+        <text font-size="17" text-anchor="middle">🧑‍⚕️<animateTransform attributeName="transform" type="translate" from="${w2[0]} ${w2[1]}" to="${w3[0]} ${w3[1]}" dur="30s" repeatCount="indefinite"/></text>`;
     s+=lab.join("");
-    const at=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(1.25,5.55);
+    const at=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(HOME0[0],HOME0[1]);
     s+=`<g id="me" style="transform:translate(${at[0]-17}px,${at[1]-46}px)"><g class="bob"><g transform="scale(.58)">${avatar(M.av)}</g></g></g>`;
-    s+=`<text font-size="30" opacity=".9">☁️<animateTransform attributeName="transform" type="translate" from="-40 30" to="600 30" dur="38s" repeatCount="indefinite"/></text><text font-size="22" opacity=".85">☁️<animateTransform attributeName="transform" type="translate" from="-40 66" to="600 66" dur="55s" begin="-20s" repeatCount="indefinite"/></text>`;
-    el.innerHTML=`<svg viewBox="-6 -44 572 424" id="mapsvg">${s}</svg>`;
+    s+=`<text font-size="30" opacity=".9">☁️<animateTransform attributeName="transform" type="translate" from="-40 26" to="880 26" dur="38s" repeatCount="indefinite"/></text><text font-size="22" opacity=".85">☁️<animateTransform attributeName="transform" type="translate" from="-40 70" to="880 70" dur="55s" begin="-20s" repeatCount="indefinite"/></text>`;
+    el.innerHTML=`<svg viewBox="-8 0 840 534" id="mapsvg">${s}</svg>`;el.scrollLeft=(at[0]+8)/840*el.scrollWidth-el.clientWidth/2;
     el.querySelectorAll(".bd").forEach(b=>b.onclick=()=>{
       if(b.dataset.home){SFX("pop");editAvatar();return;}
       const k=b.dataset.b;
       el.querySelectorAll(`.bd[data-b="${k}"]`).forEach(x=>{x.classList.remove("hop");void x.getBoundingClientRect();x.classList.add("hop");});
       if(!isOpen(k)){SFX("no");lockInfo(k,nx);return;}
       if(walking)return;walking=true;
-      SFX("pop");const f=front(k),from=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(1.25,5.55);
+      SFX("pop");const f=front(k),from=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(HOME0[0],HOME0[1]);
       const dist=Math.hypot(f[0]-from[0],f[1]-from[1]),dur=Math.max(1.3,Math.min(3,dist/90)),me=g("me");
       me.style.transitionDuration=dur+"s";me.classList.add("walk");
       me.style.transform=`translate(${f[0]-17}px,${f[1]-46}px)`;M.at=k;save();
