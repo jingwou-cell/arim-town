@@ -336,6 +336,22 @@
   .lx{margin-top:12px;border:none;background:#f4eef1;border-radius:999px;padding:7px 22px;font-family:'Jua',sans-serif;font-size:16px;color:#8a7f77}
   #vTour .hint,#vTour>.go{display:none}
   @media (max-height:520px){.cin{height:300px}.room.door{height:160px}.lift{height:190px}.room.door .win{width:66px;height:66px;font-size:38px;top:16px}.room.door .knob{top:100px}}
+  /* 층 안내판 */
+  .liftp{position:fixed;inset:0;z-index:60;padding:14px}
+  .lpin{width:min(620px,100%);max-height:94vh;overflow:auto}
+  .lpin h3{font-size:21px}
+  .lbtns{grid-template-columns:minmax(0,1fr);gap:7px}
+  .lbtns button{min-width:0;width:100%;box-sizing:border-box}
+  .lbtns button{display:flex;align-items:center;gap:12px;text-align:left;background:var(--fb);color:#4a4039;padding:6px 12px 6px 6px;border-radius:18px;box-shadow:0 3px 0 #0000001a}
+  .lbtns b{flex:none;width:50px;height:50px;border-radius:15px;background:var(--fc);color:#fff;display:grid;place-items:center;font-size:27px}
+  .lbtns .fi{display:block;min-width:0;flex:1}
+  .lbtns small{font-size:13px;opacity:1;color:#6b625b;font-family:'Jua',sans-serif}
+  .lbtns .ics{display:block;font-size:25px;line-height:1.2;letter-spacing:2px;white-space:nowrap;overflow:hidden}
+  .lbtns .nw{left:auto;right:30px;top:-6px}.lbtns .ok{right:2px;top:-6px}
+  .lbtns .cur{outline:none;box-shadow:0 0 0 3px #33302e}
+  .lbtns .cur b::after{content:"📍";position:absolute;left:-6px;top:-8px;font-size:20px}
+  .mapb{position:absolute;right:12px;top:10px;z-index:5;width:50px;height:50px;border:none;border-radius:50%;background:#fff;font-size:26px;box-shadow:0 3px 0 #0000001f}
+  @media (max-height:560px){.lbtns{grid-template-columns:1fr 1fr}.lbtns b{width:40px;height:40px;font-size:22px}.lbtns .ics{font-size:20px}}
   .item{background:#fff4f7;border-radius:16px;padding:12px 14px;margin-bottom:8px;font-size:17px;line-height:1.55}
   .item b{display:block;font-family:'Jua',sans-serif;font-weight:normal;font-size:19px;margin-bottom:2px}
   .clues{display:grid;gap:6px;margin-top:12px}
@@ -3191,7 +3207,8 @@ function corridor(f){
   return `<div class="corr" data-f="${f}" style="--fc:${FL[f][1]};--fb:${FL[f][2]}"><div class="cin"><span class="deco">${f===1?"🚪":"🪴"}</span>${ds.slice(0,L).join("")}${liftBtn(f)}${ds.slice(L).join("")}<span class="deco">🪴</span></div></div>`;
 }
 $("bld").innerHTML=`<div class="flb" id="flb"></div><button class="sc l" data-sc="-1" aria-label="왼쪽">◀</button><button class="sc r" data-sc="1" aria-label="오른쪽">▶</button><div class="me" id="me"><svg viewBox="-20 -6 40 84">${blk(0,0,{coat:1,shirt:"#ffffff",hair:"#4a3528",long:1,pants:"#f08aa6"})}</svg></div>`+FORD.map(corridor).join("")
-  +`<div class="liftp" id="liftp"><div class="lpin"><h3>몇 층으로 갈까?</h3><div class="lbtns">${FORD.map(f=>`<button data-go="${f}" style="--fc:${FL[f][1]}"><b>${f||"별관"}</b><span>${FEM[f]}</span><small>${FL[f][0]}</small><i class="nw">✨</i><i class="ok">⭐</i></button>`).join("")}</div><button class="lx" data-go="x">닫기</button></div></div>`;
+  +`<div class="liftp" id="liftp"><div class="lpin"><h3 id="lph">몇 층으로 갈까?</h3><div class="lbtns">${FORD.map(f=>`<button data-go="${f}" style="--fc:${FL[f][1]};--fb:${FL[f][2]}"><b>${f||"별"}</b><span class="fi"><small>${FL[f][0]}</small><span class="ics">${D.filter(d=>d.f===f).map(d=>d.e).join(" ")}${f===1?" 🛎️":""}${f===0?" 🍼":""}</span></span><i class="nw">✨</i><i class="ok">⭐</i></button>`).join("")}</div><button class="lx" data-go="x">닫기</button></div></div><button class="mapb" data-guide="1" aria-label="병원 안내판">🗺️</button>`;
+function openGuide(t){$("lph").textContent=t;$("liftp").querySelectorAll("[data-go]").forEach(x=>x.classList.toggle("cur",x.dataset.go===String(curF)));$("liftp").classList.add("on");}
 const meEl=$("me");
 let curF=-1,busy=false;
 const corrOf=f=>$("bld").querySelector('.corr[data-f="'+f+'"]');
@@ -3226,7 +3243,8 @@ const roomClick=e=>{
   if(g){if(g.dataset.go==="x"){$("liftp").classList.remove("on");corrOf(curF).querySelector(".lift").classList.remove("open");busy=false;}else rideTo(+g.dataset.go);return;}
   if(busy)return;
   const lf=e.target.closest(".lift");
-  if(lf){walkTo(lf,()=>{lf.classList.add("open");$("liftp").querySelectorAll("[data-go]").forEach(x=>x.classList.toggle("cur",x.dataset.go===String(curF)));$("liftp").classList.add("on");busy=true;});return;}
+  if(e.target.closest("[data-guide]")){openGuide("🏥 층마다 뭐가 있을까? 가고 싶은 층을 눌러요");return;}
+  if(lf){walkTo(lf,()=>{lf.classList.add("open");openGuide("🛗 몇 층으로 갈까?");busy=true;});return;}
   const b=e.target.closest(".room");if(!b)return;
   walkTo(b,()=>{
     if(b.dataset.desk)go("desk");
@@ -3234,7 +3252,7 @@ const roomClick=e=>{
     else openDept(b.dataset.id);});
 };
 $("bld").addEventListener("click",roomClick);
-{const ini=setInterval(()=>{if(!$("bld").clientWidth)return;clearInterval(ini);setFloor([6,5,4,3,2,1,0].includes(st.cf)?st.cf:1);},250);}
+{const ini=setInterval(()=>{if(!$("bld").clientWidth)return;clearInterval(ini);setFloor([6,5,4,3,2,1,0].includes(st.cf)?st.cf:1);if(!st.gd){st.gd=1;save();openGuide("🏥 아림대학교병원이에요! 층마다 뭐가 있을까?");}},250);}
 function floorMarks(){
   FORD.forEach(f=>{const rs=[...corrOf(f).querySelectorAll(".room[data-id]")],b=$("liftp").querySelector('[data-go="'+f+'"]');
     b.classList.toggle("fresh",rs.some(r=>r.classList.contains("fresh")));b.classList.toggle("done",rs.length>0&&rs.every(r=>r.classList.contains("done")));});
