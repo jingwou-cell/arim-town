@@ -221,6 +221,54 @@
   .closed .moon{font-size:54px;line-height:1.1}
   .closed h3{font-size:22px!important;color:#5b53a8!important;margin:6px 0!important}
   .closed .sm{font-size:15px;color:#7d8a96;margin-top:8px}
+  /* ===== 건물 단면 ===== */
+  .bld{background:none;border:none;box-shadow:none;padding:0;border-radius:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;margin:0 -12px}
+  #bld2{margin:26px -12px 0;border:none;background:none}
+  .bin{min-width:980px;padding:0 14px}
+  .frow{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-auto-rows:minmax(124px,auto);position:relative}
+  .frow>*{grid-row:1}
+  .slab{z-index:0;background:linear-gradient(#fffafc,#fff3f7);border-left:7px solid #f7bfd3;border-right:7px solid #f7bfd3;border-top:9px solid var(--fc);box-shadow:inset 0 -9px 0 #e9d5c3,inset 0 -12px 0 #d9c2ad}
+  .frow .room{z-index:1;margin:12px 5px 9px;min-height:0;border-radius:12px 12px 0 0;border:3px solid #fff;border-bottom:none;padding:17px 3px 8px;box-shadow:0 0 0 2px #00000012;overflow:hidden;background-image:linear-gradient(to top,#0000001c 0,#0000001c 11px,transparent 11px),radial-gradient(ellipse 70% 46% at 50% 0,#ffffffd9,transparent)!important}
+  .frow .room::before{content:"";position:absolute;left:50%;top:0;width:18px;height:9px;margin-left:-9px;background:#ffe27a;border-radius:0 0 10px 10px;box-shadow:0 0 10px 3px #fff2b0}
+  .frow .room .door{position:absolute;right:7px;bottom:0;width:15px;height:27px;background:#c98d5a;border-radius:4px 4px 0 0;box-shadow:inset 0 0 0 2px #b47a48}
+  .frow .room .door::after{content:"";position:absolute;left:3px;top:13px;width:3px;height:3px;border-radius:50%;background:#ffe27a}
+  .frow .room .e{font-size:30px}
+  .frow .room .n{font-size:14.5px}
+  .frow .room .pg{font-size:10.5px;letter-spacing:0}
+  .frow .room.desk{border:3px dashed #e6b84d;border-bottom:none}
+  .frow .room.done .st{top:2px;right:2px}
+  .elev{z-index:1;margin:12px 9px 9px;background:#eef1f6;border:3px solid #c9d3e1;border-bottom:none;border-radius:10px 10px 0 0;display:flex;flex-direction:column;align-items:center;padding-top:7px;font-family:'Jua',sans-serif;position:relative;overflow:hidden}
+  .elev b{background:#33302e;color:#ffd66b;border-radius:6px;padding:0 9px;font-size:17px;font-weight:normal}
+  .elev small{font-size:10.5px;color:#6b7c93;margin-top:3px;text-align:center;line-height:1.15;font-family:'Gowun Dodum',sans-serif;word-break:keep-all;padding:0 2px}
+  .elev::after{content:"";position:absolute;left:20%;right:20%;bottom:0;height:44%;border-radius:5px 5px 0 0;background:linear-gradient(90deg,#d5dce6 0,#d5dce6 48%,#8a97a8 48%,#8a97a8 52%,#d5dce6 52%);box-shadow:inset 0 0 0 2px #b9c6d2}
+  .terr{align-self:end;text-align:center;font-size:34px;line-height:1;padding-bottom:9px;z-index:1}
+  .terr.big{font-size:44px;padding-bottom:4px}
+  .roofrow{grid-auto-rows:auto;margin-top:34px}
+  .roofrow .sign{margin:0;position:relative}
+  .roofrow .sign::before{content:"🎀";position:absolute;left:50%;top:-36px;transform:translateX(-50%);font-size:50px;text-shadow:none;filter:drop-shadow(0 2px 0 #e86a9b)}
+  .roofrow .sign.annex{margin:0}
+  .grow{grid-auto-rows:minmax(86px,auto);background:linear-gradient(transparent 0,transparent 62%,#cdebc0 62%);border-radius:0 0 18px 18px}
+  .grow.low{grid-auto-rows:minmax(50px,auto)}
+  .grow .porch{align-self:end;width:auto;max-width:none;margin:0 12% 0;z-index:1}
+  .grow .terr{padding-bottom:2px}
+  .swipe{display:none;text-align:center;font-family:'Jua',sans-serif;color:#d6457e;font-size:15px;margin:0 0 6px}
+  @media (max-width:1000px){.swipe{display:block}}
+  /* 숫자 · 영어 */
+  .clkw{text-align:center;margin-top:8px}.clk{width:128px;height:128px}
+  .mopts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .mopts .opt{text-align:center;font-size:19px!important;padding:13px 4px}
+  .opts.mopts.long{grid-template-columns:1fr}
+  .mopts.long .opt{text-align:left;font-size:17px!important}
+  .mex{display:inline-block;margin-top:5px;color:#2d6aa8}
+  .egbig{display:flex;align-items:center;justify-content:center;gap:12px;background:#fff;border-radius:18px;padding:12px;margin-top:6px;font-family:'Jua',sans-serif;font-size:44px;letter-spacing:2px;color:#2d6aa8;line-height:1.15}
+  .egbig.sen{font-size:25px;letter-spacing:.5px;text-align:center}
+  .saybtn{border:none;background:#ffe1ec;border-radius:999px;width:52px;height:52px;font-size:25px;flex:none}
+  .saybtn.word{width:auto;height:auto;font-size:15px;padding:5px 12px;font-family:'Jua',sans-serif;color:#d6457e;margin:0 0 6px}
+  .egopts.pic,.egopts.let{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .egopts.pic .opt{text-align:center;font-size:42px!important;padding:10px 0}
+  .egopts.let .opt{text-align:center;font-size:34px!important;padding:8px 0}
+  .egopts .opt{font-size:20px!important}
+  #vEng .qz{border-radius:22px;padding:16px}
   .item{background:#fff4f7;border-radius:16px;padding:12px 14px;margin-bottom:8px;font-size:17px;line-height:1.55}
   .item b{display:block;font-family:'Jua',sans-serif;font-weight:normal;font-size:19px;margin-bottom:2px}
   .clues{display:grid;gap:6px;margin-top:12px}
@@ -405,18 +453,15 @@
   <button data-v="desk">🛎️ 안내</button>
   <button data-v="dx">🔍 추리</button>
   <button data-v="mind">💗 마음</button>
+  <button data-v="eng">🔤 영어</button>
 </nav>
 <main>
 <section class="view on" id="vTour">
   <button class="tpb" id="tpBtn"></button>
+  <div class="swipe">👈 옆으로 밀면 병원이 더 보여요 👉</div>
   <div class="sky"><i style="left:6%;top:0">☁️</i><i style="right:8%;top:2px">☁️</i><i style="left:46%;top:-6px;font-size:18px">🚁</i></div>
-  <div class="roof"><i class="heli">🚁</i><i class="flag">🎀</i></div>
-  <div class="sign"><span class="cross">♥</span>아림대학교병원<small>ARIM UNIVERSITY HOSPITAL</small></div>
   <div class="bld" id="bld"></div>
-  <div class="entr"><span class="pot">🌷</span><div class="porch"><div class="awn">🎀 정문 🎀</div><div class="doors"><i></i><i></i></div></div><span class="pot">🌷</span></div>
-  <div class="sign annex"><span class="cross" style="color:#f08aa6">♥</span>별관<small>엄마와 아기 센터</small></div>
   <div class="bld" id="bld2"></div>
-  <div class="ground"><span>🌷</span><span>🌳</span><span>🚑</span><span>🌳</span><span>🌷</span></div>
   <button class="go" onclick="goPlace('j')">🍼 별관 산후조리원으로 가기 →</button>
   <div class="hint">대학병원은 환자를 치료하고, 의사를 가르치고, 새 치료법을 연구하는 큰 병원이에요.<br>진료과마다 퀴즈 5개를 모두 맞히면 견학 도장 💮을 받아요<br>방에 들어가면 진료실이 나와요. 환자를 진료하고 물건도 살펴봐요</div>
   <div class="finish" id="finish">
@@ -430,6 +475,7 @@
   <div class="stamps" id="stamps"></div>
 </section>
 <section class="view" id="vDx"><div class="qz" id="dxbox"></div><div class="stamps" id="dxinfo"></div></section>
+<section class="view" id="vEng"><div class="qz b-ob" id="engbox"></div><div class="stamps" id="enginfo"></div></section>
 <section class="view" id="vMind"><div class="qz" id="mindbox"></div><div class="stamps" id="mindinfo"></div></section>
 <div class="note">몸이 아플 때는 꼭 엄마 아빠에게 말하고, 진짜 의사 선생님께 진료를 받아요.</div>
 </main>
@@ -852,15 +898,33 @@ window.addEventListener("hashchange",fromHash);
   const LOT={h:[0,0,2,74],u:[3,0,1,50],l:[4,0,1,42],p:[0,1,1,38],c:[1,1,1,44],e:[3,1,1,38],v:[4,1,1,34],f:[0,3,1,36],s:[1,3,1,32]};
   const info=k=>FIXED[k]||BLD.find(b=>b.key===k);
   const front=k=>{const L=LOT[k];return iso(L[0]+L[2]*.5,L[1]+1.12);};
-  function box(x,y,w,h,col,m){
-    m=m||.1;const A=iso(x+m,y+m),B=iso(x+w-m,y+m),C=iso(x+w-m,y+1-m),D=iso(x+m,y+1-m),up=p=>[p[0],p[1]-h];
+  function box(x,y,w,h,col,m,plain){
+    m=m||.2;const A=iso(x+m,y+m),B=iso(x+w-m,y+m),C=iso(x+w-m,y+1-m),D=iso(x+m,y+1-m),up=p=>[p[0],p[1]-h];
     const quad=(p0,p1,u0,u1,v0,v1)=>{const L=(u,v)=>[p0[0]+(p1[0]-p0[0])*u,p0[1]+(p1[1]-p0[1])*u-h*v];return P([L(u0,v0),L(u1,v0),L(u1,v1),L(u0,v1)]);};
-    let s=`<polygon points="${P([D,C,up(C),up(D)])}" fill="${col}"/><polygon points="${P([C,B,up(B),up(C)])}" fill="${shade(col,.78)}"/><polygon points="${P([up(A),up(B),up(C),up(D)])}" fill="${shade(col,1.22)}" stroke="#ffffff88" stroke-width="1.5"/>`;
-    const rows=Math.max(1,Math.round(h/24)),cols=w>1?4:2;
-    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const u=(c+.22)/cols,v=(r+.3)/rows;s+=`<polygon class="win" style="animation-delay:${(r*3+c)*.7}s" points="${quad(D,C,u,u+.56/cols,v,v+.5/rows)}" fill="#fff8d6"/>`;}
-    for(let r=0;r<rows;r++){const v=(r+.3)/rows;if(r>0||w>1)s+=`<polygon points="${quad(C,B,.58,.84,v,v+.5/rows)}" fill="#fff8d6" opacity=".85"/>`;}
-    s+=`<polygon points="${quad(C,B,.14,.42,0,Math.min(.6,22/h))}" fill="#8a6a50"/>`;
+    const gc=iso(x+w/2,y+.5);
+    let s=`<ellipse cx="${gc[0]+6}" cy="${gc[1]+8}" rx="${40*w+8}" ry="${20+4*w}" fill="#000" opacity=".1"/>`;
+    s+=`<polygon points="${P([D,C,up(C),up(D)])}" fill="${col}"/><polygon points="${P([C,B,up(B),up(C)])}" fill="${shade(col,.74)}"/>`;
+    if(plain){s+=`<polygon points="${P([up(A),up(B),up(C),up(D)])}" fill="${shade(col,1.22)}" stroke="#ffffff88" stroke-width="1.5"/>`;const r0=iso(x+w/2,y+.5);return {s:s,top:[r0[0],r0[1]-h]};}
+    /* 받침돌, 층 사이 띠 */
+    s+=`<polygon points="${quad(D,C,0,1,0,4/h)}" fill="${shade(col,.6)}"/><polygon points="${quad(C,B,0,1,0,4/h)}" fill="${shade(col,.48)}"/>`;
+    const rows=Math.max(1,Math.round(h/22)),cols=w>1?5:2,g0=h>30?.26:0;
+    for(let r=0;r<rows;r++){const v0=g0+(1-g0)*(r+.2)/rows,v1=g0+(1-g0)*(r+.72)/rows;
+      for(let q=0;q<cols;q++){const u=(q+.2)/cols;s+=`<polygon class="win" style="animation-delay:${(r*3+q)*.7}s" points="${quad(D,C,u,u+.6/cols,v0,v1)}" fill="#fff8d6" stroke="#ffffffcc" stroke-width="1.2"/><polygon points="${quad(D,C,u-.03/cols,u+.63/cols,v0-1.6/h,v0)}" fill="${shade(col,.7)}"/>`;}
+      const rc=w>1?2:2;for(let q=0;q<rc;q++){const u=(q+.2)/rc;if(g0||r>0)s+=`<polygon points="${quad(C,B,u,u+.56/rc,v0,v1)}" fill="#fff3c4" stroke="#ffffffaa" stroke-width="1" opacity=".9"/>`;}}
+    /* 1층: 가게 창과 문 */
+    const dh=Math.min(.24,17/h);
+    if(h>30){s+=`<polygon points="${quad(D,C,.08,.92,5/h,dh)}" fill="#cfeaff" stroke="#fff" stroke-width="1.5"/><polygon points="${quad(D,C,.04,.96,dh,dh+5/h)}" fill="#fff" stroke="${shade(col,.7)}" stroke-width="1"/>`;
+      for(let q=0;q<(w>1?10:5);q+=2)s+=`<polygon points="${quad(D,C,.04+.92*q/(w>1?10:5),.04+.92*(q+1)/(w>1?10:5),dh,dh+5/h)}" fill="${shade(col,1.1)}"/>`;}
+    s+=`<polygon points="${quad(C,B,.3,.7,0,dh*.96)}" fill="#fff"/><polygon points="${quad(C,B,.34,.49,0,dh*.86)}" fill="#9fd0f5"/><polygon points="${quad(C,B,.51,.66,0,dh*.86)}" fill="#9fd0f5"/><polygon points="${quad(C,B,.22,.78,dh,dh+5/h)}" fill="${shade(col,1.25)}" stroke="#fff" stroke-width="1"/>`;
+    /* 지붕 난간 */
+    const k=.11,A2=iso(x+m+k,y+m+k),B2=iso(x+w-m-k,y+m+k),C2=iso(x+w-m-k,y+1-m-k),D2=iso(x+m+k,y+1-m-k);
+    s+=`<polygon points="${P([up(A),up(B),up(C),up(D)])}" fill="${shade(col,1.3)}" stroke="#ffffffaa" stroke-width="1.5"/><polygon points="${P([up(A2),up(B2),up(C2),up(D2)])}" fill="${shade(col,1.08)}"/>`;
     const rc=iso(x+w/2,y+.5);return {s:s,top:[rc[0],rc[1]-h]};
+  }
+  function roofProp(k,t,b){
+    const x=t[0],y=t[1];
+    if(k==="h")return `<ellipse cx="${x-30}" cy="${y+4}" rx="24" ry="12" fill="#7d8ea3" stroke="#fff" stroke-width="2"/><text x="${x-30}" y="${y+9}" font-size="15" text-anchor="middle" font-family="Jua,sans-serif" fill="#fff">H</text><path d="M${x+24} ${y+6}v-12M${x+44} ${y+2}v-12" stroke="#8a97a8" stroke-width="3"/><rect x="${x+14}" y="${y-40}" width="40" height="32" rx="7" fill="#fff" stroke="#e8504f" stroke-width="2.5"/><path d="M${x+34} ${y-34}v20M${x+24} ${y-24}h20" stroke="#e8504f" stroke-width="6"/>`;
+    return `<path d="M${x-6} ${y+3}v-8M${x+6} ${y+1}v-8" stroke="#8a97a8" stroke-width="2"/><rect x="${x-13}" y="${y-28}" width="26" height="23" rx="6" fill="#fff" stroke="${b.color}" stroke-width="2"/><text x="${x}" y="${y-11}" font-size="15" text-anchor="middle">${b.emoji}</text>`;
   }
   let walking=false;
   function drawMap(){
@@ -870,18 +934,22 @@ window.addEventListener("hashchange",fromHash);
     let s=`<polygon points="${P([iso(0,0),iso(5,0),iso(5,6),iso(0,6)])}" fill="#bfe6a8"/><polygon points="${P([iso(0,6),iso(5,6),[iso(5,6)[0],iso(5,6)[1]+10],[iso(0,6)[0],iso(0,6)[1]+10]])}" fill="#8fc97a"/><polygon points="${P([iso(5,0),iso(5,6),[iso(5,6)[0],iso(5,6)[1]+10],[iso(5,0)[0],iso(5,0)[1]+10]])}" fill="#7dba68"/>`;
     s+=`<polygon points="${P([iso(2,0),iso(3,0),iso(3,6),iso(2,6)])}" fill="#cfc9c2"/><polygon points="${P([iso(0,2),iso(5,2),iso(5,3),iso(0,3)])}" fill="#cfc9c2"/>`;
     s+=`<line x1="${iso(2.5,0)[0]}" y1="${iso(2.5,0)[1]}" x2="${iso(2.5,6)[0]}" y2="${iso(2.5,6)[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="8 8"/><line x1="${iso(0,2.5)[0]}" y1="${iso(0,2.5)[1]}" x2="${iso(5,2.5)[0]}" y2="${iso(5,2.5)[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="8 8"/>`;
+    [[1.86,0,2,6],[3,0,3.14,6]].forEach(q=>{s+=`<polygon points="${P([iso(q[0],q[1]),iso(q[2],q[1]),iso(q[2],q[3]),iso(q[0],q[3])])}" fill="#e9e3da"/>`;});
+    [[0,1.86,5,2],[0,3,5,3.14]].forEach(q=>{s+=`<polygon points="${P([iso(q[0],q[1]),iso(q[2],q[1]),iso(q[2],q[3]),iso(q[0],q[3])])}" fill="#e9e3da"/>`;});
+    for(let i=0;i<5;i++){const u=2.08+i*.18;s+=`<polygon points="${P([iso(u,1.8),iso(u+.09,1.8),iso(u+.09,1.98),iso(u,1.98)])}" fill="#fff"/><polygon points="${P([iso(u,3.02),iso(u+.09,3.02),iso(u+.09,3.2),iso(u,3.2)])}" fill="#fff"/><polygon points="${P([iso(1.8,u),iso(1.98,u),iso(1.98,u+.09),iso(1.8,u+.09)])}" fill="#fff"/><polygon points="${P([iso(3.02,u),iso(3.2,u),iso(3.2,u+.09),iso(3.02,u+.09)])}" fill="#fff"/>`;}
+    [[1.92,1.92],[3.08,1.92],[1.92,3.08],[3.08,3.08]].forEach(q=>{const p=iso(q[0],q[1]);s+=`<path d="M${p[0]} ${p[1]}v-22" stroke="#8a97a8" stroke-width="2"/><circle cx="${p[0]}" cy="${p[1]-24}" r="4" fill="#ffe27a" stroke="#fff"/>`;});
     /* 공원 */
     s+=`<polygon points="${P([iso(3,3),iso(5,3),iso(5,6),iso(3,6)])}" fill="#d3f0bf"/>`;
     const lab=[];
     const items=[];
     Object.keys(LOT).forEach(k=>{const L=LOT[k],b=info(k);if(!b)return;const open=isOpen(k);let gfx,top;
-      if(open){const bx=box(L[0],L[1],L[2],L[3],b.color);gfx=bx.s+`<text x="${bx.top[0]}" y="${bx.top[1]+9}" font-size="${L[2]>1?34:26}" text-anchor="middle">${b.emoji}</text>`;top=bx.top;}
-      else{const bx=box(L[0],L[1],L[2],10,"#c9c2b8",.14);const c=iso(L[0]+L[2]/2,L[1]+.5);gfx=bx.s+`<text x="${c[0]}" y="${c[1]-8}" font-size="24" text-anchor="middle">🚧</text>`;top=[c[0],c[1]-L[3]+6];}
+      if(open){const bx=box(L[0],L[1],L[2],L[3],b.color);gfx=bx.s+roofProp(k,bx.top,b);top=[bx.top[0],bx.top[1]-(k==="h"?30:18)];}
+      else{const bx=box(L[0],L[1],L[2],10,"#c9c2b8",.14,true);const c=iso(L[0]+L[2]/2,L[1]+.5);gfx=bx.s+`<text x="${c[0]}" y="${c[1]-8}" font-size="24" text-anchor="middle">🚧</text>`;top=[c[0],c[1]-L[3]+6];}
       items.push({d:L[0]+L[1]+L[2]*.5,s:`<g class="bd" data-b="${k}">${gfx}</g>`});
       lab.push(`<g class="bd" data-b="${k}">${pill(top[0],top[1]-20,MAPN[k],open?b.color:"#b9b2a9",!open)}</g>`);
     });
     /* 아림이네 집 */
-    {const bx=box(0,5,1,26,"#ffb6c9",.16);const rc=bx.top;items.push({d:5.5,s:`<g class="bd" data-home="1">${bx.s}<polygon points="${rc[0]},${rc[1]-26} ${rc[0]-36},${rc[1]-2} ${rc[0]},${rc[1]+14} ${rc[0]+36},${rc[1]-2}" fill="#e8688a" stroke="#fff" stroke-width="1.5"/></g>`});
+    {const bx=box(0,5,1,26,"#ffb6c9",.18,true);const rc=bx.top;items.push({d:5.5,s:`<g class="bd" data-home="1">${bx.s}<polygon points="${rc[0]},${rc[1]-26} ${rc[0]-36},${rc[1]-2} ${rc[0]},${rc[1]+14} ${rc[0]+36},${rc[1]-2}" fill="#e8688a" stroke="#fff" stroke-width="1.5"/></g>`});
       lab.push(`<g class="bd" data-home="1">${pill(rc[0],rc[1]-34,"우리 집","#e8688a",false)}</g>`);}
     [[.5,4.5],[1.5,4.4],[1.75,5.3],[1.3,5.85]].forEach(t=>{const p=iso(t[0],t[1]);items.push({d:t[0]+t[1],s:`<text x="${p[0]}" y="${p[1]}" font-size="26" text-anchor="middle">🌳</text>`});});
     /* 공원 칸 */
@@ -900,7 +968,7 @@ window.addEventListener("hashchange",fromHash);
     const at=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(1.25,5.55);
     s+=`<g id="me" style="transform:translate(${at[0]-17}px,${at[1]-46}px)"><g class="bob"><g transform="scale(.58)">${avatar(M.av)}</g></g></g>`;
     s+=`<text font-size="30" opacity=".9">☁️<animateTransform attributeName="transform" type="translate" from="-40 30" to="600 30" dur="38s" repeatCount="indefinite"/></text><text font-size="22" opacity=".85">☁️<animateTransform attributeName="transform" type="translate" from="-40 66" to="600 66" dur="55s" begin="-20s" repeatCount="indefinite"/></text>`;
-    el.innerHTML=`<svg viewBox="0 0 560 374" id="mapsvg">${s}</svg>`;
+    el.innerHTML=`<svg viewBox="-6 -44 572 424" id="mapsvg">${s}</svg>`;
     el.querySelectorAll(".bd").forEach(b=>b.onclick=()=>{
       if(b.dataset.home){SFX("pop");editAvatar();return;}
       const k=b.dataset.b;
@@ -1794,7 +1862,7 @@ function sceneMarks(id){
   eb.innerHTML=cl?"🌙 오늘 진료 시간이 끝났어요 <small>내일 새 환자가 와요</small>":"🚪 다음 환자, 들어오세요!"+(n?" <small>지금까지 "+n+"명 진료</small>":"");
 }
 function openScene(id){
-  const d=DM[id];osel=null;enc=null;
+  const d=DM[id];osel=null;enc=null;if(eg&&eg.room)eg=null;
   card.classList.add("wide");
   card.innerHTML=`<div class="top"><div class="e">${d.e}</div><div><h2>${d.name} 진료실</h2><div class="en">${d.en}</div><span class="where">${d.f?d.f+"층":"별관"} · ${FL[d.f][0]}</span></div><button class="x" data-act="close" aria-label="닫기">✕</button></div>
    <div class="scwrap"><div><div class="scn" id="scn">${sceneSvg(id)}</div><div class="scap" id="scap"></div><button class="btn encb" id="encb" data-act="en-new" data-id="${id}"></button></div>
@@ -1805,6 +1873,7 @@ function openScene(id){
    ${d.dz.map(z=>`<details><summary><span class="e">${z[0]}</span>${z[1]}</summary><div class="dzb"><div class="s"><b>${d.dzt?"언제?":"😣 이럴 때 아파요"}</b><br>${z[2]}</div><div class="c"><b>${d.dzt?"어떻게?":"💊 이렇게 치료해요"}</b><br>${z[3]}</div></div></details>`).join("")}`;
   renderQ(id);sceneMarks(id);
   $("scn").onclick=e=>{const g=e.target.closest(".ob");if(!g)return;
+    if(eg&&eg.room)return;
     if(enc){if(enc.step===2&&g.dataset.o!=="doc")encExam(g.dataset.o);return;}
     osel=g.dataset.o;
     if(osel==="doc"){$("obox").style.display="none";$("qbox").style.display="block";renderQ(id);}
@@ -1814,7 +1883,7 @@ function openScene(id){
 }
 function renderOb(id,k){
   const o=SCN[id].obs.find(x=>x.k===k),c=ocur(id,k),n=o.q.length,box=$("obox");ow=0;
-  let h=`<div class="qhead"><h3>${o.e} ${o.name}</h3><span class="dots">${dots(c,c,n)}</span></div><p class="look">${o.look}</p>`;
+  let h=`<div class="qhead"><h3>${o.e} ${o.name}</h3><span class="dots">${dots(c,c,n)}</span></div>${OEN[k]?`<button class="saybtn word" data-act="eg-say" data-t="${OEN[k]}">🔊 영어로 ${OEN[k]}</button>`:""}<p class="look">${o.look}</p>`;
   if(c>=n)h+=`<p class="odone">⭐ 이 물건의 문제를 모두 풀었어요. 다른 물건도 살펴볼까?</p>`;
   else{const q=o.q[c];
     h+=`<p class="oq">🤔 ${q[0]}</p><div class="opts" style="margin-top:10px">${shuffle([1,2,3]).map(i=>`<button class="opt" data-act="opick" data-id="${id}" data-o="${k}" data-k="${i}">${q[i]}</button>`).join("")}</div>
@@ -2063,17 +2132,19 @@ rad:[
  why:"쇠는 엑스레이를 막아서 하얗게 잘 보여요. 위까지 내려간 동전은 대개 저절로 나와요. 단추 건전지였다면 바로 꺼내야 해요."}]};
 const PNAME=[["서준이","m"],["하윤이","f"],["지우","f"],["시우","m"],["서아","f"],["도윤이","m"],["예준이","m"],["하은이","f"],["민재","m"],["채원이","f"]];
 const PAGE=["다섯","여섯","일곱","여덟","아홉"],SHIRT=["#f08a5d","#5aa9e6","#58c29b","#b48ae0","#f2b84b","#f08aa6"];
-const EASK=3,EEX=2,ESTEPS=["문진","진찰","진단","치료"];
+const EASK=3,EEX=2,ESTEPS=["문진","진찰","진단","치료","숫자"];const engSeen={};
 function patG(x,y,p,happy){
   const s=p.big?1:.84;
-  return `<g transform="translate(${x},${y}) scale(${s})"><g class="pat${happy?" happy":""}">${blk(0,0,{shirt:p.shirt,hair:p.gray?"#b9b9c2":(p.g==="f"?"#4a3528":"#33302e"),long:p.g==="f",belly:p.mom,happy:happy,sad:!happy,pants:p.big?"#56657a":"#7286a0"})}</g></g>`;
+  return `<g transform="translate(${x},${y}) scale(${s})"><g class="pat${happy?" happy":""}">${blk(0,0,{shirt:p.shirt,hair:p.blond?"#e6c36a":p.gray?"#b9b9c2":(p.g==="f"?"#4a3528":"#33302e"),long:p.g==="f",belly:p.mom,happy:happy,sad:!happy,pants:p.big?"#56657a":"#7286a0"})}</g></g>`;
 }
 const evGet=id=>{const v=(st.ev&&st.ev[id])||0;return Math.floor(v/1024)===dnum()?v%1024:0;};
 const encLeft=id=>{const L=ECASE[id]||[],sn=evGet(id);return L.map((c,i)=>i).filter(i=>!(sn>>i&1));};
 let enc=null;const encDeck={},encLast={};
-function encStart(id){
+function encStart(id,noEng){
   const L=ECASE[id],left=encLeft(id);
   $("qbox").style.display="none";$("obox").style.display="block";
+  if(!noEng&&!engSeen[id]&&left.length&&Math.random()<.3){engSeen[id]=1;enc=null;osel=null;sceneMarks(id);$("encb").style.display="none";$("scap").innerHTML="🌍 외국인 환자가 왔어요";
+    $("scn").querySelector("#spt").innerHTML=patG((EPOS[id]||[186,142])[0],(EPOS[id]||[186,142])[1],{shirt:"#5aa9e6",g:"m",big:1,blond:1},false);engNew(true,id);return;}
   if(!left.length){enc=null;osel=null;$("scn").querySelector("#spt").innerHTML="";sceneMarks(id);
     $("obox").innerHTML=`<div class="closed"><div class="moon">🌙</div><h3>오늘 진료 시간이 끝났어요</h3><p>오늘 ${DM[id].name}에 온 환자 ${L.length}명을 모두 진료했어요.<br>내일 새 환자들이 찾아와요.</p><p class="sm">진료실의 물건은 계속 살펴볼 수 있어요 🔎</p></div>`;return;}
   let cand=left.filter(i=>i!==encLast[id]);if(!cand.length)cand=left;
@@ -2089,8 +2160,8 @@ function encDraw(){
   const e=enc,c=e.c,box=$("obox"),S=SCN[e.id],bar=Math.max(0,e.step<2?0:e.step-1);
   const face=e.p.mom?"🤰":(e.p.gray?(e.p.g==="f"?"👵":"👴"):(e.p.big?(e.p.g==="f"?"👩":"👨"):(e.p.g==="f"?"👧":"👦")));
   let h=`<div class="qhead"><h3>🩺 ${e.who}</h3><button class="equit" data-act="en-quit" data-id="${e.id}">그만하기</button></div>
-   <div class="esteps">${ESTEPS.map((s,i)=>`<span class="${e.step>=5||i<bar?"dn":(i===bar?"on":"")}">${s}</span>`).join("")}</div>
-   <div class="pt"><div class="face">${e.step>=5?"😊":face}</div><div class="bubble">${e.say||`<b>${e.who}${/[가-힣]$/.test(e.who)&&(e.who.charCodeAt(e.who.length-1)-44032)%28?"이":"가"} 들어왔어요.</b><br>"${e.cc}"`}</div></div>`;
+   <div class="esteps">${ESTEPS.map((s,i)=>`<span class="${e.step>=6||i<bar?"dn":(i===bar?"on":"")}">${s}</span>`).join("")}</div>
+   <div class="pt"><div class="face">${e.step>=6?"😊":face}</div><div class="bubble">${e.say||`<b>${e.who}${/[가-힣]$/.test(e.who)&&(e.who.charCodeAt(e.who.length-1)-44032)%28?"이":"가"} 들어왔어요.</b><br>"${e.cc}"`}</div></div>`;
   if(e.note)h+=`<div class="enote">${e.note}</div>`;
   if(e.step<=1){
     const left=Math.min(EASK,c.ask.length)-e.asked.length;
@@ -2104,9 +2175,12 @@ function encDraw(){
     h+=`<p class="oq">${c.dq||"🧠 어떤 병일까?"}</p><div class="opts" style="margin-top:8px">${e.dxo.map(i=>`<button class="opt" data-act="en-dx" data-k="${i}">${c.dx[i]}</button>`).join("")}</div><div class="msg" id="emsg"></div>`;
   }else if(e.step===4){
     h+=`<p class="oq">${c.tq||"💊 어떻게 치료할까?"}</p><div class="opts" style="margin-top:8px">${e.txo.map(i=>`<button class="opt" data-act="en-tx" data-k="${i}">${c.tx[i]}</button>`).join("")}</div><div class="msg" id="emsg"></div>`;
+  }else if(e.step===5){
+    const m=e.m;
+    h+=`${m.tip?`<div class="enote">${m.tip}</div>`:""}<p class="oq">🔢 ${m.q}</p>${m.svg?`<div class="clkw">${m.svg}</div>`:""}<div class="opts mopts${m.o.some(x=>x.length>7)?" long":""}" style="margin-top:8px">${e.mo.map(i=>`<button class="opt" data-act="en-m" data-k="${i}">${m.o[i]}</button>`).join("")}</div><div class="msg" id="emsg"></div>`;
   }else{
     const star=e.w===0?3:(e.w<=2?2:1);
-    h+=`<div class="result"><b>${"⭐".repeat(star)} 진료 끝!</b><br>${c.why}<br><small>핵심 질문 ${e.key}개 · 알맞은 검사 ${e.good}개를 찾았어요.</small></div>
+    h+=`<div class="result"><b>${"⭐".repeat(star)} 진료 끝!</b><br>${c.why}<br><span class="mex">🔢 ${e.m.ex}</span><br><small>핵심 질문 ${e.key}개 · 알맞은 검사 ${e.good}개를 찾았어요.</small></div>
      <button class="btn" data-act="en-new" data-id="${e.id}">${encLeft(e.id).length?"다음 환자, 들어오세요! 🚪":"오늘 진료 마치기 🌙"}</button>`;
   }
   if(e.chart.length)h+=`<div class="chart"><b>📋 차트</b>${e.chart.map(x=>`<div>${x}</div>`).join("")}</div>`;
@@ -2133,10 +2207,18 @@ function encAct(b){
     if(b.dataset.k==="0"){b.classList.add("right");e.lock=1;
       setTimeout(()=>{if(enc!==e)return;e.lock=0;e.note=null;
         if(a==="en-dx"){e.step=4;e.chart.push("🧠 "+c.dx[0]);e.say=null;}
-        else{e.step=5;e.chart.push("💊 "+c.tx[0]);e.say='"고맙습니다, 선생님!"';st.en=(st.en||0)+1;(st.ec=st.ec||{})[e.id]=(st.ec[e.id]||0)+1;(st.ev=st.ev||{})[e.id]=dnum()*1024+(evGet(e.id)|1<<e.ci);save();refresh();
-          $("scn").querySelector("#spt").innerHTML=patG((EPOS[e.id]||[186,142])[0],(EPOS[e.id]||[186,142])[1],e.p,true);}
+        else{e.step=5;e.chart.push("💊 "+c.tx[0]);e.say='"선생님, 하나만 더 도와주세요."';e.m=mathFor(e.id);e.mo=shuffle([0,1,2]);}
         sceneMarks(e.id);encDraw();},700);
     }else{e.w++;b.classList.add("wrong");$("emsg").textContent="차트를 다시 읽어 볼까? 💭";}
+  }
+  else if(a==="en-m"){
+    if(b.classList.contains("wrong")||b.classList.contains("right"))return;
+    if(b.dataset.k==="0"){b.classList.add("right");e.lock=1;
+      setTimeout(()=>{if(enc!==e)return;e.lock=0;e.step=6;e.say='"고맙습니다, 선생님!"';
+        st.en=(st.en||0)+1;(st.ec=st.ec||{})[e.id]=(st.ec[e.id]||0)+1;(st.ev=st.ev||{})[e.id]=dnum()*1024+(evGet(e.id)|1<<e.ci);save();refresh();
+        $("scn").querySelector("#spt").innerHTML=patG((EPOS[e.id]||[186,142])[0],(EPOS[e.id]||[186,142])[1],e.p,true);
+        sceneMarks(e.id);encDraw();},700);
+    }else{e.w++;b.classList.add("wrong");$("emsg").textContent="천천히 다시 세어 볼까? 💭";}
   }
 }
 
@@ -2936,6 +3018,95 @@ pharm:[
  tq:"💊 남은 약은 어떻게 할까?",tx:["정해진 날까지 시간 맞춰 먹어요","다음에 아플 때 쓰려고 남겨 둬요","동생에게 나눠 줘요"],
  why:"증상이 없어져도 균은 조금 남아 있어요. 중간에 끊으면 살아남은 센 균이 다시 늘어날 수 있어요."}]
 });
+/* 숫자 마무리: 덧셈·뺄셈, 시계 읽기, 순서. 소수와 시간 계산은 알려 주는 방식 */
+const RN=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+function clockSvg(h,m){
+  const p=(a,r)=>[(40+r*Math.sin(a*Math.PI/180)).toFixed(1),(40-r*Math.cos(a*Math.PI/180)).toFixed(1)];let t="";
+  for(let i=1;i<=12;i++){const q=p(i*30,29);t+=`<text x="${q[0]}" y="${+q[1]+3.5}" font-size="9" text-anchor="middle" font-family="Jua,sans-serif" fill="#33302e">${i}</text>`;}
+  const H=p(((h%12)+m/60)*30,16),M=p(m*6,25);
+  return `<svg class="clk" viewBox="0 0 80 80"><circle cx="40" cy="40" r="37" fill="#fff" stroke="#f77fae" stroke-width="4"/>${t}<path d="M40 40L${H[0]} ${H[1]}" stroke="#33302e" stroke-width="4.5" stroke-linecap="round"/><path d="M40 40L${M[0]} ${M[1]}" stroke="#e8504f" stroke-width="2.5" stroke-linecap="round"/><circle cx="40" cy="40" r="3" fill="#33302e"/></svg>`;
+}
+const numOpt=(c,u,alt)=>{const s=[c];(alt||[]).concat([c+1,c-1,c+2,c-2,c+10,c+3]).forEach(v=>{if(s.length<3&&v>=0&&!s.includes(v))s.push(v);});return s.map(v=>v+u);};
+const tstr=(h,m)=>h+"시"+(m?" "+m+"분":"");
+const h12=h=>((h-1)%12+12)%12+1;
+const TRIAGE=[
+ ["숨을 잘 쉬지 못하는 아저씨","무릎이 까진 어린이","어제부터 콧물이 나는 언니"],
+ ["불러도 깨어나지 않는 할머니","종이에 손가락을 벤 오빠","모기에 물린 동생"],
+ ["피가 멈추지 않는 어린이","발목을 살짝 삔 형","예방주사를 맞으러 온 아기"],
+ ["땅콩을 먹고 입술이 붓고 숨이 찬 어린이","이가 흔들리는 어린이","손톱이 깨진 어린이"],
+ ["가슴이 꽉 조인다는 할아버지","감기에 걸린 아빠","눈이 가려운 누나"]];
+const MGEN={
+ days:()=>{const a=RN(5,9),b=RN(2,a-2);return {q:`약을 ${a}일 치 받았어요. 오늘까지 ${b}일 먹었어요. 앞으로 며칠 더 먹어야 할까?`,o:numOpt(a-b,"일",[a+b]),ex:`${a} - ${b} = ${a-b}. 다 나은 것 같아도 남은 ${a-b}일을 끝까지 먹어요.`};},
+ visit:()=>{const d=RN(3,19),n=RN(3,9);return {q:`오늘은 ${d}일이에요. ${n}일 뒤에 다시 진료를 받으러 와요. 며칠에 와야 할까?`,o:numOpt(d+n,"일",[d-n>0?d-n:d+n+1]),ex:`${d} + ${n} = ${d+n}. 달력에 동그라미를 쳐 둬요.`};},
+ wait:()=>{const a=RN(7,14),o=RN(2,5),i=RN(2,6),c=a-o+i;return {q:`대기실에 ${a}명이 있어요. ${o}명이 진료를 마치고 갔고, ${i}명이 새로 왔어요. 지금은 몇 명일까?`,o:numOpt(c,"명",[a-o,a+i]),ex:`${a} - ${o} = ${a-o}, 그리고 ${a-o} + ${i} = ${c}.`};},
+ height:()=>{const a=RN(100,118),k=RN(3,8);return {q:`작년 키는 ${a}cm, 올해 키는 ${a+k}cm예요. 일 년 동안 몇 cm 자랐을까?`,o:numOpt(k,"cm"),ex:`${a+k} - ${a} = ${k}. 어린이는 일 년에 5~6cm쯤 자라요.`};},
+ weight:()=>{const a=RN(16,30),k=RN(2,5);return {q:`지난번 몸무게는 ${a}kg, 오늘은 ${a+k}kg이에요. 몸무게가 얼마나 늘었을까?`,o:numOpt(k,"kg"),ex:`${a+k} - ${a} = ${k}. 몸무게 변화는 건강을 알려 주는 중요한 숫자예요.`};},
+ water:()=>{const a=RN(52,68),k=RN(2,5);return {q:`평소 몸무게는 ${a}kg인데, 투석 전에 재니 ${a+k}kg이에요. 오늘 빼야 할 물은 몇 kg일까?`,o:numOpt(k,"kg"),ex:`${a+k} - ${a} = ${k}. 늘어난 몸무게가 몸에 쌓인 물이에요.`};},
+ pulse:()=>{const a=RN(84,99),d=RN(6,18);return {q:`열이 날 때 심장이 1분에 ${a}번 뛰었어요. 열이 내리자 ${d}번이 줄었어요. 지금은 1분에 몇 번 뛸까?`,o:numOpt(a-d,"번",[a+d]),ex:`${a} - ${d} = ${a-d}. 열이 나면 심장도 빨리 뛰어요.`};},
+ beds:()=>{const t=RN(8,12),u=RN(3,t-2);return {q:`병실에 침대가 ${t}개 있어요. 환자 ${u}명이 누워 있어요. 빈 침대는 몇 개일까?`,o:numOpt(t-u,"개",[t+u]),ex:`${t} - ${u} = ${t-u}. 빈 침대가 있어야 새 환자를 받을 수 있어요.`};},
+ iv:()=>{const a=RN(2,8)*10;return {q:`수액 주머니에 100이 들어 있었어요. 지금까지 ${a}이 들어갔어요. 남은 수액은 얼마일까?`,o:numOpt(100-a,"",[a,100-a+10]),ex:`100 - ${a} = ${100-a}. 다 들어가기 전에 간호사 선생님이 확인해요.`};},
+ range:()=>{const n=RN(1,15),c=n<4?"정상보다 낮아요":(n>10?"정상보다 높아요":"정상이에요"),all=["정상이에요","정상보다 높아요","정상보다 낮아요"];return {q:`균과 싸우는 백혈구 수는 4부터 10까지가 정상이에요. 검사 결과는 ${n}이에요. 어떨까?`,o:[c].concat(all.filter(x=>x!==c)),ex:`${n}은 ${n<4?"4보다 작아서 낮아요. 균과 싸울 군인이 모자라요.":(n>10?"10보다 커서 높아요. 몸이 무언가와 싸우는 중이에요.":"4와 10 사이라서 정상이에요.")}`};},
+ pattern:()=>({q:"감기 바이러스가 한 사람에게서 두 사람에게 옮아요. 1명 → 2명 → 4명 → 다음은 몇 명일까?",o:["8명","6명","5명"],ex:"앞의 수를 두 번 더해요. 4 + 4 = 8. 손을 씻으면 이 고리를 끊을 수 있어요."}),
+ order:()=>{const t=pick(TRIAGE);return {q:"응급실에 세 사람이 한꺼번에 왔어요. 누구를 가장 먼저 봐야 할까?",o:t.slice(),ex:"응급실은 온 순서가 아니라 급한 순서로 봐요. 숨, 피, 정신이 가장 급해요."};},
+ ticket:()=>{const a=RN(11,40),b=a+RN(1,5),c=b+RN(1,5);return {q:`급한 환자가 없을 때는 번호표 순서대로 봐요. ${c}번, ${a}번, ${b}번이 기다려요. 누구 차례일까?`,o:[a+"번",b+"번",c+"번"],ex:`가장 작은 수인 ${a}번이 먼저 왔어요.`};},
+ temp:()=>{const t=pick(["36.8","37.2","37.6","38.4","39.1","38.0"]),hot=parseFloat(t)>=38;return {tip:"💡 체온은 점(.) 앞의 숫자를 먼저 봐요. 38이거나 38보다 크면 열이 나는 거예요.",q:`체온계에 ${t}도라고 나왔어요. 열이 날까?`,o:hot?["열이 나요","열이 없어요","알 수 없어요"]:["열이 없어요","열이 나요","알 수 없어요"],ex:`점 앞의 숫자가 ${t.split(".")[0]}이에요. ${hot?"38이거나 더 크니까 열이 나요.":"38보다 작으니까 열이 없어요."}`};},
+ clock:()=>{const h=RN(1,11),m=pick([0,0,30]);return {q:"약 먹은 시간을 차트에 적어요. 시계는 지금 몇 시일까?",svg:clockSvg(h,m),o:[tstr(h,m),tstr(h12(h+1),m),tstr(h,m?0:30)],ex:`짧은바늘이 ${h}${m?"와 "+h12(h+1)+" 사이":""}, 긴바늘이 ${m?6:12}에 있으면 ${tstr(h,m)}이에요.`};},
+ clock2:()=>{const h=RN(7,9),n=pick([3,4,5]),h1=h12(h+n);return {tip:`💡 이 약은 ${n}시간 뒤에 또 먹어요. 짧은바늘이 ${h}에서 ${n}칸 움직이면 다음 약 시간이에요. 아래 시계가 그 시간이에요.`,q:`아침 ${h}시에 약을 먹었어요. 다음 약은 몇 시에 먹을까? 시계를 읽어 봐요.`,svg:clockSvg(h1,0),o:[tstr(h1,0),tstr(h12(h1+1),0),tstr(h12(h1-1),0)],ex:`${h}에서 ${n}칸을 세면 ${h1}이에요. 그래서 ${h1}시예요.`};}
+};
+function mathFor(id){
+  const ks=SCN[id].obs.map(o=>o.k),sp=[];
+  if(ks.includes("scale"))sp.push("weight");if(ks.includes("thermo"))sp.push("temp");if(ks.includes("mon"))sp.push("pulse");
+  if(ks.includes("ivp"))sp.push("iv");if(ks.includes("tubes")||ks.includes("micro"))sp.push("range");if(ks.includes("height")||["endo","fam","os","reh"].includes(id))sp.push("height");
+  if(ks.includes("dialm"))sp.push("water");if(id==="er")sp.push("order","order","ticket");if(id==="inf")sp.push("pattern");if(["icu","nicu","nb"].includes(id))sp.push("beds");
+  const k=sp.length&&Math.random()<.55?pick(sp):pick(["days","visit","wait","clock","clock","clock2","ticket"]);
+  return MGEN[k]();
+}
+/* 영어: 파닉스 낱말과 외국인 환자 */
+const say=t=>{try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.78;s.speak(u);}catch(e){}};
+const EWORD=[["leg","🦵","다리"],["lip","👄","입술"],["bed","🛏️","침대"],["bug","🐛","벌레"],["cut","🩹","베인 상처"],["hot","🥵","뜨거운"],["wet","💧","젖은"],["nap","😴","낮잠"],["cup","🥤","컵"],["pill","💊","알약"],["mask","😷","마스크"],["bag","👜","가방"],["van","🚐","승합차"],["pen","🖊️","펜"],["cap","🧢","모자"],["red","🔴","빨간색"],["kit","🧰","구급 상자"],["egg","🥚","달걀"],["nut","🥜","땅콩"],["pet","🐶","반려동물"],["sad","😢","슬픈"],["sick","🤒","아픈"],["ten","🔟","열(10)"],["jab","💉","주사"],["tub","🛁","욕조"],["sun","☀️","해"],["hug","🤗","안아 주기"],["mug","☕","머그잔"],["map","🗺️","지도"],["pot","🍲","냄비"],["net","🥅","그물"],["pan","🍳","프라이팬"],["hen","🐔","암탉"],["hill","⛰️","언덕"],["tag","🏷️","이름표"]];
+const EW=Object.fromEntries(EWORD.map(w=>[w[0],w]));
+const ERHY=[["bed","red"],["bug","hug","mug"],["nap","cap","map"],["cut","nut"],["hot","pot"],["wet","pet","net"],["van","pan"],["pen","ten","hen"],["bag","tag"],["pill","hill"]];
+const ESEN=[["My leg is hot.","다리가 뜨거워요.","🦵"],["I cut my lip.","입술을 베였어요.","👄"],["A bug bit my leg.","벌레가 다리를 물었어요.","🐛"],["I am hot.","몸이 뜨거워요.","🥵"],["I can not nap.","잠을 잘 수 없어요.","😴"],["I am sick.","아파요.","🤒"],["I am sad.","슬퍼요.","😢"],["I got wet.","몸이 젖었어요.","💧"],["I ate a nut. I am red.","땅콩을 먹고 몸이 빨개졌어요.","🥜"],["I need a pill.","알약이 필요해요.","💊"],["My pet is sick.","반려동물이 아파요.","🐶"],["I hit my leg on the bed.","침대에 다리를 부딪혔어요.","🛏️"],["I ate a bad egg.","상한 달걀을 먹었어요.","🥚"],["I sat in the sun. I am hot.","햇볕 아래 앉아 있었더니 몸이 뜨거워요.","☀️"]];
+const OEN={steth:"stethoscope",bp:"cuff",eyechart:"eye chart",viewer:"x-ray",mon:"monitor",oto:"ear light",o2:"oxygen",chart:"chart",scope:"scope",thermo:"thermometer",tubes:"tubes",urine:"cup",swab:"swab",micro:"microscope",hammer:"hammer",light:"light",pills:"pills",syr:"shot",gluco:"sugar test",lens:"lens",tray:"tray",dish:"dish",amask:"mask",bal:"scale",spiro:"blow test",draw:"crayons",bed:"bed",optable:"table",incub:"incubator",couch:"sofa",bars:"bars",donut:"scanner",usg:"ultrasound",ivp:"drip",vent:"ventilator",dialm:"dialysis",eegm:"brain test",scale:"scale",toy:"bear",crutch:"crutches",cooler:"box",wheel:"wheelchair",height:"ruler",vax:"shot chart",tongue:"stick",model:"teeth",paste:"toothbrush",xray:"x-ray",chair:"chair",lamp:"lamp",mirror:"mirror",drill:"drill",suction:"tube",view:"hand x-ray",apron:"apron",booth:"window",ct:"CT",mri:"MRI",us:"ultrasound",sign:"sign"};
+const eothers=(w,n,f)=>shuffle(EWORD.filter(x=>x[0]!==w[0]&&(!f||f(x)))).slice(0,n);
+let egLast="";
+function engTask(kind){
+  kind=kind||pick(["w2p","w2p","p2w","first","rhyme","sen"]);
+  if(kind==="sen"){let s;do{s=pick(ESEN);}while(s[0]===egLast);egLast=s[0];const ot=shuffle(ESEN.filter(x=>x!==s)).slice(0,2);
+    return {kind:kind,say:s[0],head:"🌍 외국인 환자가 왔어요",big:s[0],q:"무슨 말일까? 듣고 골라 봐요.",o:shuffle([{h:s[2]+" "+s[1],ok:1}].concat(ot.map(x=>({h:x[2]+" "+x[1]})))),ex:`"${s[0]}" 는 "${s[1]}" 라는 뜻이에요.`};}
+  if(kind==="rhyme"){const fam=pick(ERHY),a=fam[0],b=pick(fam.slice(1)),ot=eothers(EW[a],2,x=>!fam.includes(x[0])&&x[0].slice(-2)!==a.slice(-2));
+    return {kind:kind,say:a,head:"🎵 끝소리가 같은 낱말",big:EW[a][1]+" "+a,q:`'${a}' 와 끝소리가 같은 낱말은?`,o:shuffle([{h:EW[b][1]+" "+b,ok:1,say:b}].concat(ot.map(x=>({h:x[1]+" "+x[0],say:x[0]})))),ex:`${a} 와 ${b} 는 끝소리 '-${a.slice(1)}' 가 같아요.`};}
+  let w;do{w=pick(EWORD);}while(w[0]===egLast);egLast=w[0];
+  if(kind==="w2p"){const ot=eothers(w,2);return {kind:kind,say:w[0],head:"🔤 낱말을 읽고 그림 찾기",big:w[0],q:"이 낱말은 어떤 그림일까?",pic:1,o:shuffle([{h:w[1],ok:1}].concat(ot.map(x=>({h:x[1]})))),ex:`${w[0]} 는 '${w[2]}' 이에요. ${w[0].split("").join(" · ")}`};}
+  if(kind==="p2w"){const ot=eothers(w,2,x=>x[0][0]!==w[0][0]);return {kind:kind,say:w[0],head:"👂 듣고 낱말 찾기",big:w[1],q:"소리를 듣고 알맞은 낱말을 골라 봐요.",o:shuffle([{h:w[0],ok:1}].concat(ot.map(x=>({h:x[0]})))),ex:`${w[1]} ${w[0]} : '${w[2]}' 이에요.`};}
+  const L="bcdfghjklmnprstvw".split("").filter(c=>c!==w[0][0]);const ot=shuffle(L).slice(0,2);
+  return {kind:"first",say:w[0],head:"🔡 첫소리 찾기",big:w[1],q:"이 낱말은 어떤 글자의 소리로 시작할까?",letter:1,o:shuffle([{h:w[0][0],ok:1}].concat(ot.map(c=>({h:c})))),ex:`${w[0]} 는 '${w[0][0]}' 소리로 시작해요. ${w[1]} ${w[2]}`};
+}
+let eg=null;
+function engHtml(t,done,nextAct,nextLabel){
+  let h=`<div class="qhead"><h3>${t.head}</h3></div><div class="egbig${t.kind==="sen"?" sen":""}"><span>${t.big}</span><button class="saybtn" data-act="eg-say" data-t="${t.say}" aria-label="소리 듣기">🔊</button></div><p class="oq">${t.q}</p>
+   <div class="opts egopts${t.pic?" pic":""}${t.letter?" let":""}" style="margin-top:8px">${t.o.map((o,i)=>`<button class="opt${done&&o.ok?" right":""}" data-act="eg-pick" data-k="${i}"${done&&!o.ok?' style="display:none"':""}>${o.h}</button>`).join("")}</div><div class="msg" id="egmsg"></div>`;
+  if(done)h+=`<div class="result"><b>${pick(PRAISES)}</b><br>${t.ex}</div><button class="btn" data-act="${nextAct}">${nextLabel}</button>`;
+  return h;
+}
+function engDraw(){
+  if(!eg)return;const box=eg.room?$("obox"):$("engbox");
+  box.innerHTML=(eg.room?`<div class="pt"><div class="face">🧑‍🦱</div><div class="bubble"><b>외국에서 온 환자가 들어왔어요.</b><br>영어로 말해요. 무슨 말인지 알려 줄래요?</div></div>`:"")+engHtml(eg.t,eg.done,eg.room?"eg-room":"eg-next",eg.room?"통역 끝! 다음 환자 🚪":"다음 →");
+  if(!eg.room)$("enginfo").textContent="🔤 영어 별 ⭐ "+(st.eng||0)+" · 🔊 를 누르면 소리가 나와요";
+}
+function engNew(room,id){eg={t:engTask(room?"sen":null),done:0,room:room,id:id,w:0};engDraw();say(eg.t.say);}
+function engAct(b){
+  const a=b.dataset.act;
+  if(a==="eg-say"){say(b.dataset.t);return;}
+  if(!eg)return;
+  if(a==="eg-next"){engNew(false);return;}
+  if(a==="eg-room"){const id=eg.id;eg=null;encStart(id,true);return;}
+  if(a==="eg-pick"){if(eg.done||b.classList.contains("wrong"))return;const o=eg.t.o[+b.dataset.k];if(o.say)say(o.say);
+    if(o.ok){eg.done=1;st.eng=(st.eng||0)+1;save();refresh();
+      if(eg.room)$("scn").querySelector("#spt").innerHTML=patG((EPOS[eg.id]||[186,142])[0],(EPOS[eg.id]||[186,142])[1],{shirt:"#5aa9e6",g:"m",big:1,blond:1},true);
+      engDraw();}
+    else{eg.w++;b.classList.add("wrong");(eg.room?$("obox"):$("engbox")).querySelector("#egmsg").textContent="음, 다시 들어 볼까? 🔊";}}
+}
 /*SCENE-END*/
 let st={s:{},q:{},o:{},tp:0,guided:0,dx:0,dxn:0,mind:0};
 try{const x=JSON.parse(localStorage.getItem("arim-hospital1")||"null");if(x)st=Object.assign(st,x);}catch(e){}
@@ -2944,15 +3115,26 @@ const solved=id=>Math.min(QS[id].length,Math.max(st.q[id]||0,st.s[id]?1:0));
 const save=()=>{try{localStorage.setItem("arim-hospital1",JSON.stringify(st));}catch(e){}};
 
 /* 건물 */
-$("bld").innerHTML=[6,5,4,3,2,1].map(f=>{
-  const [nm,c,bg]=FL[f];
-  const rooms=D.filter(d=>d.f===f).map(d=>`<button class="room" data-id="${d.id}" style="background:${bg}"><span class="st">💮</span><span class="tk">🗣️</span><div class="e">${d.e}</div><div class="n">${d.s||d.name}</div><div class="pg"></div></button>`).join("")
-    +(f===1?`<button class="room desk" data-desk="1"><div class="e">🛎️</div><div class="n">안내 데스크</div></button>`:"");
-  return `<div class="floor"><div class="fl" style="background:${c}">${f}F<small>${nm}</small></div><div class="rooms">${rooms}</div></div>`;
-}).join("");
-$("bld2").innerHTML=`<div class="floor"><div class="fl" style="background:${FL[0][1]}">별관<small>${FL[0][0]}</small></div><div class="rooms">`
-  +D.filter(d=>d.f===0).map(d=>`<button class="room" data-id="${d.id}" style="background:${FL[0][2]}"><span class="st">💮</span><span class="tk">🗣️</span><div class="e">${d.e}</div><div class="n">${d.name}</div><div class="pg"></div></button>`).join("")
-  +`<button class="room" data-jori="1" style="background:#fff0d6"><div class="e">🍼</div><div class="n">산후조리원</div><div class="pg" id="joriPg" style="display:block"></div></button></div></div>`;
+const roomBtn=(d,col)=>`<button class="room" data-id="${d.id}" style="grid-column:${col};background:${FL[d.f][2]}"><span class="st">💮</span><span class="tk">🗣️</span><div class="e">${d.e}</div><div class="n">${d.s||d.name}</div><div class="pg"></div><i class="door"></i></button>`;
+const TERR=["🌳","🪴","🌷","🌲"];
+function floorRow(f,ds,extra){
+  const cells=ds.map(d=>({d:d})).concat(extra||[]),n=cells.length,L=Math.ceil(n/2),R=n-L,c0=5-L,c1=5+R;
+  let s=`<div class="frow"><div class="slab" style="grid-column:${c0}/${c1+1};--fc:${FL[f][1]}"></div>`;
+  cells.forEach((c,i)=>{const col=i<L?c0+i:6+(i-L);s+=c.d?roomBtn(c.d,col):c.h(col);});
+  s+=`<div class="elev" style="grid-column:5"><b>${f}F</b><small>${FL[f][0]}</small></div>`;
+  if(c0>1)s+=`<div class="terr" style="grid-column:${c0-1}">${TERR[f%4]}</div>`;
+  if(c1<8)s+=`<div class="terr" style="grid-column:${c1+1}">${f===6?"🚁":TERR[(f+1)%4]}</div>`;
+  return s+`</div>`;
+}
+$("bld").innerHTML=`<div class="bin"><div class="frow roofrow"><div class="sign" style="grid-column:3/8"><span class="cross">♥</span>아림대학교병원<small>ARIM UNIVERSITY HOSPITAL</small></div></div>`
+  +[6,5,4,3,2,1].map(f=>floorRow(f,D.filter(d=>d.f===f),f===1?[{h:col=>`<button class="room desk" data-desk="1" style="grid-column:${col}"><div class="e">🛎️</div><div class="n">안내 데스크</div><i class="door"></i></button>`}]:null)).join("")
+  +`<div class="frow grow"><div class="terr" style="grid-column:1">🌷</div><div class="terr" style="grid-column:2">🌳</div><div class="terr big" style="grid-column:3">🚑</div><div class="porch" style="grid-column:4/7"><div class="awn">🎀 정문 🎀</div><div class="doors"><i></i><i></i></div></div><div class="terr" style="grid-column:7">🌳</div><div class="terr" style="grid-column:8">🌷</div></div></div>`;
+$("bld2").innerHTML=`<div class="bin"><div class="frow roofrow"><div class="sign annex" style="grid-column:3/7"><span class="cross" style="color:#b48ae0">♥</span>별관<small>엄마와 아기 센터</small></div></div><div class="frow"><div class="slab" style="grid-column:3/7;--fc:${FL[0][1]}"></div>`
+  +D.filter(d=>d.f===0).map((d,i)=>roomBtn(d,3+i)).join("")
+  +`<button class="room" data-jori="1" style="grid-column:5;background:#fff0d6"><div class="e">🍼</div><div class="n">산후조리원</div><div class="pg" id="joriPg" style="display:block"></div><i class="door"></i></button>
+   <div class="elev" style="grid-column:6"><b>별관</b><small>${FL[0][0]}</small></div><div class="terr" style="grid-column:2">🌷</div><div class="terr" style="grid-column:7">🌳</div></div>
+   <div class="frow grow low"><div class="terr" style="grid-column:2">🌳</div><div class="terr" style="grid-column:7">🌷</div></div></div>`;
+{const cen=setInterval(()=>{const b=$("bld");if(!b.clientWidth)return;clearInterval(cen);["bld","bld2"].forEach(k=>{const x=$(k);x.scrollLeft=(x.scrollWidth-x.clientWidth)/2;});},300);}
 const roomClick=e=>{const b=e.target.closest(".room");if(!b)return;
   if(b.dataset.desk)go("desk");
   else if(b.dataset.jori){if(window.goPlace)window.goPlace("j");else location.href="https://claude.ai/artifact/X6Gak1KGYWTKBrRDytmHNr";}
@@ -2969,7 +3151,7 @@ function refresh(){
   const tb=$("tpBtn"),tn=tpn();tb.innerHTML=tn>=TPN?"🚑 오늘의 환자 "+TPN+"명을 모두 도왔어요 💮":"🚑 오늘의 환자가 기다려요 <b>"+tn+" / "+TPN+"</b>";tb.classList.toggle("fin",tn>=TPN);
   let r=RANKS[0][1],next=null;
   for(const [k,v] of RANKS){if(t>=k)r=v;else if(next===null)next=k;}
-  $("pRank").textContent=r;window.onProg&&window.onProg("h",n,D.length,r,t+(st.dxn||0)+(st.mind||0)+(st.en||0));
+  $("pRank").textContent=r;window.onProg&&window.onProg("h",n,D.length,r,t+(st.dxn||0)+(st.mind||0)+(st.en||0)+(st.eng||0));
   $("pSt").textContent="💮 도장 "+n+"/"+D.length+" · 퀴즈 "+t+"/"+(qtotal()+(LIBUSE.length+Object.keys(SCN).reduce((a,k)=>a+(SCN[k].gen?0:otot(k)),0)))+(next?" (승진까지 "+(next-t)+"문제)":"");
   $("pGd").textContent="🛎️ 안내 "+st.guided+" · 🔍 추리 ⭐"+st.dx+" · 💗 마음 "+st.mind;
   $("finish").classList.toggle("show",t>=qtotal()+(LIBUSE.length+Object.keys(SCN).reduce((a,k)=>a+(SCN[k].gen?0:otot(k)),0)));
@@ -2979,10 +3161,11 @@ $("reset").onclick=()=>{st={s:{},q:{},o:{},tp:0,guided:0,dx:0,dxn:0,mind:0};save
 /* 화면 전환 */
 function go(v){
   root.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x.dataset.v===v));
-  [["tour","vTour"],["desk","vDesk"],["dx","vDx"],["mind","vMind"]].forEach(x=>$(x[1]).classList.toggle("on",v===x[0]));
+  [["tour","vTour"],["desk","vDesk"],["dx","vDx"],["mind","vMind"],["eng","vEng"]].forEach(x=>$(x[1]).classList.toggle("on",v===x[0]));
   if(v==="desk"&&!qz)newPatient();
   if(v==="dx"&&!dx)newCase();
   if(v==="mind"&&!md)newMind();
+  if(v==="eng"&&(!eg||eg.room))engNew(false);
   window.scrollTo({top:0});
 }
 root.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.v));
@@ -3028,6 +3211,7 @@ card.addEventListener("click",e=>{
   else if(b.dataset.act==="onext"){renderOb(id,b.dataset.o);sceneMarks(id);$("obox").scrollIntoView({block:"nearest"});}
   else if(b.dataset.act.slice(0,2)==="tp")tpAct(b);
   else if(b.dataset.act.slice(0,3)==="en-")encAct(b);
+  else if(b.dataset.act.slice(0,3)==="eg-")engAct(b);
   else if(b.dataset.act==="goto"){openDept(id);}
   else if(b.dataset.act==="next"){renderQ(id);$("qbox").scrollIntoView({block:"nearest"});}
   else if(b.dataset.act==="pick"){
@@ -3043,6 +3227,7 @@ card.addEventListener("click",e=>{
 
 /* 안내 데스크 */
 $("tpBtn").onclick=()=>tpOpen();
+$("engbox").addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(b)engAct(b);});
 let qz=null,lastId=null;
 const TARGETS=D.filter(d=>d.pt);
 function newPatient(){
