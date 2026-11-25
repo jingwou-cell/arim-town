@@ -269,6 +269,73 @@
   .egopts.let .opt{text-align:center;font-size:34px!important;padding:8px 0}
   .egopts .opt{font-size:20px!important}
   #vEng .qz{border-radius:22px;padding:16px}
+  /* ===== 복도 화면 ===== */
+  .prog #pSt,.prog #pGd{display:none}.prog.more #pSt,.prog.more #pGd{display:inline-block}
+  .prog #pRank{cursor:pointer}
+  .tpb{width:auto;display:inline-block;padding:9px 18px;margin:0 0 10px;font-size:18px;border-radius:999px}
+  #vTour{text-align:center}
+  .bld{position:relative;margin:0;overflow:hidden;border-radius:26px;box-shadow:0 6px 0 #f3c6d8,0 0 0 4px #fff;background:#fff;text-align:left}
+  .flb{position:absolute;left:14px;top:12px;z-index:5;color:#fff;font-family:'Jua',sans-serif;font-size:17px;border-radius:999px;padding:5px 16px 5px 8px;box-shadow:0 3px 0 #00000022;pointer-events:none}
+  .flb b{display:inline-block;background:#fff;color:#33302e;border-radius:999px;padding:1px 11px;margin-right:6px;font-weight:normal;font-size:19px}
+  .corr{display:none;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .corr::-webkit-scrollbar{display:none}
+  .corr.on{display:block}
+  .cin{position:relative;display:flex;align-items:flex-end;justify-content:flex-start;gap:26px;min-width:max-content;height:390px;padding:0 46px 62px;
+    background:
+      radial-gradient(ellipse 90px 40px at 18% 0,#fff9d6,transparent),radial-gradient(ellipse 90px 40px at 50% 0,#fff9d6,transparent),radial-gradient(ellipse 90px 40px at 82% 0,#fff9d6,transparent),
+      repeating-linear-gradient(90deg,transparent 0,transparent 78px,#00000010 78px,#00000010 80px) 0 100%/100% 62px no-repeat,
+      linear-gradient(#efe3d4,#e2d0bb) 0 100%/100% 62px no-repeat,
+      linear-gradient(var(--fc),var(--fc)) 0 calc(100% - 62px)/100% 9px no-repeat,
+      linear-gradient(#ffffff80,#ffffff80) 0 calc(100% - 71px)/100% 96px no-repeat,
+      var(--fb)}
+  .cin>.deco:first-child{margin-left:auto}.cin>.deco:last-of-type{margin-right:auto}
+  .sc{position:absolute;top:46%;z-index:6;width:46px;height:46px;border:none;border-radius:50%;background:#ffffffe6;color:#f77fae;font-size:20px;box-shadow:0 3px 0 #0002;display:none}
+  .sc.l{left:8px}.sc.r{right:8px}.bld.wide .sc{display:block}
+  .cin .deco{flex:none;font-size:46px;line-height:1;margin-bottom:-4px}
+  .room.door{position:relative;flex:none;width:122px;height:206px;min-height:0;margin:0;padding:0;border:none;border-radius:18px 18px 0 0;overflow:visible;background:var(--dc);background-image:linear-gradient(90deg,#ffffff33,transparent 40%,#00000014)!important;box-shadow:inset 0 0 0 6px #ffffff59,0 0 0 6px #fff,0 0 0 8px #00000012;transition:transform .3s;transform-origin:left center}
+  .room.door::before,.room.door::after{content:none}
+  .room.door .plate{position:absolute;left:50%;top:-46px;transform:translateX(-50%);background:#fff;border-radius:12px;padding:4px 11px;font-family:'Jua',sans-serif;font-size:16px;line-height:1.15;color:#4a4039;white-space:nowrap;box-shadow:0 3px 0 #0000001a}
+  .room.door .win{position:absolute;left:50%;top:24px;transform:translateX(-50%);width:84px;height:84px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:48px;line-height:1;box-shadow:inset 0 0 0 5px var(--db,#fff3cf),0 0 0 4px #0000001a}
+  .room.door .knob{position:absolute;right:13px;top:128px;width:12px;height:12px;border-radius:50%;background:#ffe27a;box-shadow:0 2px 0 #c9a02f}
+  .room.door .pg,.room.door .tk{display:none!important}
+  .room.door .st,.room.door .nw{display:none;position:absolute;top:-16px;font-size:28px;line-height:1;z-index:2}
+  .room.door .st{right:-12px}.room.door .nw{left:-12px;animation:mk 1.2s ease-in-out infinite}
+  .room.door.done .st{display:block}.room.door.fresh .nw{display:block}
+  .room.door.open{transform:perspective(500px) rotateY(-34deg)}
+  .room.door.desk{height:118px;border-radius:14px 14px 0 0;--dc:#d9a56a;--db:#fff3cf;outline:none;border:none}
+  .room.door.desk .win{top:-58px;width:70px;height:70px;font-size:40px;box-shadow:none;background:none}
+  .room.door.desk .plate{top:26px;font-size:19px}
+  .room.door.desk .knob{display:none}
+  .lift{position:relative;flex:none;width:156px;height:236px;border:none;padding:0;background:#c9d3e1;border-radius:16px 16px 0 0;box-shadow:inset 0 0 0 7px #aab6c8,0 0 0 6px #fff;overflow:visible}
+  .lift .ind{position:absolute;top:-44px;left:50%;transform:translateX(-50%);background:#33302e;color:#ffd66b;font-family:'Jua',sans-serif;font-size:21px;border-radius:10px;padding:2px 16px;white-space:nowrap;box-shadow:0 3px 0 #0003}
+  .lift i{position:absolute;top:14px;bottom:0;width:calc(50% - 15px);background:linear-gradient(90deg,#f1f4f8,#d3dbe6);box-shadow:inset 0 0 0 2px #b9c6d2;transition:transform .32s}
+  .lift i:first-of-type{left:14px}.lift i:last-of-type{right:14px}
+  .lift.open i:first-of-type{transform:translateX(-84%) scaleX(.2)}.lift.open i:last-of-type{transform:translateX(84%) scaleX(.2)}
+  .lift.open{background:#fff3cf}
+  .lift .call{position:absolute;right:-26px;top:96px;width:22px;background:#fff;border-radius:8px;font-size:9px;line-height:1.5;color:#f77fae;box-shadow:0 2px 0 #0002;font-weight:normal;text-align:center;padding:3px 0}
+  .me{position:absolute;bottom:58px;width:54px;z-index:4;pointer-events:none;transition:left .5s linear,opacity .2s}
+  .me svg{display:block;width:100%;height:auto;overflow:visible}
+  .me.flip svg{transform:scaleX(-1)}
+  .me.walk svg{animation:bob .28s ease-in-out infinite}
+  .me.walk.flip svg{animation:bobf .28s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-5px) rotate(3deg)}}
+  @keyframes bobf{0%,100%{transform:scaleX(-1)}50%{transform:scaleX(-1) translateY(-5px) rotate(3deg)}}
+  .liftp{display:none;position:absolute;inset:0;z-index:8;background:#3b2a3acc;align-items:center;justify-content:center;padding:10px}
+  .liftp.on{display:flex}
+  .lpin{background:#fff;border-radius:26px;padding:14px 16px 12px;width:min(560px,100%);text-align:center}
+  .lpin h3{font-family:'Jua',sans-serif;font-weight:normal;font-size:22px;color:#d6457e;margin-bottom:10px}
+  .lbtns{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .lbtns button{position:relative;border:none;border-radius:20px;background:var(--fc);color:#fff;padding:8px 2px 7px;font-family:'Jua',sans-serif;box-shadow:0 4px 0 #00000026}
+  .lbtns b{display:block;font-size:26px;font-weight:normal;line-height:1.1}
+  .lbtns span{display:block;font-size:26px;line-height:1.2}
+  .lbtns small{display:block;font-size:11px;opacity:.95;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Gowun Dodum',sans-serif}
+  .lbtns .nw,.lbtns .ok{display:none;position:absolute;top:-8px;font-style:normal;font-size:20px}
+  .lbtns .nw{left:-4px}.lbtns .ok{right:-4px}
+  .lbtns .fresh .nw{display:block}.lbtns .done .ok{display:block}
+  .lbtns .cur{outline:4px solid #33302e;outline-offset:2px}
+  .lx{margin-top:12px;border:none;background:#f4eef1;border-radius:999px;padding:7px 22px;font-family:'Jua',sans-serif;font-size:16px;color:#8a7f77}
+  #vTour .hint,#vTour>.go{display:none}
+  @media (max-height:520px){.cin{height:300px}.room.door{height:160px}.lift{height:190px}.room.door .win{width:66px;height:66px;font-size:38px;top:16px}.room.door .knob{top:100px}}
   .item{background:#fff4f7;border-radius:16px;padding:12px 14px;margin-bottom:8px;font-size:17px;line-height:1.55}
   .item b{display:block;font-family:'Jua',sans-serif;font-weight:normal;font-size:19px;margin-bottom:2px}
   .clues{display:grid;gap:6px;margin-top:12px}
@@ -458,12 +525,9 @@
 <main>
 <section class="view on" id="vTour">
   <button class="tpb" id="tpBtn"></button>
-  <div class="swipe">👈 옆으로 밀면 병원이 더 보여요 👉</div>
   <div class="sky"><i style="left:6%;top:0">☁️</i><i style="right:8%;top:2px">☁️</i><i style="left:46%;top:-6px;font-size:18px">🚁</i></div>
   <div class="bld" id="bld"></div>
-  <div class="bld" id="bld2"></div>
   <button class="go" onclick="goPlace('j')">🍼 별관 산후조리원으로 가기 →</button>
-  <div class="hint">대학병원은 환자를 치료하고, 의사를 가르치고, 새 치료법을 연구하는 큰 병원이에요.<br>진료과마다 퀴즈 5개를 모두 맞히면 견학 도장 💮을 받아요<br>방에 들어가면 진료실이 나와요. 환자를 진료하고 물건도 살펴봐요</div>
   <div class="finish" id="finish">
     <h2>👑 아림대학교병원 교수님!</h2>
     <div>모든 진료과의 퀴즈를 다 풀었어요.<br>이제 안내 데스크에서 환자들을 도와줄까?</div>
@@ -3115,31 +3179,66 @@ const solved=id=>Math.min(QS[id].length,Math.max(st.q[id]||0,st.s[id]?1:0));
 const save=()=>{try{localStorage.setItem("arim-hospital1",JSON.stringify(st));}catch(e){}};
 
 /* 건물 */
-const roomBtn=(d,col)=>`<button class="room" data-id="${d.id}" style="grid-column:${col};background:${FL[d.f][2]}"><span class="st">💮</span><span class="tk">🗣️</span><div class="e">${d.e}</div><div class="n">${d.s||d.name}</div><div class="pg"></div><i class="door"></i></button>`;
-const TERR=["🌳","🪴","🌷","🌲"];
-function floorRow(f,ds,extra){
-  const cells=ds.map(d=>({d:d})).concat(extra||[]),n=cells.length,L=Math.ceil(n/2),R=n-L,c0=5-L,c1=5+R;
-  let s=`<div class="frow"><div class="slab" style="grid-column:${c0}/${c1+1};--fc:${FL[f][1]}"></div>`;
-  cells.forEach((c,i)=>{const col=i<L?c0+i:6+(i-L);s+=c.d?roomBtn(c.d,col):c.h(col);});
-  s+=`<div class="elev" style="grid-column:5"><b>${f}F</b><small>${FL[f][0]}</small></div>`;
-  if(c0>1)s+=`<div class="terr" style="grid-column:${c0-1}">${TERR[f%4]}</div>`;
-  if(c1<8)s+=`<div class="terr" style="grid-column:${c1+1}">${f===6?"🚁":TERR[(f+1)%4]}</div>`;
-  return s+`</div>`;
+/* 병원 복도: 한 번에 한 층, 엘리베이터로 이동 */
+const FEM={6:"🖥️",5:"✂️",4:"🧠",3:"❤️",2:"🧸",1:"🚑",0:"🍼"},FORD=[6,5,4,3,2,1,0],fname=f=>f?f+"F":"별관";
+const doorBtn=d=>`<button class="room door" data-id="${d.id}" style="--dc:${FL[d.f][1]};--db:${FL[d.f][2]}"><span class="plate">${d.s||d.name}</span><span class="win">${d.e}</span><span class="st">⭐</span><span class="nw">✨</span><span class="tk">🗣️</span><div class="pg"></div><i class="knob"></i></button>`;
+const liftBtn=f=>`<button class="lift" data-lift="1" aria-label="엘리베이터"><span class="ind">${fname(f)}</span><i></i><i></i><b class="call">▲<br>▼</b></button>`;
+function corridor(f){
+  const ds=D.filter(d=>d.f===f).map(doorBtn);
+  if(f===1)ds.push(`<button class="room door desk" data-desk="1"><span class="plate">안내</span><span class="win">🛎️</span><i class="knob"></i></button>`);
+  if(f===0)ds.push(`<button class="room door" data-jori="1" style="--dc:#f0b45c;--db:#fff0d6"><span class="plate">산후조리원</span><span class="win">🍼</span><div class="pg" id="joriPg"></div><i class="knob"></i></button>`);
+  const L=Math.ceil(ds.length/2);
+  return `<div class="corr" data-f="${f}" style="--fc:${FL[f][1]};--fb:${FL[f][2]}"><div class="cin"><span class="deco">${f===1?"🚪":"🪴"}</span>${ds.slice(0,L).join("")}${liftBtn(f)}${ds.slice(L).join("")}<span class="deco">🪴</span></div></div>`;
 }
-$("bld").innerHTML=`<div class="bin"><div class="frow roofrow"><div class="sign" style="grid-column:3/8"><span class="cross">♥</span>아림대학교병원<small>ARIM UNIVERSITY HOSPITAL</small></div></div>`
-  +[6,5,4,3,2,1].map(f=>floorRow(f,D.filter(d=>d.f===f),f===1?[{h:col=>`<button class="room desk" data-desk="1" style="grid-column:${col}"><div class="e">🛎️</div><div class="n">안내 데스크</div><i class="door"></i></button>`}]:null)).join("")
-  +`<div class="frow grow"><div class="terr" style="grid-column:1">🌷</div><div class="terr" style="grid-column:2">🌳</div><div class="terr big" style="grid-column:3">🚑</div><div class="porch" style="grid-column:4/7"><div class="awn">🎀 정문 🎀</div><div class="doors"><i></i><i></i></div></div><div class="terr" style="grid-column:7">🌳</div><div class="terr" style="grid-column:8">🌷</div></div></div>`;
-$("bld2").innerHTML=`<div class="bin"><div class="frow roofrow"><div class="sign annex" style="grid-column:3/7"><span class="cross" style="color:#b48ae0">♥</span>별관<small>엄마와 아기 센터</small></div></div><div class="frow"><div class="slab" style="grid-column:3/7;--fc:${FL[0][1]}"></div>`
-  +D.filter(d=>d.f===0).map((d,i)=>roomBtn(d,3+i)).join("")
-  +`<button class="room" data-jori="1" style="grid-column:5;background:#fff0d6"><div class="e">🍼</div><div class="n">산후조리원</div><div class="pg" id="joriPg" style="display:block"></div><i class="door"></i></button>
-   <div class="elev" style="grid-column:6"><b>별관</b><small>${FL[0][0]}</small></div><div class="terr" style="grid-column:2">🌷</div><div class="terr" style="grid-column:7">🌳</div></div>
-   <div class="frow grow low"><div class="terr" style="grid-column:2">🌳</div><div class="terr" style="grid-column:7">🌷</div></div></div>`;
-{const cen=setInterval(()=>{const b=$("bld");if(!b.clientWidth)return;clearInterval(cen);["bld","bld2"].forEach(k=>{const x=$(k);x.scrollLeft=(x.scrollWidth-x.clientWidth)/2;});},300);}
-const roomClick=e=>{const b=e.target.closest(".room");if(!b)return;
-  if(b.dataset.desk)go("desk");
-  else if(b.dataset.jori){if(window.goPlace)window.goPlace("j");else location.href="https://claude.ai/artifact/X6Gak1KGYWTKBrRDytmHNr";}
-  else openDept(b.dataset.id);};
-$("bld").addEventListener("click",roomClick);$("bld2").addEventListener("click",roomClick);
+$("bld").innerHTML=`<div class="flb" id="flb"></div><button class="sc l" data-sc="-1" aria-label="왼쪽">◀</button><button class="sc r" data-sc="1" aria-label="오른쪽">▶</button><div class="me" id="me"><svg viewBox="-20 -6 40 84">${blk(0,0,{coat:1,shirt:"#ffffff",hair:"#4a3528",long:1,pants:"#f08aa6"})}</svg></div>`+FORD.map(corridor).join("")
+  +`<div class="liftp" id="liftp"><div class="lpin"><h3>몇 층으로 갈까?</h3><div class="lbtns">${FORD.map(f=>`<button data-go="${f}" style="--fc:${FL[f][1]}"><b>${f||"별관"}</b><span>${FEM[f]}</span><small>${FL[f][0]}</small><i class="nw">✨</i><i class="ok">⭐</i></button>`).join("")}</div><button class="lx" data-go="x">닫기</button></div></div>`;
+const meEl=$("me");
+let curF=-1,busy=false;
+const corrOf=f=>$("bld").querySelector('.corr[data-f="'+f+'"]');
+function setFloor(f,atLift){
+  curF=f;$("bld").querySelectorAll(".corr").forEach(c=>c.classList.toggle("on",+c.dataset.f===f));
+  const c=corrOf(f),cin=c.querySelector(".cin"),lf=cin.querySelector(".lift");cin.appendChild(meEl);
+  $("flb").innerHTML=`<b>${fname(f)}</b> ${FEM[f]} ${FL[f][0]}`;$("flb").style.background=FL[f][1];
+  meEl.style.transition="none";meEl.style.left=(lf.offsetLeft+lf.offsetWidth/2-27+(atLift?0:-96))+"px";
+  c.scrollLeft=lf.offsetLeft+lf.offsetWidth/2-c.clientWidth/2;$("bld").classList.toggle("wide",c.scrollWidth>c.clientWidth+8);
+}
+function walkTo(el,cb){
+  if(busy||curF<0)return;busy=true;
+  const c=corrOf(curF),x=el.offsetLeft+el.offsetWidth/2-27,x0=parseFloat(meEl.style.left)||0,dist=Math.abs(x-x0),t=Math.min(1.3,Math.max(.25,dist/420));
+  meEl.classList.toggle("flip",x<x0);meEl.classList.add("walk");meEl.style.transition="left "+t+"s linear";meEl.style.left=x+"px";
+  c.scrollTo({left:x-c.clientWidth/2+27,behavior:"smooth"});
+  setTimeout(()=>{meEl.classList.remove("walk");el.classList.add("open");
+    setTimeout(()=>{busy=false;cb();setTimeout(()=>el.classList.remove("open"),500);},330);},t*1000+40);
+}
+function rideTo(f){
+  $("liftp").classList.remove("on");if(f===curF){busy=false;return;}
+  busy=true;const lf=corrOf(curF).querySelector(".lift"),ind=lf.querySelector(".ind");lf.classList.remove("open");meEl.style.opacity="0";
+  const seq=[],a=FORD.indexOf(curF),b=FORD.indexOf(f),sd=b>a?1:-1;for(let i=a;i!==b+sd;i+=sd)seq.push(FORD[i]);
+  let k=0;const tick=setInterval(()=>{k++;if(k<seq.length){ind.textContent=(sd<0?"▲ ":"▼ ")+fname(seq[k]);}
+    else{clearInterval(tick);ind.textContent=fname(curF);setFloor(f,true);const nl=corrOf(f).querySelector(".lift");nl.classList.add("open");
+      setTimeout(()=>{meEl.style.opacity="1";meEl.classList.add("walk");meEl.classList.add("flip");meEl.style.transition="left .45s linear";meEl.style.left=(parseFloat(meEl.style.left)-96)+"px";
+        setTimeout(()=>{meEl.classList.remove("walk");nl.classList.remove("open");busy=false;st.cf=f;save();},480);},260);}
+  },230);
+}
+const roomClick=e=>{
+  const sc=e.target.closest("[data-sc]");if(sc){const c=corrOf(curF);c.scrollBy({left:+sc.dataset.sc*c.clientWidth*.7,behavior:"smooth"});return;}
+  const g=e.target.closest("[data-go]");
+  if(g){if(g.dataset.go==="x"){$("liftp").classList.remove("on");corrOf(curF).querySelector(".lift").classList.remove("open");busy=false;}else rideTo(+g.dataset.go);return;}
+  if(busy)return;
+  const lf=e.target.closest(".lift");
+  if(lf){walkTo(lf,()=>{lf.classList.add("open");$("liftp").querySelectorAll("[data-go]").forEach(x=>x.classList.toggle("cur",x.dataset.go===String(curF)));$("liftp").classList.add("on");busy=true;});return;}
+  const b=e.target.closest(".room");if(!b)return;
+  walkTo(b,()=>{
+    if(b.dataset.desk)go("desk");
+    else if(b.dataset.jori){if(window.goPlace)window.goPlace("j");else location.href="https://claude.ai/artifact/X6Gak1KGYWTKBrRDytmHNr";}
+    else openDept(b.dataset.id);});
+};
+$("bld").addEventListener("click",roomClick);
+{const ini=setInterval(()=>{if(!$("bld").clientWidth)return;clearInterval(ini);setFloor([6,5,4,3,2,1,0].includes(st.cf)?st.cf:1);},250);}
+function floorMarks(){
+  FORD.forEach(f=>{const rs=[...corrOf(f).querySelectorAll(".room[data-id]")],b=$("liftp").querySelector('[data-go="'+f+'"]');
+    b.classList.toggle("fresh",rs.some(r=>r.classList.contains("fresh")));b.classList.toggle("done",rs.length>0&&rs.every(r=>r.classList.contains("done")));});
+}
 
 function refresh(){
   let n=0,t=0;
@@ -3147,8 +3246,8 @@ function refresh(){
     const el=root.querySelector(`.room[data-id="${d.id}"]`),L=qlen(d.id);el.classList.toggle("done",k>=QN);el.classList.toggle("fresh",k>=QN&&k<L);
     el.querySelector(".pg").textContent=k>=QN?(k<L?"🆕 새 문제 "+(L-k):""):(k?"●".repeat(k)+"○".repeat(QN-k):"");
     if(SCN[d.id]){const a=osol(d.id),b=otot(d.id);if(!SCN[d.id].gen)t+=a;el.classList.add("scene");el.classList.toggle("fresh",k>=QN&&(k<L||a<b));if(a<b)el.querySelector(".pg").textContent="🔎 살펴보기 "+a+"/"+b+(k>=QN&&k<L?" · 🆕 "+(L-k):"");}});
-  t+=libSol();
-  const tb=$("tpBtn"),tn=tpn();tb.innerHTML=tn>=TPN?"🚑 오늘의 환자 "+TPN+"명을 모두 도왔어요 💮":"🚑 오늘의 환자가 기다려요 <b>"+tn+" / "+TPN+"</b>";tb.classList.toggle("fin",tn>=TPN);
+  t+=libSol();floorMarks();
+  const tb=$("tpBtn"),tn=tpn();tb.innerHTML=tn>=TPN?"🚑 오늘의 환자 💮":"🚑 오늘의 환자 <b>"+tn+" / "+TPN+"</b>";tb.classList.toggle("fin",tn>=TPN);
   let r=RANKS[0][1],next=null;
   for(const [k,v] of RANKS){if(t>=k)r=v;else if(next===null)next=k;}
   $("pRank").textContent=r;window.onProg&&window.onProg("h",n,D.length,r,t+(st.dxn||0)+(st.mind||0)+(st.en||0)+(st.eng||0));
@@ -3227,6 +3326,7 @@ card.addEventListener("click",e=>{
 
 /* 안내 데스크 */
 $("tpBtn").onclick=()=>tpOpen();
+$("pRank").onclick=()=>$("pRank").parentElement.classList.toggle("more");
 $("engbox").addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(b)engAct(b);});
 let qz=null,lastId=null;
 const TARGETS=D.filter(d=>d.pt);
