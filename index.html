@@ -475,6 +475,48 @@
   .wkrow .chipb.off{background:#efeae4;color:#8d857c}
   #pset{display:block;margin:10px auto 0;border:none;background:none;color:#7d8a93;font-size:13px;text-decoration:underline}
 
+  /* 공부방 */
+  body.bg-x #pk,#pk{--x:0}
+  #mapsvg .slk{opacity:.45;filter:grayscale(.7)}
+  #skMain{max-width:640px;margin:0 auto;padding:6px 14px 40px}
+  .skhead{text-align:center;font-family:'Jua',sans-serif;font-size:19px;color:#2c6e9b;margin:8px 0 14px}
+  .skgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .sksub{border:none;background:#fff;border-radius:22px;padding:16px 4px 12px;box-shadow:0 5px 0 var(--c);font-family:'Jua',sans-serif;display:flex;flex-direction:column;align-items:center;gap:6px;color:#33302e}
+  .sksub:active{transform:translateY(3px);box-shadow:0 2px 0 var(--c)}
+  .sksub .e{font-size:44px;line-height:1.1;color:var(--c)}
+  .sksub b{font-weight:normal;font-size:22px}
+  .sksub small{font-size:14px;color:#8d857c}
+  .sksub.ok{background:#f3fff5}
+  .skdots{display:inline-flex;gap:5px}
+  .skdots i{width:13px;height:13px;border-radius:50%;background:#e6dfd7;display:block}
+  .skstamp{margin:22px auto 6px;width:170px;text-align:center;font-family:'Jua',sans-serif;font-size:18px;color:#a39a90;border:3px dashed #cfc6bc;border-radius:22px;padding:12px 6px;background:#ffffff90}
+  .skstamp span{display:block;font-size:54px;line-height:1.2}
+  .skstamp.on{color:#d6457e;border:3px solid #f08aa6;background:#fff;animation:skpop .6s}
+  @keyframes skpop{0%{transform:scale(2.2) rotate(-18deg);opacity:0}70%{transform:scale(.92) rotate(3deg);opacity:1}100%{transform:none}}
+  .skbar{display:flex;align-items:center;gap:10px;font-family:'Jua',sans-serif;font-size:20px;margin:4px 0 10px}
+  .skbar .chipb{margin:0;background:#fff}
+  .skbar .skdots,.skbar small{margin-left:auto}
+  .skcard{background:#fff;border-radius:24px;padding:18px 14px;box-shadow:0 4px 0 #c6dcec;text-align:center}
+  .skbig{font-family:'Jua',sans-serif;font-size:58px;line-height:1.25;color:#33302e}
+  .skbig.sm{font-size:34px}
+  .skbig.en,.en{font-family:'Jua','Comic Sans MS',sans-serif;letter-spacing:2px}
+  .skem{font-size:72px;line-height:1.15}
+  .skq{font-size:18px;color:#6b625b;margin:6px 0 12px}
+  .skq.big{font-family:'Jua',sans-serif;font-size:23px;color:#33302e;line-height:1.5}
+  .skclock{width:170px;height:170px;display:block;margin:0 auto}
+  .skspk{border:none;background:#e3f6ec;border-radius:50%;width:64px;height:64px;font-size:30px;margin:6px 0}
+  .skopts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+  .skopt{border:none;border-radius:18px;padding:16px 2px;font-family:'Jua',sans-serif;font-size:25px;background:#eef4ff;color:#33302e;box-shadow:0 4px 0 #cfdcf2}
+  .skopts.em .skopt{font-size:46px;padding:10px 0}
+  .skopts.en .skopt{font-size:34px;letter-spacing:2px}
+  .skopt.good{background:#d9f6df;box-shadow:0 4px 0 #9bd6a8}
+  .skopt.bad{background:#ffe0dc;box-shadow:0 4px 0 #f0aaa3}
+  .skopt.dim{opacity:.5}
+  .skwhy{margin-top:14px;border-radius:16px;padding:10px 12px;font-size:18px;line-height:1.6;background:#f1fbf3}
+  .skwhy.no{background:#fff3e6}
+  .skwhy b{font-family:'Jua',sans-serif;font-weight:normal}
+  .skwhy p{margin:4px 0 0;font-size:20px}
+
   body.bg-j{background:linear-gradient(#ffe3ec 0,#fff3ea 420px,#fff9f1 421px)}
   body.bg-home{background:linear-gradient(#bfe4ff 0,#e6f5ff 55%,#d9f0cf 55.1%,#e9f7e2 100%)}
   .place{display:none}.place.on{display:block}
@@ -730,7 +772,7 @@
 
 const PL={home:"",h:"hospital",j:"joriwon",p:"pharmacy"};
 window.goPlace=function(k,nohash){
-  if(window.TOWN&&!TOWN.isOpen(k))k="home";
+  if(window.TOWN&&(!TOWN.isOpen(k)||!TOWN.gate(k)))k="home";
   document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("open"));
   document.getElementById("home").style.display=k==="home"?"":"none";
   document.querySelectorAll(".place").forEach(x=>x.classList.toggle("on",x.id==="p"+k));
@@ -738,6 +780,7 @@ window.goPlace=function(k,nohash){
   document.body.className=k==="home"?"bg-home":(k==="j"?"bg-j":(k==="p"?"bg-p":(PB?"bg-x":"")));
   if(k==="home"&&window.TOWN)TOWN.homeDraw();
   if(k==="s"&&window.TOWN)TOWN.drawShop();
+  if(k==="k"&&window.TOWN)TOWN.drawStudy();
   window.scrollTo({top:0});
   const HN=PL[k]||(window.PLN||{})[k]||"";
   if(!nohash){try{history.replaceState(null,"",HN?"#"+HN:location.pathname+location.search);}catch(e){try{location.hash=HN;}catch(e2){}}}
@@ -762,8 +805,8 @@ window.onProg=function(k,n,t,r,p){
   const dayLocked=()=>{const d=pd();if(CT.unlockDay===d)return false;return CT.lockDay===d||(Array.isArray(RC.lockDates)&&RC.lockDates.includes(d));};
   const left=()=>dayLocked()?0:limitMin()*60+T.x-T.s;
   function draw(){
-    const dl=dayLocked(),l=Math.max(0,left()),c=g("tchip");
-    c.textContent=dl?"🌙 오늘은 쉬는 날":"⏰ 오늘 남은 시간 "+Math.ceil(l/60)+"분";c.classList.toggle("low",l<=120);
+    const dl=dayLocked(),l=Math.max(0,left()),c=g("tchip"),pre=!dl&&window.TOWN&&!TOWN.studied();
+    c.textContent=dl?"🌙 오늘은 쉬는 날":pre?"📚 공부 먼저! 그다음 "+Math.ceil(l/60)+"분":"⏰ 오늘 남은 시간 "+Math.ceil(l/60)+"분";c.classList.toggle("low",!pre&&l<=120);
     g("lockT").textContent=dl?"오늘은 아림 마을이 쉬는 날이에요":"오늘 놀이 시간이 끝났어요";
     g("lockP").textContent=dl?"마을 친구들도 오늘은 푹 쉬어요.":"오늘도 "+limitMin()+"분 동안 열심히 했어요!";
     g("pbtn").textContent=dl?"보호자용 · 오늘 잠금 풀기":"보호자용 · 10분 더 주기";
@@ -773,7 +816,7 @@ window.onProg=function(k,n,t,r,p){
   setInterval(()=>{
     if(document.visibilityState!=="visible")return;
     if(T.d!==today())T={d:today(),s:0,x:0};
-    if(left()>0){T.s++;if(T.s%5===0)saveT();}
+    if(left()>0&&(!window.TOWN||TOWN.studied())){T.s++;if(T.s%5===0)saveT();}
     draw();
   },1000);
   document.addEventListener("visibilitychange",saveT);
@@ -789,6 +832,7 @@ window.onProg=function(k,n,t,r,p){
     c.innerHTML=`<h2>⚙️ 보호자 설정</h2><div class="lab">오늘 쓴 시간 ${used}분 · 하루 ${limitMin()}분${RC.limitMin>0?" (원격 설정)":""}</div>
       <div class="avrow"><b>하루 사용 시간</b><div>${[10,15,20,30].map(v=>`<button class="chipb${(CT.limit||20)===v?" on":""}" data-lim="${v}">${v}분</button>`).join("")}</div></div>
       <div class="avrow"><b>오늘</b><div>${dayLocked()?`<button class="chipb" id="pcUn">오늘 잠금 풀기</button>`:`<button class="chipb" id="pcLock">오늘은 그만 쓰기 (지금 잠그기)</button>`}</div></div>
+      ${window.TOWN&&!TOWN.studied()?`<div class="avrow"><b>오늘 공부</b><div><button class="chipb" id="pcSkip">오늘은 공부 건너뛰기</button></div></div>`:""}
       ${window.TOWN&&TOWN.nextBld()?`<div class="avrow"><b>잠긴 건물</b><div><button class="chipb" id="pcOpen">${TOWN.nextBld()} 미리 열기</button></div></div>`:""}
       <div class="avrow"><b>다른 기기와 이어하기</b><div id="pcSync"></div></div>
       <button class="hbtn" id="pcClose">닫기</button>`;
@@ -803,6 +847,7 @@ window.onProg=function(k,n,t,r,p){
     const lk=g("pcLock");if(lk)lk.onclick=()=>{CT.lockDay=pd();CT.unlockDay="";saveC();g("tk").classList.remove("on");draw();};
     const un=g("pcUn");if(un)un.onclick=()=>{CT.unlockDay=pd();CT.lockDay="";saveC();draw();panel();};
     g("pcClose").onclick=()=>g("tk").classList.remove("on");
+    const sk=g("pcSkip");if(sk)sk.onclick=()=>{TOWN.skipStudy();draw();panel();};
     const po=g("pcOpen");if(po)po.onclick=()=>{TOWN.openNext();panel();};
   }
   const ps=g("pset");
@@ -824,7 +869,7 @@ window.addEventListener("hashchange",fromHash);
   let M={log:{},rvDay:0,rv:0,talk:{},bodyDay:0,body:0,open:{},newly:"",spent:0,inv:{},park:[]};
   const STEP=40,BLD=[];
   const pts=()=>Object.values(window.PTS||{}).reduce((a,b)=>a+(b||0),0);
-  const isOpen=k=>k==="home"||k==="h"||k==="j"||k==="p"||k==="s"||M.open[k]!==undefined;
+  const isOpen=k=>k==="home"||k==="h"||k==="j"||k==="p"||k==="s"||k==="k"||M.open[k]!==undefined;
   function unlock(){
     const nx=BLD.find(b=>M.open[b.key]===undefined);if(!nx)return;
     const opened=Object.values(M.open);
@@ -1047,13 +1092,13 @@ window.addEventListener("hashchange",fromHash);
 
   /* 지도 */
   const TW=96,TH=48,OX=392,OY=104,GW=9,GD=8,RX=4,RY=3;
-  const MAPN={h:"대학병원",p:"약국",s:"가게",e:"119",v:"동물병원",f:"식당",c:"보건소",u:"의대",l:"연구소"};
+  const MAPN={k:"공부방",h:"대학병원",p:"약국",s:"가게",e:"119",v:"동물병원",f:"식당",c:"보건소",u:"의대",l:"연구소"};
   const pill=(x,y,t,col,lock)=>{const w=t.length*15+(lock?38:22);return `<rect x="${x-w/2}" y="${y-16}" width="${w}" height="22" rx="11" fill="${lock?"#efeae4":"#fff"}" stroke="${col}" stroke-width="1.5"/><text x="${x}" y="${y}" font-size="15" text-anchor="middle" font-family="Jua,sans-serif" fill="${lock?"#8d857c":"#33302e"}">${lock?"🔒 ":""}${t}</text>`;};
   const iso=(x,y)=>[OX+(x-y)*TW/2,OY+(x+y)*TH/2];
   const P=a=>a.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
   const shade=(hex,f)=>{const n=parseInt(hex.slice(1),16),c=v=>Math.max(0,Math.min(255,Math.round(v*f)));return "rgb("+c(n>>16)+","+c(n>>8&255)+","+c(n&255)+")";};
-  const FIXED={h:{name:"대학병원",emoji:"🏥",color:"#2fa38a"},p:{name:"약국",emoji:"💊",color:"#7c6ee6"},s:{name:"꾸미기 가게",emoji:"🛍️",color:"#e9a01f"}};
-  const LOT={h:[0.5,0.35,2,78],c:[2.85,1.8,1,46],p:[0.6,1.8,1,40],u:[5.5,0.4,1,54],l:[7.5,0.4,1,44],e:[5.5,1.8,1,40],v:[7.5,1.8,1,36],f:[0.6,4.5,1,38],s:[2.6,4.5,1,34]};const HOME0=[1.45,7.5];
+  const FIXED={k:{name:"공부방",emoji:"📚",color:"#3d8fd6"},h:{name:"대학병원",emoji:"🏥",color:"#2fa38a"},p:{name:"약국",emoji:"💊",color:"#7c6ee6"},s:{name:"꾸미기 가게",emoji:"🛍️",color:"#e9a01f"}};
+  const LOT={h:[0.5,0.35,2,78],c:[2.85,1.8,1,46],p:[0.6,1.8,1,40],u:[5.5,0.4,1,54],l:[7.5,0.4,1,44],e:[5.5,1.8,1,40],v:[7.5,1.8,1,36],f:[0.6,4.5,1,38],s:[2.6,4.5,1,34],k:[2.6,6.25,1,42]};const HOME0=[1.45,7.5];
   const info=k=>FIXED[k]||BLD.find(b=>b.key===k);
   const front=k=>{const L=LOT[k];return iso(L[0]+L[2]*.5,L[1]+1.12);};
   function box(x,y,w,h,col,m,plain){
@@ -1105,16 +1150,16 @@ window.addEventListener("hashchange",fromHash);
     s+=`<polygon points="${R(5.35,4.3,8.75,7.75)}" fill="#d3f0bf" stroke="#b5dd9d" stroke-width="2"/>`;
     const lab=[];
     const items=[];
-    Object.keys(LOT).forEach(k=>{const L=LOT[k],b=info(k);if(!b)return;const open=isOpen(k);let gfx,top;
+    Object.keys(LOT).forEach(k=>{const L=LOT[k],b=info(k);if(!b)return;const open=isOpen(k),sl=open&&!gate(k);let gfx,top;
       if(open){const bx=box(L[0],L[1],L[2],L[3],b.color);gfx=bx.s+roofProp(k,bx.top,b);top=[bx.top[0],bx.top[1]-(k==="h"?30:18)];}
       else{const bx=box(L[0],L[1],L[2],10,"#c9c2b8",.14,true);const c=iso(L[0]+L[2]/2,L[1]+.5);gfx=bx.s+`<text x="${c[0]}" y="${c[1]-8}" font-size="24" text-anchor="middle">🚧</text>`;top=[c[0],c[1]-L[3]+6];}
-      items.push({d:L[0]+L[1]+L[2]*.5,s:`<g class="bd" data-b="${k}">${gfx}</g>`});
-      lab.push(`<g class="bd" data-b="${k}">${pill(top[0],top[1]-20,MAPN[k],open?b.color:"#b9b2a9",!open)}</g>`);
+      items.push({d:L[0]+L[1]+L[2]*.5,s:`<g class="bd${sl?" slk":""}" data-b="${k}">${gfx}</g>`});
+      lab.push(`<g class="bd" data-b="${k}">${pill(top[0],top[1]-20,MAPN[k],open&&!sl?b.color:"#b9b2a9",!open||sl)}${k==="k"&&!studied()?`<g class="bob">${pill(top[0]+52,top[1]-44,"여기부터!","#e8504f",false)}</g>`:""}</g>`);
     });
     /* 아림이네 집 */
     {const bx=box(0.9,6.25,1,28,"#ffb6c9",.12,true);const rc=bx.top;items.push({d:7.65,s:`<g class="bd" data-home="1">${bx.s}<polygon points="${rc[0]},${rc[1]-30} ${rc[0]-42},${rc[1]-2} ${rc[0]},${rc[1]+17} ${rc[0]+42},${rc[1]-2}" fill="#e8688a" stroke="#fff" stroke-width="1.5"/></g>`});
       lab.push(`<g class="bd" data-home="1">${pill(rc[0],rc[1]-34,"우리 집","#e8688a",false)}</g>`);}
-    [[3.45,.45],[3.5,3-.5],[.25,1.5],[8.75,1.5],[6.95,.9],[6.95,2.4],[.25,3-.45],[8.75,2.6],[2.05,4.75],[.3,5.9],[3.6,5.9],[2.4,6.6],[3.55,7.5],[.3,7.6],[2.75,7.55],[5.15,7.85],[8.9,4.15]].forEach(t=>{const p=iso(t[0],t[1]);items.push({d:t[0]+t[1],s:`<text x="${p[0]}" y="${p[1]}" font-size="26" text-anchor="middle">🌳</text>`});});
+    [[3.45,.45],[3.5,3-.5],[.25,1.5],[8.75,1.5],[6.95,.9],[6.95,2.4],[.25,3-.45],[8.75,2.6],[2.05,4.75],[.3,5.9],[3.6,5.9],[3.75,6.6],[3.7,7.7],[.3,7.6],[2.2,7.75],[5.15,7.85],[8.9,4.15]].forEach(t=>{const p=iso(t[0],t[1]);items.push({d:t[0]+t[1],s:`<text x="${p[0]}" y="${p[1]}" font-size="26" text-anchor="middle">🌳</text>`});});
     /* 공원 칸 */
     while(M.park.length<SLOTS)M.park.push("");
     for(let i=0;i<SLOTS;i++){const cx=5.5+(i%3)*1.1+.45,cy=4.4+Math.floor(i/3)*.66+.36,c=iso(cx,cy),it=M.park[i]&&SI[M.park[i]];
@@ -1137,6 +1182,7 @@ window.addEventListener("hashchange",fromHash);
       const k=b.dataset.b;
       el.querySelectorAll(`.bd[data-b="${k}"]`).forEach(x=>{x.classList.remove("hop");void x.getBoundingClientRect();x.classList.add("hop");});
       if(!isOpen(k)){SFX("no");lockInfo(k,nx);return;}
+      if(!gate(k)){SFX("no");studyInfo(k);return;}
       if(walking)return;walking=true;
       SFX("pop");const f=front(k),from=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(HOME0[0],HOME0[1]);
       const dist=Math.hypot(f[0]-from[0],f[1]-from[1]),dur=Math.max(1.3,Math.min(3,dist/90)),me=g("me");
@@ -1147,8 +1193,8 @@ window.addEventListener("hashchange",fromHash);
     el.querySelectorAll(".pslot").forEach(b=>b.onclick=()=>{SFX("pop");slot(Number(b.dataset.slot));});
     /* 마을 현황 */
     const sc=g("statCard");
-    if(sc)sc.innerHTML=`<h3>📋 마을 현황</h3>`+Object.keys(LOT).filter(k=>k!=="s"&&isOpen(k)).map(k=>{const b=info(k),pr=(window.PROG||{})[k]||{n:0,t:1,r:""};
-      return `<div class="strow"><span>${b.emoji} ${b.name.replace("아림 ","")}</span><span class="r">${pr.r||""}</span><span class="n">${k==="p"?"⭐ "+pr.n:pr.n+" / "+pr.t}</span></div>`;}).join("")+`<div class="strow"><span>🛍️ 꾸미기 가게</span><span class="r"></span><span class="n">쓸 수 있는 별 ⭐ ${bal()}</span></div>`;
+    if(sc)sc.innerHTML=`<h3>📋 마을 현황</h3>`+Object.keys(LOT).filter(k=>k!=="s"&&k!=="k"&&isOpen(k)).map(k=>{const b=info(k),pr=(window.PROG||{})[k]||{n:0,t:1,r:""};
+      return `<div class="strow"><span>${b.emoji} ${b.name.replace("아림 ","")}</span><span class="r">${pr.r||""}</span><span class="n">${k==="p"?"⭐ "+pr.n:pr.n+" / "+pr.t}</span></div>`;}).join("")+`<div class="strow"><span>📚 공부방</span><span class="r"></span><span class="n">💮 도장 ${M.sdn||0}개</span></div><div class="strow"><span>🛍️ 꾸미기 가게</span><span class="r"></span><span class="n">쓸 수 있는 별 ⭐ ${bal()}</span></div>`;
   }
   function lockInfo(k,nx){
     const b=info(k),c=g("tkc"),need=Math.max(1,Math.max(...Object.values(M.open).concat([0]))+STEP-pts()),next=nx&&nx.key===k;
@@ -1187,6 +1233,130 @@ window.addEventListener("hashchange",fromHash);
     else if(nxt)c.innerHTML=`<h3>📬 새 문제</h3>${kdate(nxt.id)} 월요일에 건물마다 새 문제가 들어와요!`;
     else c.style.display="none";
   }
+  /* ===== 공부방: 한글 · 연산 · 영어 5문제씩 → 출근 도장 → 마을 문 열림 ===== */
+  const SN=5,SUB={k:["가","한글","#f08aa6"],m:["🔢","연산","#5aa9e6"],e:["🔤","영어","#58b88f"]},SKEY=["k","m","e"];
+  const sdGet=()=>{const v=M.sd||0;if(Math.floor(v/216)!==day())return [0,0,0];const r=v%216;return [Math.floor(r/36),Math.floor(r/6)%6,r%6];};
+  const sdSet=a=>{M.sd=day()*216+a[0]*36+a[1]*6+a[2];save();};
+  const studied=()=>M.skip===day()||sdGet().every(n=>n>=SN);
+  const gate=k=>k==="home"||k==="k"||studied();
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+  const mkQ=(h,c,ws,why,x)=>{const o=shuffle([c].concat(ws));return Object.assign({h:h,o:o,a:o.indexOf(c),why:why},x||{});};
+  window.PTS.k=(M.sdn||0)*3;
+  (window.PLN=window.PLN||{}).k="study";(window.PBG=window.PBG||{}).k="#e3f1ff";
+
+  /* --- 한글: 겹받침 --- */
+  const KR={"ㄺ":"ㄺ 받침은 <b>ㄱ</b>만 소리 나요.","ㄻ":"ㄻ 받침은 <b>ㅁ</b>만 소리 나요.","ㄼ":"ㄼ 받침은 <b>ㄹ</b>만 소리 나요.","ㅄ":"ㅄ 받침은 <b>ㅂ</b>만 소리 나요.","ㄵ":"ㄵ 받침은 <b>ㄴ</b>만 소리 나요.","ㄶ":"ㄶ 받침은 <b>ㄴ</b>이 소리 나고, ㅎ은 뒤 글자를 거세게 해요.","ㅀ":"ㅀ 받침은 <b>ㄹ</b>이 소리 나고, ㅎ은 뒤 글자를 거세게 해요.","ㄳ":"ㄳ 받침은 <b>ㄱ</b>만 소리 나요.","ㄾ":"ㄾ 받침은 <b>ㄹ</b>만 소리 나요.","밟":"‘밟다’는 특별해요. <b>ㅂ</b>이 소리 나요.","이":"뒤에 ㅇ이 오면, 받침 하나가 뒤로 넘어가요.","ㅎ":"뒤에 ㅇ이 오면, ㅎ은 소리가 사라져요."};
+  const KSND=[["닭","닥",["달","닫"],"ㄺ"],["흙","흑",["흘","흡"],"ㄺ"],["읽다","익따",["일따","이따"],"ㄺ"],["맑다","막따",["말따","마따"],"ㄺ"],["밝다","박따",["발따","바따"],"ㄺ"],["삶","삼",["살","삽"],"ㄻ"],["닮다","담따",["달따","닥따"],"ㄻ"],["젊다","점따",["절따","적따"],"ㄻ"],["굶다","굼따",["굴따","국따"],"ㄻ"],["여덟","여덜",["여덥","여던"],"ㄼ"],["넓다","널따",["넙따","너따"],"ㄼ"],["짧다","짤따",["짭따","짜따"],"ㄼ"],["값","갑",["갓","각"],"ㅄ"],["없다","업따",["엇따","얼따"],"ㅄ"],["앉다","안따",["앗따","알따"],"ㄵ"],["많다","만타",["만다","마다"],"ㄶ"],["싫다","실타",["실다","시타"],"ㅀ"],["끓다","끌타",["끌다","끄타"],"ㅀ"],["앓다","알타",["알다","아타"],"ㅀ"],["몫","목",["못","몹"],"ㄳ"],["핥다","할따",["핫따","하따"],"ㄾ"],["밟다","밥따",["발따","바따"],"밟"]];
+  const KLNK=[["읽어요","일거요",["익어요","이거요"],"이"],["앉아요","안자요",["안아요","아자요"],"이"],["없어요","업써요",["어버요","업어요"],"이"],["닭이","달기",["다기","닥이"],"이"],["흙을","흘글",["흐글","흑을"],"이"],["값이","갑씨",["가비","갑이"],"이"],["젊어요","절머요",["저머요","점어요"],"이"],["넓어요","널버요",["너버요","널어요"],"이"],["밟아요","발바요",["바바요","발아요"],"이"],["맑아요","말가요",["마가요","막아요"],"이"],["짧아요","짤바요",["짜바요","짤아요"],"이"],["삶아요","살마요",["사마요","삼아요"],"이"],["많아요","마나요",["만하요","만아요"],"ㅎ"],["싫어요","시러요",["실허요","실어요"],"ㅎ"],["끓어요","끄러요",["끌허요","끌어요"],"ㅎ"]];
+  const KFILL=[["하늘이 ○○.","맑다",["막다","말다"],"☀️"],["의자에 ○○.","앉다",["안다","않다"],"🪑"],["그림책을 ○○.","읽다",["익다","일다"],"📖"],["운동장이 아주 ○○.","넓다",["널다","넙다"],"🏟️"],["몽당연필은 ○○.","짧다",["짤다","짭다"],"✏️"],["사탕이 아주 ○○.","많다",["만다","맣다"],"🍬"],["물이 보글보글 ○○.","끓다",["끌다","끅다"],"🫖"],["주머니에 돈이 ○○.","없다",["업다","엇다"],"👛"],["나는 엄마와 ○○.","닮다",["담다","달다"],"👩‍👧"],["모기 물린 곳을 ○○.","긁다",["극다","글다"],"🦟"],["보름달이 환하게 ○○.","밝다",["박다","발다"],"🌕"],["낙엽을 발로 ○○.","밟다",["밥다","발다"],"🍂"],["쓴 약은 ○○.","싫다",["실다","실타"],"💊"],["종이는 아주 ○○.","얇다",["얄다","얍다"],"📄"],["나무 줄기가 ○○.","굵다",["국다","굴다"],"🌳"],["감기를 ○○.","앓다",["알다","않다"],"🤒"],["강아지가 손을 ○○.","핥다",["할다","핧다"],"🐶"],["넘어졌지만 ○○○.","괜찮다",["괜찬다","괜찮타"],"🩹"],["달걀을 ○○.","삶다",["삼다","살다"],"🥚"],["아빠는 아직 ○○.","젊다",["점다","절다"],"👨"]];
+  const KPIC=[["🐔","꼬끼오! 무엇일까?","닭",["닥","닦"]],["8️⃣","이 수를 한글로 쓰면?","여덟",["여덜","여덥"]],["🪴","화분 속에 있는 것은?","흙",["흑","흘"]],["🏷️","물건이 얼마인지 알려 주는 것은?","값",["갑","갓"]],["🥚","달걀을 물에 넣고 익히는 것은?","삶기",["삼기","살기"]],["🪑","다리가 아플 때 의자에…","앉아요",["안자요","않아요"]],["📖","책을 펴고 글자를…","읽어요",["일거요","익어요"]],["🍕","피자를 똑같이 나눈 내 것은? 내 ○","몫",["목","못"]]];
+  let kUsed={};
+  const kNew=(L,t)=>{let c=L.filter(x=>!kUsed[t+x[0]]);if(!c.length){L.forEach(x=>{delete kUsed[t+x[0]];});c=L;}const x=pick(c);kUsed[t+x[0]]=1;return x;};
+  function kGen(i){
+    const t=["s","f","p","l","f"][i%5];
+    if(t==="s"||t==="l"){const x=kNew(t==="s"?KSND:KLNK,t);return mkQ(`<div class="skbig">${x[0]}</div><div class="skq">어떻게 소리 날까?</div>`,"["+x[1]+"]",x[2].map(w=>"["+w+"]"),`<b>${x[0]}</b> → [${x[1]}]<br>${KR[x[3]]}`);}
+    if(t==="f"){const x=kNew(KFILL,t);return mkQ(`<div class="skem">${x[3]}</div><div class="skbig sm">${x[0]}</div><div class="skq">○에 들어갈, 바르게 쓴 말은?</div>`,x[1],x[2],`<b>${x[0].replace(/○+/,x[1])}</b>`);}
+    const x=kNew(KPIC,"p");return mkQ(`<div class="skem">${x[0]}</div><div class="skq">${x[1]}</div>`,x[2],x[3],`바르게 쓰면 <b>${x[2]}</b>`);
+  }
+
+  /* --- 연산: 덧셈 · 뺄셈 · 시계 · 규칙 --- */
+  const skClock=(h,m)=>{let s=`<svg viewBox="0 0 120 120" class="skclock"><circle cx="60" cy="60" r="54" fill="#fff" stroke="#5aa9e6" stroke-width="5"/>`;
+    for(let i=1;i<=12;i++){const a=i*Math.PI/6;s+=`<text x="${(60+42*Math.sin(a)).toFixed(1)}" y="${(65-42*Math.cos(a)).toFixed(1)}" font-size="14" text-anchor="middle" font-family="Jua,sans-serif" fill="#33302e">${i}</text>`;}
+    const ha=(h%12+m/60)*Math.PI/6,ma=m*Math.PI/30;
+    return s+`<line x1="60" y1="60" x2="${(60+24*Math.sin(ha)).toFixed(1)}" y2="${(60-24*Math.cos(ha)).toFixed(1)}" stroke="#33302e" stroke-width="6" stroke-linecap="round"/><line x1="60" y1="60" x2="${(60+37*Math.sin(ma)).toFixed(1)}" y2="${(60-37*Math.cos(ma)).toFixed(1)}" stroke="#e8504f" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="60" r="4" fill="#33302e"/></svg>`;};
+  const eqQ=(t,ans,why)=>mkQ(`<div class="skbig">${t}</div>`,String(ans),three(ans,[ans+1,ans-1,ans+2,ans-2,ans+10,ans-10]).filter(v=>v!==ans).map(String),why);
+  const MG={
+    add:()=>{const a=rnd(5,9),b=rnd(11-a,9),t=10-a;return eqQ(`${a} + ${b} = ?`,a+b,`${a} + ${t} = 10<br>10 + ${b-t} = <b>${a+b}</b>`);},
+    sub:()=>{const a=rnd(11,17),b=rnd(a-9,9),t=a-10;return eqQ(`${a} − ${b} = ?`,a-b,`${a} − ${t} = 10<br>10 − ${b-t} = <b>${a-b}</b>`);},
+    two:()=>{const p=Math.random()<.5,a=rnd(21,88),b=rnd(2,9),r=p?a+b:a-b;return eqQ(`${a} ${p?"+":"−"} ${b} = ?`,r,`${a} ${p?"+":"−"} ${b} = <b>${r}</b>`);},
+    tens:()=>{const p=Math.random()<.5,a=rnd(2,8)*10,b=rnd(1,p?9-a/10:a/10-1)*10,r=p?a+b:a-b;return eqQ(`${a} ${p?"+":"−"} ${b} = ?`,r,`십이 ${a/10}개, ${b/10}개 → ${a} ${p?"+":"−"} ${b} = <b>${r}</b>`);},
+    box:()=>{const k=rnd(0,2),x=rnd(3,9),y=rnd(3,9);
+      if(k===0)return eqQ(`□ + ${y} = ${x+y}`,x,`${x+y} − ${y} = <b>${x}</b><br>${x} + ${y} = ${x+y}`);
+      if(k===1)return eqQ(`${x} + □ = ${x+y}`,y,`${x+y} − ${x} = <b>${y}</b><br>${x} + ${y} = ${x+y}`);
+      return eqQ(`${x+y} − □ = ${x}`,y,`${x+y} − ${x} = <b>${y}</b><br>${x+y} − ${y} = ${x}`);},
+    three:()=>{if(Math.random()<.5){const a=rnd(2,7),b=rnd(2,6),c=rnd(2,6);return eqQ(`${a} + ${b} + ${c} = ?`,a+b+c,`${a} + ${b} = ${a+b}<br>${a+b} + ${c} = <b>${a+b+c}</b>`);}
+      const a=rnd(12,18),b=rnd(2,5),c=rnd(2,5);return eqQ(`${a} − ${b} − ${c} = ?`,a-b-c,`${a} − ${b} = ${a-b}<br>${a-b} − ${c} = <b>${a-b-c}</b>`);},
+    story:()=>{const x=pick([["🍎","사과","먹고","샀어요"],["🎈","풍선","터지고","불었어요"],["⭐","별 스티커","붙이고","받았어요"]]),a=rnd(8,14),b=rnd(2,6),c=rnd(3,7),r=a-b+c;
+      return mkQ(`<div class="skem">${x[0]}</div><div class="skq big">${x[1]} ${a}개에서 ${b}개를 ${x[2]},<br>${c}개를 더 ${x[3]}. 모두 몇 개?</div>`,String(r),three(r,[r+1,r-1,r+2,r-2,a+b+c]).filter(v=>v!==r).map(String),`${a} − ${b} = ${a-b}<br>${a-b} + ${c} = <b>${r}</b>`);},
+    clock:()=>{const h=rnd(1,12),half=Math.random()<.5,nm=(H,M2)=>H+"시"+(M2?" 30분":""),h2=h%12+1,h0=(h+10)%12+1;
+      const ws=half?[nm(h2,30),nm(h,0)]:[nm(h,30),pick([nm(h2,0),nm(h0,0)])];
+      return mkQ(skClock(h,half?30:0)+`<div class="skq">몇 시일까?</div>`,nm(h,half?30:0),ws,half?`긴바늘이 6 → 30분<br>짧은바늘이 ${h}와 ${h2} 사이 → <b>${h}시 30분</b>`:`긴바늘이 12 → 정각<br>짧은바늘이 ${h} → <b>${h}시</b>`);},
+    pat:()=>{const d=pick([2,3,5,10,-2,-3,-5]),s=d>0?rnd(1,9):rnd(30,50),a=[0,1,2,3].map(i=>s+d*i),r=s+d*4;return mkQ(`<div class="skbig sm">${a.join(", ")}, □</div><div class="skq">□에 들어갈 수는?</div>`,String(r),three(r,[r+1,r-1,r+d,r-d,r+2]).filter(v=>v!==r).map(String),`${Math.abs(d)}씩 ${d>0?"커져요":"작아져요"} → <b>${r}</b>`);},
+    big:()=>{const big=Math.random()<.5;let a=[];while(a.length<3){const v=rnd(12,98);if(!a.includes(v))a.push(v);}const r=big?Math.max(...a):Math.min(...a),o=a.map(String);return {h:`<div class="skq big">가장 ${big?"큰":"작은"} 수는?</div>`,o:o,a:o.indexOf(String(r)),why:`십의 자리부터 비교해요 → <b>${r}</b>`};}
+  };
+  const mGen=i=>MG[[pick(["add","sub"]),pick(["two","tens"]),"clock",pick(["box","three","story"]),pick(["pat","big"])][i%5]]();
+
+  /* --- 영어: 파닉스 --- */
+  const say=t=>{try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.75;s.speak(u);}catch(e){}};
+  const EW=[["cat","🐱","고양이"],["dog","🐶","개"],["pig","🐷","돼지"],["hen","🐔","암탉"],["bug","🐛","벌레"],["sun","☀️","해"],["bed","🛏️","침대"],["cup","🥤","컵"],["bus","🚌","버스"],["hat","🎩","모자"],["pen","🖊️","펜"],["map","🗺️","지도"],["fox","🦊","여우"],["bat","🦇","박쥐"],["box","📦","상자"],["net","🥅","그물"],["pot","🍲","냄비"],["bag","👜","가방"],["van","🚐","승합차"],["web","🕸️","거미줄"],["leg","🦵","다리"],["lip","👄","입술"],["nut","🥜","땅콩"],["mug","☕","머그잔"],["ten","🔟","열"],["pan","🍳","프라이팬"],["cap","🧢","야구 모자"],["red","🔴","빨간색"],["jet","✈️","제트기"],["rat","🐀","쥐"],["six","6️⃣","여섯"],["wet","💧","젖은"],["hot","🥵","뜨거운"],["sad","😢","슬픈"],["hug","🤗","안아 주기"]];
+  const ERH=[["cat","hat","bat","rat"],["hen","pen","ten"],["bug","mug","hug"],["map","cap"],["van","pan"],["net","jet","wet"],["pot","hot"],["fox","box"],["bed","red"]];
+  const ew=w=>EW.find(x=>x[0]===w),ewl=x=>`${x[0]} ${x[1]} ${x[2]}`;
+  let eUsed={};
+  const eNew=L=>{let c=L.filter(x=>!eUsed[x[0]]);if(c.length<1){eUsed={};c=L;}const x=pick(c);eUsed[x[0]]=1;return x;};
+  const eOther=(x,n,f)=>shuffle(EW.filter(y=>y[0]!==x[0]&&y[1]!==x[1]&&(!f||f(y)))).slice(0,n);
+  const spk=w=>`<button class="skspk" data-say="${w}">🔊</button>`;
+  function eGen(i){
+    const t=["hear","first","read","word","rhyme"][i%5];
+    if(t==="rhyme"){const G=pick(ERH),a=pick(G),b=pick(G.filter(w=>w!==a)),ws=shuffle(EW.filter(y=>!G.includes(y[0])&&y[0].slice(1)!==a.slice(1))).slice(0,2);
+      return mkQ(`<div class="skbig en">${a} ${ew(a)[1]}</div>${spk(a)}<div class="skq">끝소리가 같은 낱말은?</div>`,`<span class="en">${b}</span> ${ew(b)[1]}`,ws.map(y=>`<span class="en">${y[0]}</span> ${y[1]}`),`<span class="en">${a}</span> – <span class="en">${b}</span><br>둘 다 <b class="en">-${a.slice(1)}</b> 소리로 끝나요.`,{snd:a,after:a+", "+b});}
+    const x=eNew(EW);
+    if(t==="hear")return mkQ(`${spk(x[0])}<div class="skq">잘 듣고, 맞는 그림을 골라요</div>`,x[1],eOther(x,2).map(y=>y[1]),`<span class="en">${x[0]}</span> ${x[1]} ${x[2]}`,{snd:x[0],em:1,after:x[0]});
+    if(t==="first"){const c=x[0][0],bad=c==="c"?"k":c==="k"?"c":"",ls=shuffle("bdpmnhtsrlfgwjv".split("").filter(l=>l!==c&&l!==bad)).slice(0,2);
+      return mkQ(`<div class="skem">${x[1]}</div>${spk(x[0])}<div class="skq">첫소리 글자는?</div>`,c,ls,`<b class="en">${c}</b> → <span class="en">${x[0]}</span> ${x[1]} ${x[2]}`,{snd:x[0],em:1,en:1,after:x[0]});}
+    if(t==="read")return mkQ(`<div class="skbig en">${x[0]}</div><div class="skq">읽고, 맞는 그림을 골라요</div>`,x[1],eOther(x,2).map(y=>y[1]),`<span class="en">${x[0]}</span> ${x[1]} ${x[2]}`,{em:1,after:x[0]});
+    let ws=eOther(x,2,y=>y[0][0]===x[0][0]||y[0].slice(1)===x[0].slice(1));if(ws.length<2)ws=ws.concat(eOther(x,4,y=>!ws.includes(y))).slice(0,2);
+    return mkQ(`<div class="skem">${x[1]}</div><div class="skq">${x[2]} — 맞는 낱말은?</div>`,x[0],ws.map(y=>y[0]),`<span class="en">${x[0]}</span> ${x[1]} ${x[2]}`,{en:1,after:x[0]});
+  }
+  const SGEN={k:kGen,m:mGen,e:eGen};
+
+  /* --- 화면 --- */
+  const kp=document.createElement("div");kp.className="place";kp.id="pk";
+  kp.innerHTML=`<button class="backhome" onclick="goPlace('home')">← 🏘️ 아림 마을</button><header class="bh"><h1 style="color:#2c6e9b">📚 공부방</h1></header><main id="skMain"></main>`;
+  document.body.insertBefore(kp,g("rv"));
+  let SK=null;
+  const dots=(n,col)=>`<span class="skdots">${[0,1,2,3,4].map(i=>`<i style="${i<n?"background:"+col:""}"></i>`).join("")}</span>`;
+  function drawStudy(){
+    SK=null;const a=sdGet(),done=studied(),el=g("skMain");
+    el.innerHTML=`<div class="skhead">${done?"💮 오늘 공부 끝! 마을 문이 열렸어요":"세 가지를 다 하면 마을 문이 열려요 🔓"}</div>
+      <div class="skgrid">${SKEY.map((k,i)=>`<button class="sksub${a[i]>=SN?" ok":""}" data-s="${k}" style="--c:${SUB[k][2]}"><span class="e">${SUB[k][0]}</span><b>${SUB[k][1]}</b>${dots(a[i],SUB[k][2])}<small>${a[i]>=SN?"✅ 다 했어요":a[i]+" / "+SN}</small></button>`).join("")}</div>
+      <div class="skstamp${done?" on":""}"><span>${done?"💮":"🔒"}</span>${done?"출근 도장 쾅!":"출근 도장"}</div>
+      ${done?`<button class="hbtn" id="skHome" style="background:#2fa38a">🏘️ 마을로 가기</button>`:""}`;
+    el.querySelectorAll(".sksub").forEach(b=>b.onclick=()=>{SFX("pop");SK={s:b.dataset.s,i:sdGet()[SKEY.indexOf(b.dataset.s)]%SN,free:sdGet()[SKEY.indexOf(b.dataset.s)]>=SN,n:0};skNext();});
+    const h=g("skHome");if(h)h.onclick=()=>{SFX("pop");goPlace("home");};
+  }
+  function skNext(){SK.q=SGEN[SK.s](SK.i+SK.n);SK.done=false;drawQ();}
+  function drawQ(){
+    const el=g("skMain"),q=SK.q,S=SUB[SK.s],n=sdGet()[SKEY.indexOf(SK.s)];
+    el.innerHTML=`<div class="skbar"><button class="chipb" id="skBack">← 공부방</button><span style="color:${S[2]}">${S[0]} ${S[1]}</span>${SK.free?`<small>연습</small>`:dots(n,S[2])}</div>
+      <div class="skcard">${q.h}<div class="skopts${q.em?" em":""}${q.en?" en":""}">${q.o.map((o,i)=>`<button class="skopt" data-i="${i}">${o}</button>`).join("")}</div>
+      <div class="skans" id="skAns"></div></div>`;
+    g("skBack").onclick=()=>{SFX("pop");drawStudy();};
+    el.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>say(b.dataset.say));
+    if(q.snd)setTimeout(()=>say(q.snd),350);
+    el.querySelectorAll(".skopt").forEach(b=>b.onclick=()=>{
+      if(SK.done)return;SK.done=true;const ok=Number(b.dataset.i)===q.a;
+      el.querySelectorAll(".skopt").forEach((x,i)=>{x.classList.add(i===q.a?"good":"dim");});if(!ok)b.classList.add("bad");
+      SFX(ok?"ok":"no");if(q.after)setTimeout(()=>say(q.after),500);
+      let fin=false;
+      if(ok&&!SK.free){const a=sdGet(),j=SKEY.indexOf(SK.s);a[j]=Math.min(SN,a[j]+1);sdSet(a);fin=a[j]>=SN;}
+      SK.n++;
+      g("skAns").innerHTML=`<div class="skwhy ${ok?"ok":"no"}"><b>${ok?"⭕ 맞았어요!":"다시 해 볼까? 새 문제가 나와요"}</b><p>${q.why}</p></div><button class="hbtn" id="skGo" style="background:${S[2]}">${fin?"다 했어요 ✅":"다음 ▶"}</button>`;
+      g("skGo").onclick=()=>{if(fin||(SK.free&&SK.n>=SN)){skFinish();}else skNext();};
+      g("skGo").scrollIntoView({block:"nearest",behavior:"smooth"});
+    });
+  }
+  function skFinish(){
+    if(studied()&&M.sdd!==day()){M.sdd=day();M.sdn=(M.sdn||0)+1;window.PTS.k=M.sdn*3;save();SFX("fanfare");}else SFX("ok");
+    drawStudy();window.scrollTo({top:0});
+  }
+  function studyInfo(k){
+    const b=info(k),c=g("tkc"),a=sdGet();g("tk").classList.add("on");
+    c.innerHTML=`<h2>🔒 ${b.emoji} ${MAPN[k]||b.name}</h2><div class="qq">📚 공부방에서 오늘 공부를 마치면 문이 열려요!<br><b style="font-family:Jua;font-weight:normal">${SKEY.map((s,i)=>SUB[s][0]+" "+a[i]+"/"+SN).join(" · ")}</b></div><button class="hbtn" id="siGo" style="background:#3d8fd6">📚 공부방 가기</button><button class="skip" id="siX">닫기</button>`;
+    g("siGo").onclick=()=>{g("tk").classList.remove("on");SFX("pop");M.at="k";save();goPlace("k");};
+    g("siX").onclick=()=>g("tk").classList.remove("on");
+  }
+
   /* 마을 화면 */
   function homeDraw(){
     const hadNew=M.newly;unlock();if(M.newly&&M.newly!==hadNew)setTimeout(()=>SFX("fanfare"),300);drawMap();drawShop();drawSnd();drawWk();
@@ -1194,17 +1364,19 @@ window.addEventListener("hashchange",fromHash);
     if(nb){nc.style.display="block";nc.innerHTML=`<h3>🎉 새 건물이 문을 열었어요!</h3><span class="big">${nb.emoji} ${nb.name}</span><button class="hbtn" id="newGo" style="background:${nb.color}">구경하러 가기</button>`;g("newGo").onclick=()=>{M.newly="";save();goPlace(nb.key);};}
     else nc.style.display="none";
     const tc=g("tpCard"),H=window.HOSP;
-    if(tc&&H){const k=H.tpn();tc.style.display="block";
+    if(tc&&!studied()){const a=sdGet();tc.style.display="block";tc.innerHTML=`<h3>📚 오늘의 공부</h3>공부를 마치면 병원과 마을 문이 열려요.<br><b style="font-family:Jua;font-weight:normal">${SKEY.map((s,i)=>SUB[s][0]+" "+a[i]+"/"+SN).join(" · ")}</b><button class="hbtn" id="skGoH" style="background:#3d8fd6">공부방 가기 ▶</button>`;g("skGoH").onclick=()=>{SFX("pop");M.at="k";save();goPlace("k");};}
+    else if(tc&&H){const k=H.tpn();tc.style.display="block";
       tc.innerHTML=k>=H.total?`<h3>📋 오늘의 일정</h3>오늘 할 일 ${H.total}가지를 모두 마쳤어요 💮`:`<h3>📋 오늘의 일정</h3>병원에서 오늘 할 일이 기다려요. <b style="font-family:Jua;font-weight:normal">${k} / ${H.total}</b><button class="hbtn" id="tpGo" style="background:#f77fae">시작하기 ▶</button>`;
       const b=g("tpGo");if(b)b.onclick=()=>{SFX("pop");goPlace("h");H.open();};}
     const t=day(),n=cands().length,rc=g("rvCard");
-    if(M.rvDay===t)rc.innerHTML=`<h3>🔁 오늘의 복습</h3>오늘 복습을 마쳤어요 ⭐`;
+    if(!studied())rc.innerHTML=`<h3>🔁 오늘의 복습</h3>🔒 공부를 마치면 복습할 수 있어요.`;
+    else if(M.rvDay===t)rc.innerHTML=`<h3>🔁 오늘의 복습</h3>오늘 복습을 마쳤어요 ⭐`;
     else if(n)rc.innerHTML=`<h3>🔁 오늘의 복습</h3>전에 배운 문제 ${n}개가 기다리고 있어요.<button class="hbtn" id="rvGo">복습하러 가기</button>`;
     else rc.innerHTML=`<h3>🔁 오늘의 복습</h3>오늘 퀴즈를 풀면, 내일부터 복습 문제가 나와요.`;
     const go=g("rvGo");if(go)go.onclick=openReview;
     g("hstat").textContent="🌟 마을 별 "+pts()+" · ⭐ 복습 별 "+M.rv;
   }
-  window.TOWN={meSvg:meSvg,hasPet:()=>!!(M.pet&&M.pets[M.pet]),
+  window.TOWN={studied:studied,gate:gate,_gen:SGEN,drawStudy:()=>drawStudy(),skipStudy:()=>{M.skip=day();save();homeDraw();},meSvg:meSvg,hasPet:()=>!!(M.pet&&M.pets[M.pet]),
     reg:(k,f)=>{BANK[k]=f;},
     solved:(id,w)=>{if(!M.log[id]){M.log[id]={d:day(),w:w||0};save();}},
     talkDone:k=>!!M.talk[k],
@@ -1212,7 +1384,7 @@ window.addEventListener("hashchange",fromHash);
     addBld:b=>{BLD.push(b);(window.PLN=window.PLN||{})[b.key]=b.hash;(window.PBG=window.PBG||{})[b.key]=b.bg;},
     openTalk:openTalk,
     homeDraw:homeDraw,
-    start:()=>{watchSounds();homeDraw();loadPacks().then(()=>{homeDraw();if(M.rvDay!==day()&&cands().length&&g("home").style.display!=="none"&&!g("rv").classList.contains("on"))openReview();});}
+    start:()=>{watchSounds();homeDraw();loadPacks().then(()=>{homeDraw();if(studied()&&M.rvDay!==day()&&cands().length&&g("home").style.display!=="none"&&!g("rv").classList.contains("on"))openReview();});}
   };
 })();
 (function(root){
@@ -3287,8 +3459,8 @@ const MINDQ=[
 let mqLast=-1;
 function mindFor(){let i;do{i=Math.floor(Math.random()*MINDQ.length);}while(i===mqLast);mqLast=i;return Object.assign({ic:"💗"},MINDQ[i]);}
 /* 오늘의 일정: 골고루 섞어서 하루 다섯 가지 */
-const SCH={enc:["🩺","환자 진료",3],eng:["🔤","영어",2],mind:["💗","마음 읽기",1],desk:["🛎️","안내",2],dx:["🔍","추리",1]},SCHN=5;
-const schOrder=()=>{const mid=["eng","mind","desk"],r=dnum()%3;return ["enc"].concat(mid.slice(r),mid.slice(0,r),["dx"]);};
+const SCH={enc:["🩺","환자 진료",3],mind:["💗","마음 읽기",1],desk:["🛎️","안내",2],dx:["🔍","추리",1]},SCHN=4;
+const schOrder=()=>{const mid=["mind","desk"],r=dnum()%2;return ["enc"].concat(mid.slice(r),mid.slice(0,r),["dx"]);};
 const schN=()=>{const v=st.sch||0;return Math.floor(v/10)===dnum()?Math.min(SCHN,v%10):0;};
 const schFloor=()=>[1,2,3,4,5,6,0][dnum()%7];
 const schCnt=k=>k==="enc"?D.filter(d=>d.f===schFloor()).reduce((a,d)=>a+((st.ec&&st.ec[d.id])||0),0):k==="eng"?(st.eng||0):k==="mind"?(st.mind||0):k==="desk"?(st.guided||0):(st.dxn||0);
