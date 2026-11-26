@@ -383,6 +383,11 @@
   .pcard .tools{margin-top:8px}
   .prow{display:flex;gap:8px;margin-top:10px}.prow .btn{margin:0;flex:1}
   .btn.encb.prepb{background:#5aa9e6;box-shadow:0 4px 0 #3f86c0}
+  .schmis{font-family:'Jua',sans-serif;font-size:19px;color:#d6457e;background:#fff;border-radius:999px;padding:10px 20px;box-shadow:0 3px 0 #f3c6d8}
+  .schmis b{font-weight:normal;background:#f77fae;color:#fff;border-radius:999px;padding:2px 12px;margin:0 2px}
+  .schmis small{font-size:14px;color:#8a7f77;margin-left:6px}
+  .lbtns .today{box-shadow:0 0 0 3px #f77fae}
+  .lbtns .today .fi small::after{content:" · 🩺 오늘 진료하는 층";color:#d6457e}
   .item{background:#fff4f7;border-radius:16px;padding:12px 14px;margin-bottom:8px;font-size:17px;line-height:1.55}
   .item b{display:block;font-family:'Jua',sans-serif;font-weight:normal;font-size:19px;margin-bottom:2px}
   .clues{display:grid;gap:6px;margin-top:12px}
@@ -3248,21 +3253,22 @@ function mindFor(){let i;do{i=Math.floor(Math.random()*MINDQ.length);}while(i===
 const SCH={enc:["🩺","환자 진료",1],eng:["🔤","영어",2],mind:["💗","마음 읽기",1],desk:["🛎️","안내",2],dx:["🔍","추리",1]},SCHN=5;
 const schOrder=()=>{const mid=["eng","mind","desk"],r=dnum()%3;return ["enc"].concat(mid.slice(r),mid.slice(0,r),["dx"]);};
 const schN=()=>{const v=st.sch||0;return Math.floor(v/10)===dnum()?Math.min(SCHN,v%10):0;};
-const schCnt=k=>k==="enc"?(st.en||0):k==="eng"?(st.eng||0):k==="mind"?(st.mind||0):k==="desk"?(st.guided||0):(st.dxn||0);
+const schFloor=()=>[1,2,3,4,5,6,0][dnum()%7];
+const schCnt=k=>k==="enc"?D.filter(d=>d.f===schFloor()).reduce((a,d)=>a+((st.ec&&st.ec[d.id])||0),0):k==="eng"?(st.eng||0):k==="mind"?(st.mind||0):k==="desk"?(st.guided||0):(st.dxn||0);
 let schRun=null;
 function schDraw(){
   const n=schN(),o=schOrder(),el=$("sch");if(!el)return;
   el.innerHTML=`<div class="schrow">${o.map((k,i)=>`<span class="${i<n?"dn":(i===n?"on":"")}">${i<n?"✅":SCH[k][0]}</span>`).join("<i></i>")}</div>`
-    +(n>=SCHN?`<div class="schdone">🎉 오늘 일정 끝! 자유 시간이에요</div>`:`<button class="btn schgo" id="schGo">▶ ${SCH[o[n]][0]} ${SCH[o[n]][1]}</button>`);
+    +(n>=SCHN?`<div class="schdone">🎉 오늘 일정 끝! 자유 시간이에요</div>`:(o[n]==="enc"?`<div class="schmis">🩺 오늘은 <b>${schFloor()?schFloor()+"층":"별관"}</b>에서 환자 1명을 진료해요${curF>=0&&curF!==schFloor()?" <small>🛗 엘리베이터를 타요</small>":""}</div>`:`<button class="btn schgo" id="schGo">▶ ${SCH[o[n]][0]} ${SCH[o[n]][1]}</button>`));
+  if(n<SCHN&&o[n]==="enc"&&(!schRun||schRun.k!=="enc"))schRun={k:"enc",base:schCnt("enc")};
+  $("liftp").querySelectorAll("[data-go]").forEach(b=>b.classList.toggle("today",n<SCHN&&o[n]==="enc"&&b.dataset.go===String(schFloor())));
   const b=$("schGo");if(b)b.onclick=()=>schStart();
   $("bld").querySelectorAll(".room.sp").forEach(d=>d.classList.toggle("lock",n<SCHN));
 }
 function schStart(){
   const n=schN();$("schbar").classList.remove("on");if(n>=SCHN){go("tour");return;}
-  const k=schOrder()[n];schRun={k:k,base:schCnt(k)};
-  if(k==="enc"){const c=shuffle(D.filter(d=>encLeft(d.id).length));
-    if(!c.length){schRun.base-=1;schCheck();refresh();return;}
-    go("tour");openDept(c[0].id);encStart(c[0].id,true);}
+  const k=schOrder()[n];if(k!=="enc"||!schRun||schRun.k!=="enc")schRun={k:k,base:schCnt(k)};
+  if(k==="enc"){go("tour");return;}
   else{go(k);if(k==="desk")newPatient();else if(k==="dx")newCase();else if(k==="mind")newMind();else engNew(false);}
 }
 function schCheck(){
@@ -3333,7 +3339,7 @@ function setFloor(f,atLift){
   const c=corrOf(f),cin=c.querySelector(".cin"),lf=cin.querySelector(".lift");cin.appendChild(meEl);
   $("flb").innerHTML=`<b>${fname(f)}</b> ${FEM[f]} ${FL[f][0]}`;$("flb").style.background=FL[f][1];
   meEl.style.transition="none";meEl.style.left=(lf.offsetLeft+lf.offsetWidth/2-27+(atLift?0:-96))+"px";
-  c.scrollLeft=lf.offsetLeft+lf.offsetWidth/2-c.clientWidth/2;$("bld").classList.toggle("wide",c.scrollWidth>c.clientWidth+8);
+  c.scrollLeft=lf.offsetLeft+lf.offsetWidth/2-c.clientWidth/2;$("bld").classList.toggle("wide",c.scrollWidth>c.clientWidth+8);schDraw();
 }
 function walkTo(el,cb){
   if(busy||curF<0)return;busy=true;
