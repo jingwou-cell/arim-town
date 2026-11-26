@@ -1,0 +1,31 @@
+{
+  "name": "은준이 마을",
+  "short_name": "은준이 마을",
+  "description": "수학·체스·물리·잡지식·몸 미션을 하며 생각하는 힘을 기르는 은준이의 마을",
+  "lang": "ko",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#1b2a55",
+  "theme_color": "#1b2a55",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
