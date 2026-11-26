@@ -516,6 +516,9 @@
   .skwhy.no{background:#fff3e6}
   .skwhy b{font-family:'Jua',sans-serif;font-weight:normal}
   .skwhy p{margin:4px 0 0;font-size:20px}
+  #map:has(#mapsvg.pic){padding:0;background:#8fc65a}
+  #mapsvg.pic .slk{opacity:.8;filter:grayscale(1) brightness(1.08)}
+  #mapsvg.pic image{image-rendering:auto}
 
   body.bg-j{background:linear-gradient(#ffe3ec 0,#fff3ea 420px,#fff9f1 421px)}
   body.bg-home{background:linear-gradient(#bfe4ff 0,#e6f5ff 55%,#d9f0cf 55.1%,#e9f7e2 100%)}
@@ -1130,53 +1133,39 @@ window.addEventListener("hashchange",fromHash);
     return `<path d="M${x-6} ${y+3}v-8M${x+6} ${y+1}v-8" stroke="#8a97a8" stroke-width="2"/><rect x="${x-13}" y="${y-28}" width="26" height="23" rx="6" fill="#fff" stroke="${b.color}" stroke-width="2"/><text x="${x}" y="${y-11}" font-size="15" text-anchor="middle">${b.emoji}</text>`;
   }
   let walking=false;
+  /* 그림 지도: 배경(base) + 건물 그림(b_*) + 앞 장식(top) */
+  const MW=1672,MH=941;
+  const MB={h:[517,0,638,314],p:[139,19,299,295],e:[1174,39,459,295],v:[298,254,339,276],k:[19,392,300,295],c:[995,254,379,276]},MHOME=[1313,392,359,314];
+  const MF={h:[833,268],p:[334,272],e:[1338,282],v:[502,490],k:[251,636],c:[1154,482],s:[159,376],f:[1471,404],u:[205,896],l:[1466,896]},MHF=[1451,628];
+  const mfront=k=>MF[k]||MHF;
+  const lab2=(x,y,t,col,lock)=>`<g transform="translate(${x},${y}) scale(1.9)">${pill(0,0,t,col,lock)}</g>`;
+  const sign=(x,y,e,col)=>`<g transform="translate(${x},${y})"><ellipse cx="0" cy="3" rx="36" ry="10" fill="#000" opacity=".16"/><rect x="-6" y="-46" width="12" height="50" rx="3" fill="#8a5a33"/><rect x="-46" y="-108" width="92" height="66" rx="12" fill="#fff7e6" stroke="${col}" stroke-width="6"/><text x="0" y="-60" font-size="42" text-anchor="middle">${e}</text></g>`;
   function drawMap(){
     walking=false;
     const el=g("map");if(!el)return;
     const nx=BLD.find(b=>M.open[b.key]===undefined);
-    const R=(x0,y0,x1,y1)=>P([iso(x0,y0),iso(x1,y0),iso(x1,y1),iso(x0,y1)]),e0=iso(0,GD),e1=iso(GW,GD),e2=iso(GW,0);
-    let s=`<polygon points="${R(0,0,GW,GD)}" fill="#bfe6a8"/><polygon points="${P([e0,e1,[e1[0],e1[1]+12],[e0[0],e0[1]+12]])}" fill="#8fc97a"/><polygon points="${P([e2,e1,[e1[0],e1[1]+12],[e2[0],e2[1]+12]])}" fill="#7dba68"/>`;
-    for(let x=0;x<GW;x++)for(let y=0;y<GD;y++)if((x+y)%2===0)s+=`<polygon points="${R(x,y,x+1,y+1)}" fill="#c6eab0"/>`;
-    s+=`<polygon points="${R(RX,0,RX+1,GD)}" fill="#cfc9c2"/><polygon points="${R(0,RY,GW,RY+1)}" fill="#cfc9c2"/>`;
-    {const a=iso(RX+.5,0),b=iso(RX+.5,GD),c2=iso(0,RY+.5),d=iso(GW,RY+.5);s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="8 8"/><line x1="${c2[0]}" y1="${c2[1]}" x2="${d[0]}" y2="${d[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="8 8"/>`;}
-    [[RX-.14,0,RX,GD],[RX+1,0,RX+1.14,GD],[0,RY-.14,GW,RY],[0,RY+1,GW,RY+1.14]].forEach(q=>{s+=`<polygon points="${R(q[0],q[1],q[2],q[3])}" fill="#e9e3da"/>`;});
-    s+=`<polygon points="${R(RX,RY,RX+1,RY+1)}" fill="#cfc9c2"/>`;
-    for(let i=0;i<5;i++){const u=RX+.08+i*.18,v=RY+.08+i*.18;s+=`<polygon points="${R(u,RY-.2,u+.09,RY-.02)}" fill="#fff"/><polygon points="${R(u,RY+1.02,u+.09,RY+1.2)}" fill="#fff"/><polygon points="${R(RX-.2,v,RX-.02,v+.09)}" fill="#fff"/><polygon points="${R(RX+1.02,v,RX+1.2,v+.09)}" fill="#fff"/>`;}
-    /* 건물 앞 오솔길 */
-    Object.keys(LOT).forEach(k=>{const L=LOT[k],cx=L[0]+L[2]/2,y0=L[1]+.9,y1=L[1]<RY?RY-.14:L[1]+1.5;s+=`<polygon points="${R(cx-.13,y0,cx+.13,Math.max(y0+.2,y1))}" fill="#efe6d6"/>`;});
-    s+=`<polygon points="${R(1.27,7.2,1.53,GD)}" fill="#efe6d6"/>`;
-    [[RX-.08,RY-.08],[RX+1.08,RY-.08],[RX-.08,RY+1.08],[RX+1.08,RY+1.08],[RX-.08,.4],[RX+1.08,7.5],[.4,RY-.08],[8.6,RY+1.08]].forEach(q=>{const p=iso(q[0],q[1]);s+=`<path d="M${p[0]} ${p[1]}v-24" stroke="#8a97a8" stroke-width="2"/><circle cx="${p[0]}" cy="${p[1]-26}" r="4.5" fill="#ffe27a" stroke="#fff"/>`;});
-    /* 공원 */
-    s+=`<polygon points="${R(5.35,4.3,8.75,7.75)}" fill="#d3f0bf" stroke="#b5dd9d" stroke-width="2"/>`;
-    const lab=[];
-    const items=[];
-    Object.keys(LOT).forEach(k=>{const L=LOT[k],b=info(k);if(!b)return;const open=isOpen(k),sl=open&&!gate(k);let gfx,top;
-      if(open){const bx=box(L[0],L[1],L[2],L[3],b.color);gfx=bx.s+roofProp(k,bx.top,b);top=[bx.top[0],bx.top[1]-(k==="h"?30:18)];}
-      else{const bx=box(L[0],L[1],L[2],10,"#c9c2b8",.14,true);const c=iso(L[0]+L[2]/2,L[1]+.5);gfx=bx.s+`<text x="${c[0]}" y="${c[1]-8}" font-size="24" text-anchor="middle">🚧</text>`;top=[c[0],c[1]-L[3]+6];}
-      items.push({d:L[0]+L[1]+L[2]*.5,s:`<g class="bd${sl?" slk":""}" data-b="${k}">${gfx}</g>`});
-      lab.push(`<g class="bd" data-b="${k}">${pill(top[0],top[1]-20,MAPN[k],open&&!sl?b.color:"#b9b2a9",!open||sl)}${k==="k"&&!studied()?`<g class="bob">${pill(top[0]+52,top[1]-44,"여기부터!","#e8504f",false)}</g>`:""}</g>`);
+    let s=`<image href="map/base.webp" x="0" y="0" width="${MW}" height="${MH}" preserveAspectRatio="none"/>`;
+    const items=[],lab=[],signs=[];
+    Object.keys(LOT).forEach(k=>{const b=info(k);if(!b)return;const open=isOpen(k),sl=open&&!gate(k),B=MB[k],F=MF[k];let gfx,top,d;
+      if(B&&open){gfx=`<image href="map/b_${k}.webp" x="${B[0]}" y="${B[1]}" width="${B[2]}" height="${B[3]}"/>`;top=[B[0]+B[2]/2,Math.max(46,B[1]+34)];d=B[1]+B[3];}
+      else{gfx=sign(F[0],F[1]-28,open?b.emoji:"🚧",open?b.color:"#b9b2a9");top=[F[0],F[1]-150];d=F[1];}
+      (B&&open?items:signs).push({d:d,s:`<g class="bd${sl?" slk":""}" data-b="${k}">${gfx}</g>`});
+      lab.push(`<g class="bd" data-b="${k}">${lab2(top[0],top[1],MAPN[k],open&&!sl?b.color:"#b9b2a9",!open||sl)}${k==="k"&&!studied()?`<g class="bob">${lab2(top[0]+30,top[1]-50,"여기부터!","#e8504f",false)}</g>`:""}</g>`);
     });
-    /* 아림이네 집 */
-    {const bx=box(0.9,6.25,1,28,"#ffb6c9",.12,true);const rc=bx.top;items.push({d:7.65,s:`<g class="bd" data-home="1">${bx.s}<polygon points="${rc[0]},${rc[1]-30} ${rc[0]-42},${rc[1]-2} ${rc[0]},${rc[1]+17} ${rc[0]+42},${rc[1]-2}" fill="#e8688a" stroke="#fff" stroke-width="1.5"/></g>`});
-      lab.push(`<g class="bd" data-home="1">${pill(rc[0],rc[1]-34,"우리 집","#e8688a",false)}</g>`);}
-    [[3.45,.45],[3.5,3-.5],[.25,1.5],[8.75,1.5],[6.95,.9],[6.95,2.4],[.25,3-.45],[8.75,2.6],[2.05,4.75],[.3,5.9],[3.6,5.9],[3.75,6.6],[3.7,7.7],[.3,7.6],[2.2,7.75],[5.15,7.85],[8.9,4.15]].forEach(t=>{const p=iso(t[0],t[1]);items.push({d:t[0]+t[1],s:`<text x="${p[0]}" y="${p[1]}" font-size="26" text-anchor="middle">🌳</text>`});});
-    /* 공원 칸 */
-    while(M.park.length<SLOTS)M.park.push("");
-    for(let i=0;i<SLOTS;i++){const cx=5.5+(i%3)*1.1+.45,cy=4.4+Math.floor(i/3)*.66+.36,c=iso(cx,cy),it=M.park[i]&&SI[M.park[i]];
-      const dm=P([iso(cx-.26,cy-.26),iso(cx+.26,cy-.26),iso(cx+.26,cy+.26),iso(cx-.26,cy+.26)]);
-      items.push({d:cx+cy,s:`<g class="pslot" data-slot="${i}"><polygon points="${dm}" fill="${it?"#c4e8ad":"#e6f7da"}" stroke="#a9d392" stroke-width="1" stroke-dasharray="${it?"0":"3 3"}"/>${it?`<text x="${c[0]}" y="${c[1]+4}" font-size="24" text-anchor="middle">${it[1]}</text>`:`<text x="${c[0]}" y="${c[1]+5}" font-size="13" text-anchor="middle" fill="#9cc788">＋</text>`}</g>`});}
+    items.push({d:MHOME[1]+MHOME[3],s:`<g class="bd" data-home="1"><image href="map/b_home.webp" x="${MHOME[0]}" y="${MHOME[1]}" width="${MHOME[2]}" height="${MHOME[3]}"/></g>`});
+    lab.push(`<g class="bd" data-home="1">${lab2(MHOME[0]+MHOME[2]/2-10,MHOME[1]+30,"우리 집","#e8688a",false)}</g>`);
     items.sort((a,b)=>a.d-b.d);
     s+=items.map(i=>i.s).join("");
-    /* 움직이는 것들 */
-    const r0=iso(0,RY+.66),r1=iso(GW,RY+.66),w0=iso(RX-.07,GD),w1=iso(RX-.07,0),w2=iso(GW,RY-.07),w3=iso(0,RY-.07);
-    s+=`<text font-size="24" text-anchor="middle">🚑<animateTransform attributeName="transform" type="translate" from="${r0[0]} ${r0[1]}" to="${r1[0]} ${r1[1]}" dur="15s" repeatCount="indefinite"/></text>
-        <text font-size="17" text-anchor="middle">🚶<animateTransform attributeName="transform" type="translate" from="${w0[0]} ${w0[1]}" to="${w1[0]} ${w1[1]}" dur="26s" repeatCount="indefinite"/></text>
-        <text font-size="17" text-anchor="middle">🧑‍⚕️<animateTransform attributeName="transform" type="translate" from="${w2[0]} ${w2[1]}" to="${w3[0]} ${w3[1]}" dur="30s" repeatCount="indefinite"/></text>`;
+    s+=`<image href="map/top.webp" x="0" y="0" width="${MW}" height="${MH}" preserveAspectRatio="none" style="pointer-events:none"/>`+signs.map(i=>i.s).join("");
+    /* 공원 칸 */
+    while(M.park.length<SLOTS)M.park.push("");
+    const PR=[[5,640,90],[5,690,94],[5,740,90]];let pi=0;
+    PR.forEach(r=>{for(let j=0;j<r[0]&&pi<SLOTS;j++,pi++){const cx=836+(j-(r[0]-1)/2)*r[2],cy=r[1],it=M.park[pi]&&SI[M.park[pi]];
+      s+=`<g class="pslot" data-slot="${pi}"><ellipse cx="${cx}" cy="${cy}" rx="36" ry="22" fill="${it?"#ffffff00":"#ffffff55"}" stroke="#ffffffcc" stroke-width="2.5" stroke-dasharray="${it?"0 99":"7 6"}"/>${it?`<text x="${cx}" y="${cy+12}" font-size="50" text-anchor="middle">${it[1]}</text>`:`<text x="${cx}" y="${cy+9}" font-size="26" text-anchor="middle" fill="#ffffff">＋</text>`}</g>`;}});
     s+=lab.join("");
-    const at=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(HOME0[0],HOME0[1]);
-    s+=`<g id="me" style="transform:translate(${at[0]-17}px,${at[1]-46}px)"><g class="bob"><g transform="scale(.58)">${meSvg()}</g></g></g>`;
-    s+=`<text font-size="30" opacity=".9">☁️<animateTransform attributeName="transform" type="translate" from="-40 26" to="880 26" dur="38s" repeatCount="indefinite"/></text><text font-size="22" opacity=".85">☁️<animateTransform attributeName="transform" type="translate" from="-40 70" to="880 70" dur="55s" begin="-20s" repeatCount="indefinite"/></text>`;
-    el.innerHTML=`<svg viewBox="-8 0 840 534" id="mapsvg">${s}</svg>`;el.scrollLeft=(at[0]+8)/840*el.scrollWidth-el.clientWidth/2;
+    const at=M.at&&LOT[M.at]&&isOpen(M.at)?mfront(M.at):MHF;
+    s+=`<g id="me" style="transform:translate(${at[0]-34}px,${at[1]-91}px)"><g class="bob"><g transform="scale(1.15)">${meSvg()}</g></g></g>`;
+    el.innerHTML=`<svg viewBox="0 0 ${MW} ${MH}" id="mapsvg" class="pic">${s}</svg>`;el.scrollLeft=(studied()?at[0]:MF.k[0])/MW*el.scrollWidth-el.clientWidth/2;
     el.querySelectorAll(".bd").forEach(b=>b.onclick=()=>{
       if(b.dataset.home){SFX("pop");editAvatar();return;}
       const k=b.dataset.b;
@@ -1184,10 +1173,10 @@ window.addEventListener("hashchange",fromHash);
       if(!isOpen(k)){SFX("no");lockInfo(k,nx);return;}
       if(!gate(k)){SFX("no");studyInfo(k);return;}
       if(walking)return;walking=true;
-      SFX("pop");const f=front(k),from=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(HOME0[0],HOME0[1]);
-      const dist=Math.hypot(f[0]-from[0],f[1]-from[1]),dur=Math.max(1.3,Math.min(3,dist/90)),me=g("me");
+      SFX("pop");const f=mfront(k),from=M.at&&LOT[M.at]&&isOpen(M.at)?mfront(M.at):MHF;
+      const dist=Math.hypot(f[0]-from[0],f[1]-from[1]),dur=Math.max(1.3,Math.min(3,dist/180)),me=g("me");
       me.style.transitionDuration=dur+"s";me.classList.add("walk");
-      me.style.transform=`translate(${f[0]-17}px,${f[1]-46}px)`;M.at=k;save();
+      me.style.transform=`translate(${f[0]-34}px,${f[1]-91}px)`;M.at=k;save();
       setTimeout(()=>{walking=false;goPlace(k);},dur*1000+350);
     });
     el.querySelectorAll(".pslot").forEach(b=>b.onclick=()=>{SFX("pop");slot(Number(b.dataset.slot));});
