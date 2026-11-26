@@ -372,6 +372,17 @@
   .room.door.sp.lock .lk{display:block}
   .room.door.shake{animation:shk .35s}
   @keyframes shk{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  /* 진료 준비 */
+  .pcard{background:#fff;border-radius:16px;padding:12px 14px;margin-top:6px}
+  .pcard h4{font-family:'Jua',sans-serif;font-weight:normal;font-size:21px;color:#2d6aa8;margin-bottom:6px}
+  .pcard h4 span{font-size:26px}
+  .pcard p{font-size:17px;line-height:1.55}
+  .pcard .s,.pcard .c{border-radius:12px;padding:9px 11px;margin-top:8px;font-size:16.5px;line-height:1.5}
+  .pcard .s{background:#fff1ef}.pcard .c{background:#e9f8f1}
+  .pcard .s b,.pcard .c b{font-family:'Jua',sans-serif;font-weight:normal}
+  .pcard .tools{margin-top:8px}
+  .prow{display:flex;gap:8px;margin-top:10px}.prow .btn{margin:0;flex:1}
+  .btn.encb.prepb{background:#5aa9e6;box-shadow:0 4px 0 #3f86c0}
   .item{background:#fff4f7;border-radius:16px;padding:12px 14px;margin-bottom:8px;font-size:17px;line-height:1.55}
   .item b{display:block;font-family:'Jua',sans-serif;font-weight:normal;font-size:19px;margin-bottom:2px}
   .clues{display:grid;gap:6px;margin-top:12px}
@@ -1969,10 +1980,11 @@ function sceneMarks(id){
   const a=osol(id),t=otot(id);
   $("scap").innerHTML=a>=t?"🎉 진료실의 물건을 모두 살펴봤어요!":"🔎 반짝이는 물건을 눌러서 살펴봐요 <b>"+a+" / "+t+"</b>";
   const n=(st.ec&&st.ec[id])||0,eb=$("encb"),cl=encLeft(id).length===0;eb.style.display=ECASE[id]?"":"none";eb.classList.toggle("closed",cl);
-  eb.innerHTML=cl?"🌙 오늘 진료 시간이 끝났어요 <small>내일 새 환자가 와요</small>":"🚪 다음 환자, 들어오세요!"+(n?" <small>지금까지 "+n+"명 진료</small>":"");
+  const pk=prepOk(id);eb.classList.toggle("prepb",!pk);
+  eb.innerHTML=!pk?"📖 먼저 진료 준비를 해요":(cl?"🌙 오늘 진료 시간이 끝났어요 <small>내일 새 환자가 와요</small>":"🚪 다음 환자, 들어오세요!"+(n?" <small>지금까지 "+n+"명 진료</small>":""));
 }
 function openScene(id){
-  const d=DM[id];osel=null;enc=null;if(eg&&eg.room)eg=null;
+  const d=DM[id];osel=null;enc=null;if(eg&&eg.room)eg=null;if(prep&&prep.id!==id)prep=null;
   card.classList.add("wide");
   card.innerHTML=`<div class="top"><div class="e">${d.e}</div><div><h2>${d.name} 진료실</h2><div class="en">${d.en}</div><span class="where">${d.f?d.f+"층":"별관"} · ${FL[d.f][0]}</span></div><button class="x" data-act="close" aria-label="닫기">✕</button></div>
    <div class="scwrap"><div><div class="scn" id="scn">${sceneSvg(id)}</div><div class="scap" id="scap"></div><button class="btn encb" id="encb" data-act="en-new" data-id="${id}"></button></div>
@@ -1990,6 +2002,7 @@ function openScene(id){
     else{$("qbox").style.display="none";$("obox").style.display="block";renderOb(id,osel);}
     sceneMarks(id);(osel==="doc"?$("qbox"):$("obox")).scrollIntoView({block:"nearest",behavior:"smooth"});};
   sheet.classList.add("open");card.scrollTop=0;
+  if(!prepOk(id))prepStart(id);
 }
 function renderOb(id,k){
   const o=SCN[id].obs.find(x=>x.k===k),c=ocur(id,k),n=o.q.length,box=$("obox");ow=0;
@@ -2251,6 +2264,7 @@ const evGet=id=>{const v=(st.ev&&st.ev[id])||0;return Math.floor(v/1024)===dnum(
 const encLeft=id=>{const L=ECASE[id]||[],sn=evGet(id);return L.map((c,i)=>i).filter(i=>!(sn>>i&1));};
 let enc=null;const encDeck={},encLast={};
 function encStart(id,noEng){
+  if(!prepOk(id)){prepStart(id);return;}
   const L=ECASE[id],left=encLeft(id);
   $("qbox").style.display="none";$("obox").style.display="block";
   if(!noEng&&!engSeen[id]&&left.length&&Math.random()<.3){engSeen[id]=1;enc=null;osel=null;sceneMarks(id);$("encb").style.display="none";$("scap").innerHTML="🌍 외국인 환자가 왔어요";
@@ -3259,6 +3273,36 @@ function schCheck(){
 $("schNext").onclick=()=>{closeSheet();if(schN()>=SCHN){$("schbar").classList.remove("on");go("tour");}else schStart();};
 $("backT").onclick=()=>{$("schbar").classList.remove("on");go("tour");};
 window.HOSP={tpn:schN,total:SCHN,open:schStart};
+
+/* 진료 준비: 내용을 먼저 보고 확인 문제를 풀어야 환자를 부를 수 있음 */
+let prep=null;
+const prepOk=id=>!!(st.pr&&st.pr[id]);
+function prepStart(id){enc=null;osel=null;if(!prep||prep.id!==id)prep={id:id,i:0,q:null};$("qbox").style.display="none";$("obox").style.display="block";sceneMarks(id);prepDraw();}
+function prepDraw(){
+  const d=DM[prep.id],m=d.dz.length,n=m+2,i=prep.i,box=$("obox");
+  let h=`<div class="qhead"><h3>📖 진료 준비</h3><span class="dots">${"●".repeat(Math.min(i+1,n))}${"○".repeat(Math.max(0,n-i-1))}</span></div>`;
+  if(i===0)h+=`<div class="pcard"><h4>🩺 무슨 일을 할까?</h4><p>${d.say}</p><div class="tools">${d.tools.map(t=>`<span class="tool">${t}</span>`).join("")}</div></div>`;
+  else if(i<=m){const z=d.dz[i-1];h+=`<div class="pcard"><h4><span>${z[0]}</span> ${z[1]}</h4><div class="s"><b>${d.dzt?"언제?":"😣 이럴 때 아파요"}</b><br>${z[2]}</div><div class="c"><b>${d.dzt?"어떻게?":"💊 이렇게 치료해요"}</b><br>${z[3]}</div></div>`;}
+  else{
+    if(!prep.q){const z=pick(d.dz);let ot=shuffle(d.dz.filter(x=>x!==z)).slice(0,2);
+      if(ot.length<2){const more=shuffle(D.filter(x=>x!==d&&!x.dzt===!d.dzt).reduce((a,x)=>a.concat(x.dz),[])).filter(x=>x[1]!==z[1]&&!ot.some(o=>o[1]===x[1]));ot=ot.concat(more.slice(0,2-ot.length));}
+      prep.q={z:z,o:shuffle([z].concat(ot))};}
+    h+=`<p class="oq">✏️ 확인 문제: 무엇에 대한 설명일까?</p><div class="enote">${prep.q.z[2]}</div><div class="opts" style="margin-top:8px">${prep.q.o.map((o,k)=>`<button class="opt" data-act="pp-pick" data-k="${k}">${o[0]} ${o[1]}</button>`).join("")}</div><div class="msg" id="pmsg"></div>`;
+  }
+  h+=`<div class="prow">${i>0?`<button class="btn soft2" data-act="pp-prev">${i>m?"← 다시 보기":"← 이전"}</button>`:""}${i<=m?`<button class="btn" data-act="pp-next">${i===m?"확인 문제 풀기 ✏️":"다음 →"}</button>`:""}</div>`;
+  box.innerHTML=h;
+}
+function prepAct(b){
+  const a=b.dataset.act;if(!prep)return;const id=prep.id;
+  if(a==="pp-next"){prep.i++;prep.q=null;prepDraw();$("obox").scrollIntoView({block:"nearest"});}
+  else if(a==="pp-prev"){prep.i=Math.max(0,prep.i-1);prep.q=null;prepDraw();}
+  else if(a==="pp-pick"){
+    if(b.classList.contains("wrong")||b.classList.contains("right"))return;
+    if(prep.q.o[+b.dataset.k]===prep.q.z){b.classList.add("right");(st.pr=st.pr||{})[id]=1;save();prep=null;refresh();sceneMarks(id);
+      setTimeout(()=>{$("obox").innerHTML=`<div class="result"><b>🎉 진료 준비 끝!</b><br>이제 ${DM[id].name}의 환자를 만날 수 있어요.</div><button class="btn" data-act="en-new" data-id="${id}">🚪 환자를 불러요</button>`;},600);}
+    else{b.classList.add("wrong");$("pmsg").textContent="'다시 보기'를 눌러 한 번 더 읽어 볼까? 💭";}
+  }
+}
 /*SCENE-END*/
 let st={s:{},q:{},o:{},tp:0,guided:0,dx:0,dxn:0,mind:0};
 try{const x=JSON.parse(localStorage.getItem("arim-hospital1")||"null");if(x)st=Object.assign(st,x);}catch(e){}
@@ -3404,6 +3448,7 @@ card.addEventListener("click",e=>{
   else if(b.dataset.act.slice(0,2)==="tp")tpAct(b);
   else if(b.dataset.act.slice(0,3)==="en-")encAct(b);
   else if(b.dataset.act.slice(0,3)==="eg-")engAct(b);
+  else if(b.dataset.act.slice(0,3)==="pp-")prepAct(b);
   else if(b.dataset.act==="goto"){openDept(id);}
   else if(b.dataset.act==="next"){renderQ(id);$("qbox").scrollIntoView({block:"nearest"});}
   else if(b.dataset.act==="pick"){
