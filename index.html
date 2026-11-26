@@ -352,6 +352,26 @@
   .lbtns .cur b::after{content:"📍";position:absolute;left:-6px;top:-8px;font-size:20px}
   .mapb{position:absolute;right:12px;top:10px;z-index:5;width:50px;height:50px;border:none;border-radius:50%;background:#fff;font-size:26px;box-shadow:0 3px 0 #0000001f}
   @media (max-height:560px){.lbtns{grid-template-columns:1fr 1fr}.lbtns b{width:40px;height:40px;font-size:22px}.lbtns .ics{font-size:20px}}
+  /* 오늘의 일정 */
+  .hnav{display:none!important}
+  .backt{display:none;border:none;background:#fff;border-radius:999px;padding:9px 18px;font-family:'Jua',sans-serif;font-size:17px;color:#d6457e;box-shadow:0 3px 0 #f3c6d8;margin-bottom:12px}
+  .sch{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:0 0 12px}
+  .schrow{display:flex;align-items:center;background:#fff;border-radius:999px;padding:6px 12px;box-shadow:0 3px 0 #f3c6d8}
+  .schrow span{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:23px;background:#f6eef2;opacity:.55}
+  .schrow span.on{opacity:1;background:#ffe1ec;box-shadow:0 0 0 3px #f77fae;animation:mk 1.3s ease-in-out infinite}
+  .schrow span.dn{opacity:1;background:#d8f5ea}
+  .schrow i{width:14px;height:4px;background:#f3d3df;border-radius:2px;margin:0 2px}
+  .btn.schgo{width:auto;margin:0;padding:11px 24px;font-size:20px;background:#f77fae;box-shadow:0 4px 0 #de5f92}
+  .schdone{font-family:'Jua',sans-serif;font-size:19px;color:#22795f;background:#fff;border-radius:999px;padding:9px 18px;box-shadow:0 3px 0 #cfe9e1}
+  .schbar{display:none;position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:90;background:#fff;border-radius:999px;padding:8px 8px 8px 20px;box-shadow:0 6px 20px #0003,0 0 0 3px #ffd3e3;align-items:center;gap:12px;font-family:'Jua',sans-serif;font-size:18px;color:#22795f;white-space:nowrap}
+  .schbar.on{display:flex}
+  .schbar button{border:none;border-radius:999px;background:#f77fae;color:#fff;font-family:'Jua',sans-serif;font-size:18px;padding:10px 20px;box-shadow:0 3px 0 #de5f92}
+  .room.door.sp{height:176px}
+  .room.door.sp .lk{display:none;position:absolute;left:50%;top:112px;transform:translateX(-50%);font-size:30px}
+  .room.door.sp.lock{filter:grayscale(.75);opacity:.62}
+  .room.door.sp.lock .lk{display:block}
+  .room.door.shake{animation:shk .35s}
+  @keyframes shk{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   .item{background:#fff4f7;border-radius:16px;padding:12px 14px;margin-bottom:8px;font-size:17px;line-height:1.55}
   .item b{display:block;font-family:'Jua',sans-serif;font-weight:normal;font-size:19px;margin-bottom:2px}
   .clues{display:grid;gap:6px;margin-top:12px}
@@ -533,16 +553,19 @@
 <header>
   <div class="prog"><span class="rank" id="pRank"></span><span id="pSt"></span><span id="pGd"></span></div>
 </header>
-<nav>
+<nav class="hnav">
   <button data-v="tour" class="on">🏥 구경</button>
   <button data-v="desk">🛎️ 안내</button>
   <button data-v="dx">🔍 추리</button>
   <button data-v="mind">💗 마음</button>
   <button data-v="eng">🔤 영어</button>
 </nav>
+<div class="schbar" id="schbar"><span id="schmsg"></span><button id="schNext">다음 할 일 ▶</button></div>
 <main>
+<button class="backt" id="backT">← 🏥 복도로</button>
 <section class="view on" id="vTour">
-  <button class="tpb" id="tpBtn"></button>
+  <button class="tpb" id="tpBtn" style="display:none"></button>
+  <div class="sch" id="sch"></div>
   <div class="sky"><i style="left:6%;top:0">☁️</i><i style="right:8%;top:2px">☁️</i><i style="left:46%;top:-6px;font-size:18px">🚁</i></div>
   <div class="bld" id="bld"></div>
   <button class="go" onclick="goPlace('j')">🍼 별관 산후조리원으로 가기 →</button>
@@ -1119,7 +1142,7 @@ window.addEventListener("hashchange",fromHash);
     else nc.style.display="none";
     const tc=g("tpCard"),H=window.HOSP;
     if(tc&&H){const k=H.tpn();tc.style.display="block";
-      tc.innerHTML=k>=H.total?`<h3>🚑 오늘의 환자</h3>오늘의 환자 ${H.total}명을 모두 도왔어요 💮`:`<h3>🚑 오늘의 환자</h3>환자가 아림 선생님을 기다려요. <b style="font-family:Jua;font-weight:normal">${k} / ${H.total}</b><button class="hbtn" id="tpGo" style="background:#e8615a">환자 만나러 가기</button>`;
+      tc.innerHTML=k>=H.total?`<h3>📋 오늘의 일정</h3>오늘 할 일 ${H.total}가지를 모두 마쳤어요 💮`:`<h3>📋 오늘의 일정</h3>병원에서 오늘 할 일이 기다려요. <b style="font-family:Jua;font-weight:normal">${k} / ${H.total}</b><button class="hbtn" id="tpGo" style="background:#f77fae">시작하기 ▶</button>`;
       const b=g("tpGo");if(b)b.onclick=()=>{SFX("pop");goPlace("h");H.open();};}
     const t=day(),n=cands().length,rc=g("rvCard");
     if(M.rvDay===t)rc.innerHTML=`<h3>🔁 오늘의 복습</h3>오늘 복습을 마쳤어요 ⭐`;
@@ -2219,7 +2242,7 @@ rad:[
  why:"쇠는 엑스레이를 막아서 하얗게 잘 보여요. 위까지 내려간 동전은 대개 저절로 나와요. 단추 건전지였다면 바로 꺼내야 해요."}]};
 const PNAME=[["서준이","m"],["하윤이","f"],["지우","f"],["시우","m"],["서아","f"],["도윤이","m"],["예준이","m"],["하은이","f"],["민재","m"],["채원이","f"]];
 const PAGE=["다섯","여섯","일곱","여덟","아홉"],SHIRT=["#f08a5d","#5aa9e6","#58c29b","#b48ae0","#f2b84b","#f08aa6"];
-const EASK=3,EEX=2,ESTEPS=["문진","진찰","진단","치료","숫자"];const engSeen={};
+const EASK=3,EEX=2,ESTEPS=["문진","진찰","진단","치료","마무리"];const engSeen={};
 function patG(x,y,p,happy){
   const s=p.big?1:.84;
   return `<g transform="translate(${x},${y}) scale(${s})"><g class="pat${happy?" happy":""}">${blk(0,0,{shirt:p.shirt,hair:p.blond?"#e6c36a":p.gray?"#b9b9c2":(p.g==="f"?"#4a3528":"#33302e"),long:p.g==="f",belly:p.mom,happy:happy,sad:!happy,pants:p.big?"#56657a":"#7286a0"})}</g></g>`;
@@ -2264,10 +2287,10 @@ function encDraw(){
     h+=`<p class="oq">${c.tq||"💊 어떻게 치료할까?"}</p><div class="opts" style="margin-top:8px">${e.txo.map(i=>`<button class="opt" data-act="en-tx" data-k="${i}">${c.tx[i]}</button>`).join("")}</div><div class="msg" id="emsg"></div>`;
   }else if(e.step===5){
     const m=e.m;
-    h+=`${m.tip?`<div class="enote">${m.tip}</div>`:""}<p class="oq">🔢 ${m.q}</p>${m.svg?`<div class="clkw">${m.svg}</div>`:""}<div class="opts mopts${m.o.some(x=>x.length>7)?" long":""}" style="margin-top:8px">${e.mo.map(i=>`<button class="opt" data-act="en-m" data-k="${i}">${m.o[i]}</button>`).join("")}</div><div class="msg" id="emsg"></div>`;
+    h+=`${m.tip?`<div class="enote">${m.tip}</div>`:""}<p class="oq">${m.ic||"🔢"} ${m.q}</p>${m.svg?`<div class="clkw">${m.svg}</div>`:""}<div class="opts mopts${m.o.some(x=>x.length>7)?" long":""}" style="margin-top:8px">${e.mo.map(i=>`<button class="opt" data-act="en-m" data-k="${i}">${m.o[i]}</button>`).join("")}</div><div class="msg" id="emsg"></div>`;
   }else{
     const star=e.w===0?3:(e.w<=2?2:1);
-    h+=`<div class="result"><b>${"⭐".repeat(star)} 진료 끝!</b><br>${c.why}<br><span class="mex">🔢 ${e.m.ex}</span><br><small>핵심 질문 ${e.key}개 · 알맞은 검사 ${e.good}개를 찾았어요.</small></div>
+    h+=`<div class="result"><b>${"⭐".repeat(star)} 진료 끝!</b><br>${c.why}<br><span class="mex">${e.m.ic||"🔢"} ${e.m.ex}</span><br><small>핵심 질문 ${e.key}개 · 알맞은 검사 ${e.good}개를 찾았어요.</small></div>
      <button class="btn" data-act="en-new" data-id="${e.id}">${encLeft(e.id).length?"다음 환자, 들어오세요! 🚪":"오늘 진료 마치기 🌙"}</button>`;
   }
   if(e.chart.length)h+=`<div class="chart"><b>📋 차트</b>${e.chart.map(x=>`<div>${x}</div>`).join("")}</div>`;
@@ -2294,7 +2317,7 @@ function encAct(b){
     if(b.dataset.k==="0"){b.classList.add("right");e.lock=1;
       setTimeout(()=>{if(enc!==e)return;e.lock=0;e.note=null;
         if(a==="en-dx"){e.step=4;e.chart.push("🧠 "+c.dx[0]);e.say=null;}
-        else{e.step=5;e.chart.push("💊 "+c.tx[0]);e.say='"선생님, 하나만 더 도와주세요."';e.m=mathFor(e.id);e.mo=shuffle([0,1,2]);}
+        else{e.step=5;e.chart.push("💊 "+c.tx[0]);e.say='"선생님, 하나만 더 도와주세요."';e.m=Math.random()<.3?mindFor():mathFor(e.id);e.mo=shuffle([0,1,2]);}
         sceneMarks(e.id);encDraw();},700);
     }else{e.w++;b.classList.add("wrong");$("emsg").textContent="차트를 다시 읽어 볼까? 💭";}
   }
@@ -2305,7 +2328,7 @@ function encAct(b){
         st.en=(st.en||0)+1;(st.ec=st.ec||{})[e.id]=(st.ec[e.id]||0)+1;(st.ev=st.ev||{})[e.id]=dnum()*1024+(evGet(e.id)|1<<e.ci);save();refresh();
         $("scn").querySelector("#spt").innerHTML=patG((EPOS[e.id]||[186,142])[0],(EPOS[e.id]||[186,142])[1],e.p,true);
         sceneMarks(e.id);encDraw();},700);
-    }else{e.w++;b.classList.add("wrong");$("emsg").textContent="천천히 다시 세어 볼까? 💭";}
+    }else{e.w++;b.classList.add("wrong");$("emsg").textContent="천천히 다시 생각해 볼까? 💭";}
   }
 }
 
@@ -3194,6 +3217,48 @@ function engAct(b){
       engDraw();}
     else{eg.w++;b.classList.add("wrong");(eg.room?$("obox"):$("engbox")).querySelector("#egmsg").textContent="음, 다시 들어 볼까? 🔊";}}
 }
+
+/* 마음 한마디: 진료 마무리에 가끔 나옴 */
+const MINDQ=[
+ {q:"주사를 맞기 전에 환자가 덜덜 떨어요. 뭐라고 말해 줄까?",o:["무서울 수 있어. 따끔하지만 금방 끝나. 내가 옆에 있을게.","하나도 안 아파. 정말이야.","울면 주사를 두 번 놓을 거야."],ex:"안 아프다고 거짓말하면 다음에는 믿지 않아요. 솔직하게 말하고 곁에 있어 주는 것이 가장 큰 힘이에요."},
+ {q:"검사 결과를 기다리는 보호자가 두 손을 꼭 쥐고 있어요. 어떤 마음일까?",o:["걱정되고 초조한 마음","신나고 들뜬 마음","심심하고 지루한 마음"],ex:"기다리는 시간은 누구에게나 길고 불안해요. '곧 알려 드릴게요' 한마디가 도움이 돼요."},
+ {q:"환자가 \"왜 나만 아파요?\" 하며 울먹여요. 뭐라고 말해 줄까?",o:["많이 속상했겠다. 아픈 건 네 잘못이 아니야.","다른 친구들은 더 많이 아파.","울지 마. 뚝!"],ex:"속상한 마음을 먼저 알아주는 것이 위로의 시작이에요."},
+ {q:"치료를 마친 환자가 활짝 웃으며 인사해요. 의사 선생님은 어떤 마음일까?",o:["뿌듯하고 기쁜 마음","화나는 마음","부끄러워 숨고 싶은 마음"],ex:"환자가 나아지는 모습을 보는 것이 의사에게 가장 큰 보람이에요."},
+ {q:"입원한 어린이가 집에 가고 싶다며 시무룩해요. 뭐라고 말해 줄까?",o:["집이 그립구나. 나을 때까지 같이 힘내 보자.","여기가 집보다 훨씬 좋잖아.","그런 말은 하면 안 돼."],ex:"그리운 마음을 그대로 인정해 주면 마음이 한결 가벼워져요."},
+ {q:"환자가 약이 써서 먹기 싫대요. 뭐라고 말해 줄까?",o:["쓰지? 먹고 나서 바로 물을 마시자. 약이 병과 싸워 줄 거야.","안 먹으면 혼날 줄 알아.","이건 약이 아니라 사탕이야."],ex:"약을 사탕이라고 속이면 위험해요. 왜 먹는지 알려 주고 도와주는 것이 좋아요."},
+ {q:"할머니 환자가 잘 안 들려서 같은 것을 또 물어보세요. 어떻게 할까?",o:["천천히, 또박또박 다시 말씀드려요.","못 들은 척해요.","한숨을 쉬고 짧게 대답해요."],ex:"잘 들리지 않으면 불안해져요. 눈을 보고 천천히 말하면 훨씬 잘 알아들으세요."},
+ {q:"진료실에 들어온 어린이가 엄마 뒤에 숨어요. 어떻게 할까?",o:["무릎을 굽혀 눈높이를 맞추고 이름을 불러 줘요.","얼른 나오라고 재촉해요.","모른 척하고 진찰부터 시작해요."],ex:"눈높이를 맞추면 덜 무서워요. 마음이 편해야 진찰도 잘 돼요."}];
+let mqLast=-1;
+function mindFor(){let i;do{i=Math.floor(Math.random()*MINDQ.length);}while(i===mqLast);mqLast=i;return Object.assign({ic:"💗"},MINDQ[i]);}
+/* 오늘의 일정: 골고루 섞어서 하루 다섯 가지 */
+const SCH={enc:["🩺","환자 진료",1],eng:["🔤","영어",2],mind:["💗","마음 읽기",1],desk:["🛎️","안내",2],dx:["🔍","추리",1]},SCHN=5;
+const schOrder=()=>{const mid=["eng","mind","desk"],r=dnum()%3;return ["enc"].concat(mid.slice(r),mid.slice(0,r),["dx"]);};
+const schN=()=>{const v=st.sch||0;return Math.floor(v/10)===dnum()?Math.min(SCHN,v%10):0;};
+const schCnt=k=>k==="enc"?(st.en||0):k==="eng"?(st.eng||0):k==="mind"?(st.mind||0):k==="desk"?(st.guided||0):(st.dxn||0);
+let schRun=null;
+function schDraw(){
+  const n=schN(),o=schOrder(),el=$("sch");if(!el)return;
+  el.innerHTML=`<div class="schrow">${o.map((k,i)=>`<span class="${i<n?"dn":(i===n?"on":"")}">${i<n?"✅":SCH[k][0]}</span>`).join("<i></i>")}</div>`
+    +(n>=SCHN?`<div class="schdone">🎉 오늘 일정 끝! 자유 시간이에요</div>`:`<button class="btn schgo" id="schGo">▶ ${SCH[o[n]][0]} ${SCH[o[n]][1]}</button>`);
+  const b=$("schGo");if(b)b.onclick=()=>schStart();
+  $("bld").querySelectorAll(".room.sp").forEach(d=>d.classList.toggle("lock",n<SCHN));
+}
+function schStart(){
+  const n=schN();$("schbar").classList.remove("on");if(n>=SCHN){go("tour");return;}
+  const k=schOrder()[n];schRun={k:k,base:schCnt(k)};
+  if(k==="enc"){const c=shuffle(D.filter(d=>encLeft(d.id).length));
+    if(!c.length){schRun.base-=1;schCheck();refresh();return;}
+    go("tour");openDept(c[0].id);encStart(c[0].id,true);}
+  else{go(k);if(k==="desk")newPatient();else if(k==="dx")newCase();else if(k==="mind")newMind();else engNew(false);}
+}
+function schCheck(){
+  if(!schRun)return;
+  if(schCnt(schRun.k)-schRun.base>=SCH[schRun.k][2]){const n=Math.min(SCHN,schN()+1);st.sch=dnum()*10+n;schRun=null;save();
+    $("schmsg").textContent=n>=SCHN?"🎉 오늘 일정을 모두 마쳤어요!":"✅ 오늘의 일정 "+n+" / "+SCHN;$("schNext").textContent=n>=SCHN?"자유 시간 🎈":"다음 할 일 ▶";$("schbar").classList.add("on");}
+}
+$("schNext").onclick=()=>{closeSheet();if(schN()>=SCHN){$("schbar").classList.remove("on");go("tour");}else schStart();};
+$("backT").onclick=()=>{$("schbar").classList.remove("on");go("tour");};
+window.HOSP={tpn:schN,total:SCHN,open:schStart};
 /*SCENE-END*/
 let st={s:{},q:{},o:{},tp:0,guided:0,dx:0,dxn:0,mind:0};
 try{const x=JSON.parse(localStorage.getItem("arim-hospital1")||"null");if(x)st=Object.assign(st,x);}catch(e){}
@@ -3208,7 +3273,7 @@ const doorBtn=d=>`<button class="room door" data-id="${d.id}" style="--dc:${FL[d
 const liftBtn=f=>`<button class="lift" data-lift="1" aria-label="엘리베이터"><span class="ind">${fname(f)}</span><i></i><i></i><b class="call">▲<br>▼</b></button>`;
 function corridor(f){
   const ds=D.filter(d=>d.f===f).map(doorBtn);
-  if(f===1)ds.push(`<button class="room door desk" data-desk="1"><span class="plate">안내</span><span class="win">🛎️</span><i class="knob"></i></button>`);
+  if(f===1)[["desk","안내","🛎️","#e9a23b"],["dx","추리","🔍","#5aa9e6"],["eng","영어","🔤","#f08aa6"],["mind","마음","💗","#b48ae0"]].forEach(s=>ds.push(`<button class="room door sp lock" data-sp="${s[0]}" style="--dc:${s[3]};--db:#fff"><span class="plate">${s[1]}</span><span class="win">${s[2]}</span><span class="lk">🔒</span><i class="knob"></i></button>`));
   if(f===0)ds.push(`<button class="room door" data-jori="1" style="--dc:#f0b45c;--db:#fff0d6"><span class="plate">산후조리원</span><span class="win">🍼</span><div class="pg" id="joriPg"></div><i class="knob"></i></button>`);
   const L=Math.ceil(ds.length/2);
   return `<div class="corr" data-f="${f}" style="--fc:${FL[f][1]};--fb:${FL[f][2]}"><div class="cin"><span class="deco">${f===1?"🚪":"🪴"}</span>${ds.slice(0,L).join("")}${liftBtn(f)}${ds.slice(L).join("")}<span class="deco">🪴</span></div></div>`;
@@ -3253,8 +3318,9 @@ const roomClick=e=>{
   if(e.target.closest("[data-guide]")){openGuide("🏥 층마다 뭐가 있을까? 가고 싶은 층을 눌러요");return;}
   if(lf){walkTo(lf,()=>{lf.classList.add("open");openGuide("🛗 몇 층으로 갈까?");busy=true;});return;}
   const b=e.target.closest(".room");if(!b)return;
+  if(b.classList.contains("lock")){$("flb").innerHTML="🔒 오늘의 일정을 마치면 열려요";b.classList.add("shake");setTimeout(()=>{b.classList.remove("shake");$("flb").innerHTML=`<b>${fname(curF)}</b> ${FEM[curF]} ${FL[curF][0]}`;},1500);return;}
   walkTo(b,()=>{
-    if(b.dataset.desk)go("desk");
+    if(b.dataset.sp)go(b.dataset.sp);
     else if(b.dataset.jori){if(window.goPlace)window.goPlace("j");else location.href="https://claude.ai/artifact/X6Gak1KGYWTKBrRDytmHNr";}
     else openDept(b.dataset.id);});
 };
@@ -3266,6 +3332,7 @@ function floorMarks(){
 }
 
 function refresh(){
+  schCheck();schDraw();
   let n=0,t=0;
   D.forEach(d=>{const k=solved(d.id);t+=k;if(k>=QN)n++;
     const el=root.querySelector(`.room[data-id="${d.id}"]`),L=qlen(d.id);el.classList.toggle("done",k>=QN);el.classList.toggle("fresh",k>=QN&&k<L);
@@ -3286,6 +3353,7 @@ $("reset").onclick=()=>{st={s:{},q:{},o:{},tp:0,guided:0,dx:0,dxn:0,mind:0};save
 function go(v){
   root.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x.dataset.v===v));
   [["tour","vTour"],["desk","vDesk"],["dx","vDx"],["mind","vMind"],["eng","vEng"]].forEach(x=>$(x[1]).classList.toggle("on",v===x[0]));
+  $("backT").style.display=v==="tour"?"none":"inline-block";
   if(v==="desk"&&!qz)newPatient();
   if(v==="dx"&&!dx)newCase();
   if(v==="mind"&&!md)newMind();
