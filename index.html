@@ -389,6 +389,9 @@
   .schmis small{font-size:14px;color:#8a7f77;margin-left:6px}
   .lbtns .today{box-shadow:0 0 0 3px #f77fae}
   .lbtns .today .fi small::after{content:" · 🩺 오늘 진료하는 층";color:#d6457e}
+  .me{width:58px}.me.pet{width:89px}
+  .me svg{transform-origin:29px 50%}
+  .me .petg{animation:none}
   .item{background:#fff4f7;border-radius:16px;padding:12px 14px;margin-bottom:8px;font-size:17px;line-height:1.55}
   .item b{display:block;font-family:'Jua',sans-serif;font-weight:normal;font-size:19px;margin-bottom:2px}
   .clues{display:grid;gap:6px;margin-top:12px}
@@ -437,6 +440,11 @@
   .sitem .p{font-size:14px;color:#b0761a}
   .sitem .own{font-size:11px;color:#2f9b7b}
   .sitem.poor{opacity:.55}
+  .sitem .petpic{display:block;width:74px;height:auto;margin:2px auto 0;overflow:visible}
+  .sitem.pet.act{box-shadow:0 0 0 3px #f77fae,0 3px 0 #ecd9ad;background:#fff5f9}
+  .sitem.pet .p{font-family:'Jua',sans-serif}
+  #me .petg{animation:petb .5s ease-in-out infinite}
+  @keyframes petb{0%,100%{transform:translate(52px,45px) scale(1.25)}50%{transform:translate(52px,41px) scale(1.25)}}
   .park{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px;background:#dff2d3;border-radius:16px;padding:8px}
   .slot{aspect-ratio:1;border:2px dashed #b9d7a8;border-radius:12px;background:#eef9e6;font-size:22px;color:#a9c99a;padding:0}
   .slot.full{border:none;background:none;font-size:34px}
@@ -888,19 +896,23 @@ window.addEventListener("hashchange",fromHash);
   /* 꾸미기 가게와 공원 */
   const SHOP=[["flower","🌷","꽃밭",4],["tree","🌳","나무",5],["bench","🪑","쉼터 벤치",6],["lamp","💡","가로등",8],["balloon","🚰","음수대",8],["post","🧼","손 씻는 곳",10],["bike","🚲","자전거",10],["duck","🦆","오리 연못",12],["dog","🐕","산책 강아지",15],["cat","🏃","운동 트랙",18],["fountain","⛲","분수",20],["bus","🚌","건강 검진 버스",20],["play","🛝","놀이터",25],["tent","❤️‍🩹","심장 충격기",25],["amb","🚑","구급차",30],["cafe","🩸","헌혈 버스",35],["heli","🚁","닥터 헬기",40],["wheel","🧘","체조 광장",45],["rainbow","🌈","무지개",50]];
   const SI=Object.fromEntries(SHOP.map(x=>[x[0],x])),SLOTS=15;
+  [["pet_chick","병아리",25],["pet_ham","햄스터",25],["pet_dog","강아지",30],["pet_cat","고양이",30],["pet_rab","토끼",35],["pet_panda","판다",45]].forEach(p=>{SI[p[0]]=[p[0],"🐾",p[1],p[2],"pet"];});
   const bal=()=>pts()-(M.spent||0);
   const placed=id=>M.park.filter(x=>x===id).length,spare=id=>(M.inv[id]||0)-placed(id);
   const three=(ans,c)=>{const r=[ans];for(const v of shuffle(c)){if(v>=0&&!r.includes(v))r.push(v);if(r.length===3)break;}let k=1;while(r.length<3){if(!r.includes(ans+k))r.push(ans+k);k++;}return shuffle(r);};
   (window.PLN=window.PLN||{}).s="shop";(window.PBG=window.PBG||{}).s="#fff0cf";
   const sp=document.createElement("div");sp.className="place";sp.id="ps";
-  sp.innerHTML=`<button class="backhome" onclick="goPlace('home')">← 🏘️ 아림 마을</button><header class="bh"><h1 style="color:#c98209">🛍️ 꾸미기 가게</h1><div class="prog"><span class="rank" id="shBal"></span><span id="shHave"></span></div></header><main><div class="stamps" style="margin:0 0 10px">문제를 풀어 모은 별로 물건을 사서, 마을 공원에 놓아 봐!</div><div class="shopgrid" id="shGrid"></div></main>`;
+  sp.innerHTML=`<button class="backhome" onclick="goPlace('home')">← 🏘️ 아림 마을</button><header class="bh"><h1 style="color:#c98209">🛍️ 꾸미기 가게</h1><div class="prog"><span class="rank" id="shBal"></span><span id="shHave"></span></div></header><main><div class="stamps" style="margin:0 0 10px">문제를 풀어 모은 별로 물건을 사서, 마을 공원에 놓아 봐!</div><div class="shopgrid" id="shGrid"></div><div class="stamps" style="margin:18px 0 10px">🐾 아림이를 따라다니는 친구를 데려와 봐!</div><div class="shopgrid" id="shPets"></div></main>`;
   document.body.insertBefore(sp,g("rv"));
   function drawShop(){
     g("shBal").textContent="⭐ 쓸 수 있는 별 "+bal();
     g("shHave").textContent="🎁 가진 물건 "+Object.values(M.inv).reduce((a,b)=>a+b,0)+"개";
     g("shGrid").innerHTML=SHOP.map(x=>`<button class="sitem${bal()<x[3]?" poor":""}" data-id="${x[0]}"><div class="e">${x[1]}</div><div class="n">${x[2]}</div><div class="p">⭐ ${x[3]}</div>${M.inv[x[0]]?`<div class="own">${M.inv[x[0]]}개 있음</div>`:""}</button>`).join("");
     const sb=g("sBal");if(sb)sb.textContent="⭐ 쓸 수 있는 별 "+bal();
+    g("shPets").innerHTML=PETS.map(p=>{const own=M.pets&&M.pets[p[0]],act=own&&M.pet===p[0];return `<button class="sitem pet${act?" act":""}${!own&&bal()<p[2]?" poor":""}" data-id="${p[0]}"><svg viewBox="-3 -9 34 37" class="petpic">${petSvg(p[0])}</svg><div class="n">${p[1]}</div><div class="p">${act?"💗 함께 다니는 중":(own?"데려가기":"⭐ "+p[2])}</div></button>`;}).join("");
   }
+  g("shPets").addEventListener("click",e=>{const b=e.target.closest(".sitem");if(!b)return;const id=b.dataset.id;
+    if(M.pets[id]){M.pet=M.pet===id?"":id;save();SFX("pop");drawShop();}else buy(id);});
   g("shGrid").addEventListener("click",e=>{const b=e.target.closest(".sitem");if(b)buy(b.dataset.id);});
   function buy(id){
     const it=SI[id],P=it[3],B=bal(),c=g("tkc");g("tk").classList.add("on");
@@ -918,10 +930,10 @@ window.addEventListener("hashchange",fromHash);
       const cs=[[t,u]];[[u||t+1,t],[t+1,u],[t-1>0?t-1:t+2,u],[t,u+1]].forEach(x=>{if(cs.length<3&&!cs.some(y=>y[0]===x[0]&&y[1]===x[1])&&x[0]>0)cs.push(x);});
       o=shuffle(cs).map(x=>[f(x[0],x[1]),x[0]===t&&x[1]===u]);q=`별 ${P}개를 내려고 해요.<br><b>10개 묶음과 낱개를 어떻게 내면 될까?</b>`;ex=`${P}은 10이 ${t}개`+(u?`, 1이 ${u}개`:"")+"예요.";}
     c.innerHTML=`<h2>${it[1]} ${it[2]} 사기</h2><div class="lab">가격 ⭐ ${P} · 내 별 ⭐ ${B}</div><div class="qq">${q}</div><div class="opts">${o.map((x,i)=>`<button class="opt" data-i="${i}">${x[0]}</button>`).join("")}</div><div class="msg" id="bmsg"></div>
-      <div class="ans" id="bans"><div class="pr">계산 성공! ${it[1]} ${it[2]}을(를) 샀어요 🎉</div><p>${ex}</p><button class="btn" id="bpark">공원에 놓으러 가기</button> <button class="btn soft" id="bmore">더 구경하기</button></div><button class="skip" id="bskip">사지 않기</button>`;
+      <div class="ans" id="bans"><div class="pr">계산 성공! ${it[1]} ${it[2]}을(를) 샀어요 🎉</div><p>${ex}</p><button class="btn" id="bpark">${it[4]==="pet"?"마을에서 만나러 가기":"공원에 놓으러 가기"}</button> <button class="btn soft" id="bmore">더 구경하기</button></div><button class="skip" id="bskip">사지 않기</button>`;
     c.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
       if(b.classList.contains("wrong")||g("bans").classList.contains("show"))return;
-      if(o[Number(b.dataset.i)][1]){b.classList.add("right");M.spent=(M.spent||0)+P;M.inv[id]=(M.inv[id]||0)+1;save();SFX("coin");g("bskip").style.display="none";g("bmsg").textContent="";g("bans").classList.add("show");drawShop();}
+      if(o[Number(b.dataset.i)][1]){b.classList.add("right");M.spent=(M.spent||0)+P;if(it[4]==="pet"){M.pets[id]=1;M.pet=id;}else M.inv[id]=(M.inv[id]||0)+1;save();SFX("coin");g("bskip").style.display="none";g("bmsg").textContent="";g("bans").classList.add("show");drawShop();}
       else{b.classList.add("wrong");g("bmsg").textContent="음, 다시 계산해 볼까? 💭";}});
     g("bmore").onclick=close;g("bskip").onclick=close;
     g("bpark").onclick=()=>{close();goPlace("home");const pc=g("map");pc&&pc.scrollIntoView({block:"center"});};
@@ -976,32 +988,56 @@ window.addEventListener("hashchange",fromHash);
   const AV={hair:["단발","긴 머리","양갈래","포니테일","숏컷"],hc:["#2b2220","#5a3a22","#8a5a33","#c98a4b"],skin:["#ffe0c7","#f6cfa8","#e8b88f"],coat:["#ff9ec0","#7fd1b9","#8ec5ff","#b79cf0","#ffcf6b"],acc:["없음","청진기","안경","리본"]};
   if(!M.av)M.av={hair:0,hc:0,skin:0,coat:0,acc:1};
   function avatar(a){
-    const H=AV.hc[a.hc],S=AV.skin[a.skin],C=AV.coat[a.coat];
-    const back=["M13 24 Q13 6 30 6 Q47 6 47 24 L47 37 Q47 41 43 41 L17 41 Q13 41 13 37Z","M12 24 Q12 5 30 5 Q48 5 48 24 L49 53 Q49 57 44 57 L16 57 Q11 57 11 53Z","M14 24 Q14 7 30 7 Q46 7 46 24 L46 30 L14 30Z","M14 24 Q14 7 30 7 Q46 7 46 24 L46 30 L14 30Z","M14 24 Q14 7 30 7 Q46 7 46 24 L46 29 L14 29Z"][a.hair];
-    let x=`<ellipse cx="30" cy="81" rx="15" ry="3" fill="#000" opacity=".12"/>`;
-    if(a.hair===2)x+=`<circle cx="9" cy="33" r="7.5" fill="${H}"/><circle cx="51" cy="33" r="7.5" fill="${H}"/><circle cx="13.5" cy="27" r="2.3" fill="#ff6fa5"/><circle cx="46.5" cy="27" r="2.3" fill="#ff6fa5"/>`;
-    if(a.hair===3)x+=`<ellipse cx="47" cy="12" rx="6" ry="11" fill="${H}" transform="rotate(35 47 12)"/><circle cx="43" cy="14" r="2.3" fill="#ff6fa5"/>`;
-    x+=`<path d="${back}" fill="${H}"/>
-      <rect x="22" y="64" width="6" height="14" rx="3" fill="${S}"/><rect x="32" y="64" width="6" height="14" rx="3" fill="${S}"/>
-      <ellipse cx="24.5" cy="79" rx="5" ry="3" fill="#e8688a"/><ellipse cx="35.5" cy="79" rx="5" ry="3" fill="#e8688a"/>
-      <path d="M19 44 Q30 40 41 44 L44 68 L16 68Z" fill="${C}"/>
-      <path d="M19 44 L27 43 L27 68 L15 68Z M41 44 L33 43 L33 68 L45 68Z" fill="#fff" stroke="#dcdcdc" stroke-width=".8"/>
-      <rect x="11" y="45" width="7" height="18" rx="3.5" fill="#fff" stroke="#dcdcdc" stroke-width=".8"/><rect x="42" y="45" width="7" height="18" rx="3.5" fill="#fff" stroke="#dcdcdc" stroke-width=".8"/>
-      <circle cx="14.5" cy="64" r="3.4" fill="${S}"/><circle cx="45.5" cy="64" r="3.4" fill="${S}"/>
-      <circle cx="30" cy="25" r="15" fill="${S}"/>
-      <path d="M15 25 Q15 9 30 9 Q45 9 45 25 Q39 17 30 18 Q21 17 15 25Z" fill="${H}"/>
-      <circle cx="24" cy="27" r="2.3" fill="#3b2f2a"/><circle cx="36" cy="27" r="2.3" fill="#3b2f2a"/><circle cx="24.8" cy="26.2" r=".8" fill="#fff"/><circle cx="36.8" cy="26.2" r=".8" fill="#fff"/>
-      <circle cx="20" cy="32" r="3" fill="#ffb3a0" opacity=".6"/><circle cx="40" cy="32" r="3" fill="#ffb3a0" opacity=".6"/>
-      <path d="M26 32 Q30 36 34 32" stroke="#d65d5a" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
-    if(a.acc===1)x+=`<path d="M24 41 Q23 55 30 55 Q37 55 36 41" stroke="#5f6b7a" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="30" cy="57" r="2.8" fill="#9aa5b1" stroke="#5f6b7a" stroke-width=".8"/>`;
-    if(a.acc===2)x+=`<circle cx="24" cy="27" r="4.6" fill="none" stroke="#444" stroke-width="1.2"/><circle cx="36" cy="27" r="4.6" fill="none" stroke="#444" stroke-width="1.2"/><path d="M28.6 27 h2.8" stroke="#444" stroke-width="1.2"/>`;
-    if(a.acc===3)x+=`<path d="M40 11 l-7 -4 v8z M40 11 l7 -4 v8z" fill="#ff6fa5"/><circle cx="40" cy="11" r="2" fill="#e84d8a"/>`;
+    const H=AV.hc[a.hc],S=AV.skin[a.skin],C=AV.coat[a.coat],S2=shade(S,.88),ln=' stroke="#0000002e" stroke-width=".8"';
+    let x=`<ellipse cx="31" cy="81" rx="17" ry="3.2" fill="#000" opacity=".14"/>`;
+    if(a.hair===1)x+=`<rect x="14" y="10" width="32" height="40" fill="${H}"${ln}/>`;
+    if(a.hair===0)x+=`<rect x="15" y="10" width="30" height="24" fill="${H}"${ln}/>`;
+    if(a.hair===2)x+=`<rect x="8" y="16" width="8" height="20" fill="${H}"${ln}/><rect x="44" y="16" width="8" height="20" fill="${H}"${ln}/><rect x="11" y="13" width="5" height="4" fill="#ff6fa5"/><rect x="44" y="13" width="5" height="4" fill="#ff6fa5"/>`;
+    if(a.hair===3)x+=`<rect x="43" y="1" width="9" height="21" fill="${H}"${ln}/><rect x="42" y="8" width="4" height="4" fill="#ff6fa5"/>`;
+    x+=`<rect x="20.5" y="58" width="9" height="18" fill="${S}"${ln}/><rect x="30.5" y="58" width="9" height="18" fill="${S}"${ln}/><rect x="20.5" y="73" width="9" height="6" fill="#e8688a"/><rect x="30.5" y="73" width="9" height="6" fill="#e8688a"/>
+      <rect x="12" y="31" width="8" height="22" fill="#fff"${ln}/><rect x="40" y="31" width="8" height="22" fill="#fff"${ln}/><rect x="12" y="50" width="8" height="5" fill="${S}"/><rect x="40" y="50" width="8" height="5" fill="${S}"/>
+      <rect x="20" y="30" width="20" height="30" fill="#fff"${ln}/><rect x="26" y="30" width="8" height="30" fill="${C}"/><rect x="20" y="56" width="20" height="4" fill="${C}"/>
+      <path d="M17 8L22 3H48L43 8z" fill="${H}"${ln}/><path d="M43 8L48 3V25L43 30z" fill="${S2}"${ln}/><path d="M43 8L48 3V12L43 17z" fill="${H}"/>
+      <rect x="17" y="8" width="26" height="22" fill="${S}"${ln}/><rect x="17" y="8" width="26" height="7" fill="${H}"/>`;
+    if(a.hair<2)x+=`<rect x="17" y="15" width="4" height="${a.hair?15:13}" fill="${H}"/><rect x="39" y="15" width="4" height="${a.hair?15:13}" fill="${H}"/>`;
+    else x+=`<rect x="17" y="15" width="3.5" height="4" fill="${H}"/><rect x="39.5" y="15" width="3.5" height="4" fill="${H}"/>`;
+    x+=`<rect x="22" y="18" width="5" height="5" fill="#fff"/><rect x="33" y="18" width="5" height="5" fill="#fff"/><rect x="23.7" y="19" width="3.3" height="4" fill="#3b2f2a"/><rect x="33" y="19" width="3.3" height="4" fill="#3b2f2a"/>
+      <rect x="18.5" y="23.5" width="4" height="3" fill="#ffb3a0" opacity=".75"/><rect x="37.5" y="23.5" width="4" height="3" fill="#ffb3a0" opacity=".75"/>
+      <rect x="27" y="25.5" width="6" height="2" fill="#d65d5a"/><rect x="25" y="24" width="2" height="2" fill="#d65d5a"/><rect x="33" y="24" width="2" height="2" fill="#d65d5a"/>`;
+    if(a.acc===1)x+=`<path d="M24 31v13h12v-13" fill="none" stroke="#5f6b7a" stroke-width="2"/><rect x="27.5" y="44" width="5" height="5" fill="#9aa5b1" stroke="#5f6b7a"/>`;
+    if(a.acc===2)x+=`<rect x="20.7" y="16.7" width="7.6" height="7.6" fill="none" stroke="#444" stroke-width="1.3"/><rect x="31.7" y="16.7" width="7.6" height="7.6" fill="none" stroke="#444" stroke-width="1.3"/><path d="M28.3 20.5h3.4" stroke="#444" stroke-width="1.3"/>`;
+    if(a.acc===3)x+=`<rect x="31" y="2" width="5" height="7" fill="#ff6fa5"/><rect x="39" y="2" width="5" height="7" fill="#ff6fa5"/><rect x="36" y="4" width="3" height="3.5" fill="#e84d8a"/>`;
     return x;
   }
+  /* 따라다니는 친구 */
+  const PETS=[["pet_chick","병아리",25],["pet_ham","햄스터",25],["pet_dog","강아지",30],["pet_cat","고양이",30],["pet_rab","토끼",35],["pet_panda","판다",45]];
+  const PETL={pet_dog:{b:"#c98a4b",d:"#8a5a33",m:"#f3dcc0",ear:"flop",tail:"up"},pet_cat:{b:"#f2b84b",d:"#c9862a",m:"#fff3dc",ear:"up",tail:"long"},pet_rab:{b:"#ffffff",d:"#f2c6d6",m:"",ear:"long",tail:"puff",nose:"#f08aa6"},pet_chick:{b:"#ffd94a",d:"#f2a93b",m:"",ear:"none",tail:"none",beak:1},pet_ham:{b:"#f6d7a8",d:"#e2a86b",m:"#ffffff",ear:"round",tail:"none"},pet_panda:{b:"#ffffff",d:"#33302e",m:"",ear:"round",tail:"none",patch:1}};
+  if(!M.pets)M.pets={};
+  function petSvg(id){
+    const p=PETL[id];if(!p)return "";const ln=' stroke="#0000002e" stroke-width=".6"',wh=p.b==="#ffffff",b2=wh?"#e9e9ee":shade(p.b,.84),lg=p.patch?p.d:b2;
+    let s=`<ellipse cx="14" cy="25.5" rx="12" ry="2.2" fill="#000" opacity=".14"/>`;
+    if(p.tail==="up")s+=`<rect x="0.5" y="8" width="3.5" height="7" fill="${p.d}"${ln}/>`;
+    if(p.tail==="long")s+=`<rect x="0" y="4" width="3" height="12" fill="${p.d}"${ln}/><rect x="0" y="4" width="6" height="3" fill="${p.d}"/>`;
+    if(p.tail==="puff")s+=`<rect x="0.5" y="13" width="4" height="4" fill="#fff"${ln}/>`;
+    s+=`<rect x="5" y="20" width="4.5" height="5" fill="${lg}"${ln}/><rect x="13.5" y="20" width="4.5" height="5" fill="${lg}"${ln}/><rect x="3" y="12" width="17" height="10" fill="${p.b}"${ln}/>`;
+    if(p.patch)s+=`<rect x="3" y="12" width="5" height="10" fill="${p.d}"/><rect x="14" y="12" width="6" height="10" fill="${p.d}"/>`;
+    if(p.beak)s+=`<rect x="6" y="14" width="8" height="5" fill="${p.d}" opacity=".7"/>`;
+    if(p.ear==="long")s+=`<rect x="13" y="-7" width="4.5" height="12" fill="${p.b}"${ln}/><rect x="20" y="-7" width="4.5" height="12" fill="${p.b}"${ln}/><rect x="14.3" y="-5" width="2" height="8" fill="${p.d}"/><rect x="21.3" y="-5" width="2" height="8" fill="${p.d}"/>`;
+    if(p.ear==="up")s+=`<rect x="12" y="0" width="4.5" height="5" fill="${p.d}"${ln}/><rect x="20.5" y="0" width="4.5" height="5" fill="${p.d}"${ln}/>`;
+    if(p.ear==="round")s+=`<rect x="10.5" y="1" width="4.5" height="4.5" fill="${p.d}"${ln}/><rect x="22" y="1" width="4.5" height="4.5" fill="${p.d}"${ln}/>`;
+    s+=`<path d="M12 4L15 1H28L25 4z" fill="${wh?"#f6f6fa":shade(p.b,1.12)}"${ln}/><path d="M25 4L28 1V13L25 16z" fill="${b2}"${ln}/><rect x="12" y="4" width="13" height="12" fill="${p.b}"${ln}/>`;
+    if(p.ear==="flop")s+=`<rect x="10" y="4" width="3.5" height="9" fill="${p.d}"${ln}/><rect x="23.5" y="4" width="3.5" height="9" fill="${p.d}"${ln}/>`;
+    if(p.patch)s+=`<rect x="13.3" y="7.3" width="4.4" height="4.6" fill="${p.d}"/><rect x="19.3" y="7.3" width="4.4" height="4.6" fill="${p.d}"/>`;
+    if(p.m)s+=`<rect x="15.5" y="10.5" width="6" height="4.5" fill="${p.m}"/>`;
+    s+=`<rect x="14.5" y="8.3" width="2" height="2.6" fill="${p.patch?"#fff":"#2b2220"}"/><rect x="20.5" y="8.3" width="2" height="2.6" fill="${p.patch?"#fff":"#2b2220"}"/>`;
+    s+=p.beak?`<rect x="16.5" y="11" width="4" height="2.6" fill="#f08a3c"/>`:`<rect x="17.5" y="11.6" width="2" height="1.6" fill="${p.nose||"#2b2220"}"/>`;
+    return s;
+  }
+  const meSvg=()=>avatar(M.av)+(M.pet&&M.pets[M.pet]?`<g class="petg" transform="translate(52,45) scale(1.25)">${petSvg(M.pet)}</g>`:"");
   function editAvatar(){
     const c=g("tkc");g("tk").classList.add("on");
     const row=(key,label,items,sw)=>`<div class="avrow"><b>${label}</b><div>${items.map((v,i)=>sw?`<button class="sw${M.av[key]===i?" on":""}" data-k="${key}" data-i="${i}" style="background:${v}"></button>`:`<button class="chipb${M.av[key]===i?" on":""}" data-k="${key}" data-i="${i}">${v}</button>`).join("")}</div></div>`;
-    const draw=()=>{c.innerHTML=`<h2>🪞 내 캐릭터 꾸미기</h2><svg viewBox="0 0 60 84" style="width:120px;display:block;margin:4px auto">${avatar(M.av)}</svg>
+    const draw=()=>{c.innerHTML=`<h2>🪞 내 캐릭터 꾸미기</h2><svg viewBox="0 -4 92 88" style="width:170px;display:block;margin:4px auto;overflow:visible">${meSvg()}</svg>
       ${row("hair","머리 모양",AV.hair)}${row("hc","머리 색",AV.hc,1)}${row("skin","피부",AV.skin,1)}${row("coat","옷 색",AV.coat,1)}${row("acc","꾸미기",AV.acc)}
       <button class="hbtn" id="avOk">완성!</button>`;
       c.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{M.av[b.dataset.k]=Number(b.dataset.i);save();SFX("tick");draw();});
@@ -1093,7 +1129,7 @@ window.addEventListener("hashchange",fromHash);
         <text font-size="17" text-anchor="middle">🧑‍⚕️<animateTransform attributeName="transform" type="translate" from="${w2[0]} ${w2[1]}" to="${w3[0]} ${w3[1]}" dur="30s" repeatCount="indefinite"/></text>`;
     s+=lab.join("");
     const at=M.at&&LOT[M.at]&&isOpen(M.at)?front(M.at):iso(HOME0[0],HOME0[1]);
-    s+=`<g id="me" style="transform:translate(${at[0]-17}px,${at[1]-46}px)"><g class="bob"><g transform="scale(.58)">${avatar(M.av)}</g></g></g>`;
+    s+=`<g id="me" style="transform:translate(${at[0]-17}px,${at[1]-46}px)"><g class="bob"><g transform="scale(.58)">${meSvg()}</g></g></g>`;
     s+=`<text font-size="30" opacity=".9">☁️<animateTransform attributeName="transform" type="translate" from="-40 26" to="880 26" dur="38s" repeatCount="indefinite"/></text><text font-size="22" opacity=".85">☁️<animateTransform attributeName="transform" type="translate" from="-40 70" to="880 70" dur="55s" begin="-20s" repeatCount="indefinite"/></text>`;
     el.innerHTML=`<svg viewBox="-8 0 840 534" id="mapsvg">${s}</svg>`;el.scrollLeft=(at[0]+8)/840*el.scrollWidth-el.clientWidth/2;
     el.querySelectorAll(".bd").forEach(b=>b.onclick=()=>{
@@ -1168,7 +1204,7 @@ window.addEventListener("hashchange",fromHash);
     const go=g("rvGo");if(go)go.onclick=openReview;
     g("hstat").textContent="🌟 마을 별 "+pts()+" · ⭐ 복습 별 "+M.rv;
   }
-  window.TOWN={
+  window.TOWN={meSvg:meSvg,hasPet:()=>!!(M.pet&&M.pets[M.pet]),
     reg:(k,f)=>{BANK[k]=f;},
     solved:(id,w)=>{if(!M.log[id]){M.log[id]={d:day(),w:w||0};save();}},
     talkDone:k=>!!M.talk[k],
@@ -3330,14 +3366,16 @@ function corridor(f){
   const L=Math.ceil(ds.length/2);
   return `<div class="corr" data-f="${f}" style="--fc:${FL[f][1]};--fb:${FL[f][2]}"><div class="cin"><span class="deco">${f===1?"🚪":"🪴"}</span>${ds.slice(0,L).join("")}${liftBtn(f)}${ds.slice(L).join("")}<span class="deco">🪴</span></div></div>`;
 }
-$("bld").innerHTML=`<div class="flb" id="flb"></div><button class="sc l" data-sc="-1" aria-label="왼쪽">◀</button><button class="sc r" data-sc="1" aria-label="오른쪽">▶</button><div class="me" id="me"><svg viewBox="-20 -6 40 84">${blk(0,0,{coat:1,shirt:"#ffffff",hair:"#4a3528",long:1,pants:"#f08aa6"})}</svg></div>`+FORD.map(corridor).join("")
+$("bld").innerHTML=`<div class="flb" id="flb"></div><button class="sc l" data-sc="-1" aria-label="왼쪽">◀</button><button class="sc r" data-sc="1" aria-label="오른쪽">▶</button><div class="me" id="me"></div>`+FORD.map(corridor).join("")
   +`<div class="liftp" id="liftp"><div class="lpin"><h3 id="lph">몇 층으로 갈까?</h3><div class="lbtns">${FORD.map(f=>`<button data-go="${f}" style="--fc:${FL[f][1]};--fb:${FL[f][2]}"><b>${f||"별"}</b><span class="fi"><small>${FL[f][0]}</small><span class="ics">${D.filter(d=>d.f===f).map(d=>d.e).join(" ")}${f===1?" 🛎️":""}${f===0?" 🍼":""}</span></span><i class="nw">✨</i><i class="ok">⭐</i></button>`).join("")}</div><button class="lx" data-go="x">닫기</button></div></div><button class="mapb" data-guide="1" aria-label="병원 안내판">🗺️</button>`;
 function openGuide(t){$("lph").textContent=t;$("liftp").querySelectorAll("[data-go]").forEach(x=>x.classList.toggle("cur",x.dataset.go===String(curF)));$("liftp").classList.add("on");}
 const meEl=$("me");
+function meDraw(){const T=window.TOWN,pet=T&&T.hasPet&&T.hasPet();meEl.classList.toggle("pet",!!pet);
+  meEl.innerHTML=T&&T.meSvg?`<svg viewBox="0 -6 ${pet?92:60} 90">${T.meSvg()}</svg>`:`<svg viewBox="-30 -6 60 90">${blk(0,0,{coat:1,shirt:"#ffffff",hair:"#4a3528",long:1,pants:"#f08aa6"})}</svg>`;}
 let curF=-1,busy=false;
 const corrOf=f=>$("bld").querySelector('.corr[data-f="'+f+'"]');
 function setFloor(f,atLift){
-  curF=f;$("bld").querySelectorAll(".corr").forEach(c=>c.classList.toggle("on",+c.dataset.f===f));
+  meDraw();curF=f;$("bld").querySelectorAll(".corr").forEach(c=>c.classList.toggle("on",+c.dataset.f===f));
   const c=corrOf(f),cin=c.querySelector(".cin"),lf=cin.querySelector(".lift");cin.appendChild(meEl);
   $("flb").innerHTML=`<b>${fname(f)}</b> ${FEM[f]} ${FL[f][0]}`;$("flb").style.background=FL[f][1];
   meEl.style.transition="none";meEl.style.left=(lf.offsetLeft+lf.offsetWidth/2-27+(atLift?0:-96))+"px";
@@ -3383,8 +3421,9 @@ function floorMarks(){
     b.classList.toggle("fresh",rs.some(r=>r.classList.contains("fresh")));b.classList.toggle("done",rs.length>0&&rs.every(r=>r.classList.contains("done")));});
 }
 
+window.addEventListener("hashchange",()=>meDraw());
 function refresh(){
-  schCheck();schDraw();
+  schCheck();schDraw();meDraw();
   let n=0,t=0;
   D.forEach(d=>{const k=solved(d.id);t+=k;if(k>=QN)n++;
     const el=root.querySelector(`.room[data-id="${d.id}"]`),L=qlen(d.id);el.classList.toggle("done",k>=QN);el.classList.toggle("fresh",k>=QN&&k<L);
